@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Щукин Дмитрий](https://up.htmlacademy.ru/ecmascript/8/user/929569).
-* Наставник: `Неизвестно`.
+* Наставник: [Александр Александров](https://htmlacademy.ru/profile/id935163).
 
 ---
 
