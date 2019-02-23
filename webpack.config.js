@@ -13,5 +13,11 @@ module.exports = {
       test: /\.js$/,
       use: `babel-loader`
     }]
+  },
+  devServer: {
+    contentBase: path.join(__dirname, `public`),
+    publicPath: `http://localhost:8080/`,
+    hot: true,
+    compress: true
   }
 };
