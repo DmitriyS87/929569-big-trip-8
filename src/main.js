@@ -23,6 +23,8 @@ const tripsData = {
   offers: [`Upgrade to business +&euro;&nbsp;20`, `Select meal +&euro;&nbsp;20`]
 };
 
+const tripsDefaultCount = 7;
+
 const FILTER_FORM_CLASS = `.trip-filter`;
 const TRIP_DAY_CLASS = `.trip-day__items`;
 
@@ -33,5 +35,10 @@ const filtersHtml = FILTERS_DATA.reduce((html, item) => {
 clearHtmlInside(FILTER_FORM_CLASS);
 render(filtersHtml, FILTER_FORM_CLASS);
 
+let tripsHTML = ``;
 clearHtmlInside(TRIP_DAY_CLASS);
-render(makePointHtml(tripsData), TRIP_DAY_CLASS);
+
+for (let index = 0; index < tripsDefaultCount; index++) {
+  tripsHTML += makePointHtml(tripsData);
+}
+render(tripsHTML, TRIP_DAY_CLASS);
