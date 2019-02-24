@@ -1,6 +1,7 @@
-import makeFilter from './filter';
-import {render} from './utils';
-import {clearHtmlInside} from './utils';
+import makeFilters from './filter';
+import {renderHTML} from './utils';
+import {clearHTMLInside} from './utils';
+import {renderObject as renderComponent} from './utils';
 import makePointHtml from './trip-point';
 
 const FILTERS_DATA = [{
@@ -23,22 +24,28 @@ const tripsData = {
   offers: [`Upgrade to business +&euro;&nbsp;20`, `Select meal +&euro;&nbsp;20`]
 };
 
+const collectItems = (buildItem, count) => {
+  let itemsCollection = ``;
+  for (let index = 0; index < count; index++) {
+    itemsCollection += buildItem();
+  }
+  return itemsCollection;
+};
+
 const tripsDefaultCount = 7;
 
 const FILTER_FORM_CLASS = `.trip-filter`;
 const TRIP_DAY_CLASS = `.trip-day__items`;
 
-const filtersHtml = FILTERS_DATA.reduce((html, item) => {
-  return ((html !== 0) ? html : ``) + makeFilter(item);
-}, 0);
+clearHTMLInside(FILTER_FORM_CLASS);
 
-clearHtmlInside(FILTER_FORM_CLASS);
-render(filtersHtml, FILTER_FORM_CLASS);
+const onClickFilter = () => {
+  clearHTMLInside(TRIP_DAY_CLASS);
+  renderHTML(collectItems(makePointHtml.bind(this, tripsData), Math.round(Math.random() * 10)), TRIP_DAY_CLASS);
+};
 
-let tripsHTML = ``;
-clearHtmlInside(TRIP_DAY_CLASS);
+renderComponent(makeFilters(FILTERS_DATA, onClickFilter), FILTER_FORM_CLASS);
 
-for (let index = 0; index < tripsDefaultCount; index++) {
-  tripsHTML += makePointHtml(tripsData);
-}
-render(tripsHTML, TRIP_DAY_CLASS);
+clearHTMLInside(TRIP_DAY_CLASS);
+
+renderHTML(collectItems(makePointHtml.bind(this, tripsData), tripsDefaultCount), TRIP_DAY_CLASS);
