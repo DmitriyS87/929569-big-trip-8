@@ -24,10 +24,10 @@ const tripsData = {
   offers: [`Upgrade to business +&euro;&nbsp;20`, `Select meal +&euro;&nbsp;20`]
 };
 
-const collectItems = (buildItem, count) => {
+const collectItems = (item, count) => {
   let itemsCollection = ``;
   for (let index = 0; index < count; index++) {
-    itemsCollection += buildItem();
+    itemsCollection += item;
   }
   return itemsCollection;
 };
@@ -39,13 +39,15 @@ const TRIP_DAY_CLASS = `.trip-day__items`;
 
 clearHTMLInside(FILTER_FORM_CLASS);
 
+const tripPoint = makePointHtml(tripsData);
+
 const onClickFilter = () => {
   clearHTMLInside(TRIP_DAY_CLASS);
-  renderHTML(collectItems(makePointHtml.bind(this, tripsData), Math.round(Math.random() * 10)), TRIP_DAY_CLASS);
+  renderHTML(collectItems(tripPoint, Math.round(Math.random() * 10)), TRIP_DAY_CLASS);
 };
 
 renderComponent(makeFilters(FILTERS_DATA, onClickFilter), FILTER_FORM_CLASS);
 
 clearHTMLInside(TRIP_DAY_CLASS);
 
-renderHTML(collectItems(makePointHtml.bind(this, tripsData), tripsDefaultCount), TRIP_DAY_CLASS);
+renderHTML(collectItems(tripPoint, tripsDefaultCount), TRIP_DAY_CLASS);
