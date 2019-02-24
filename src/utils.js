@@ -1,9 +1,13 @@
-const render = (elementHTML, place) => {
+const renderHTML = (elementHTML, place) => {
   document.querySelector(place).insertAdjacentHTML(`beforeEnd`, elementHTML);
 };
 
-const clearHtmlInside = (className) => {
+const clearHTMLInside = (className) => {
   document.querySelector(className).innerHTML = ``;
 };
 
-export {render, clearHtmlInside};
+const renderObject = (element, place) => {
+  document.querySelector(place).appendChild(element);
+};
+
+export {renderHTML, clearHTMLInside, renderObject};
