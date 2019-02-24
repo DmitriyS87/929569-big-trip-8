@@ -1,5 +1,5 @@
-const render = (element, place) => {
-  document.querySelector(place).insertAdjacentHTML(`beforeEnd`, element);
+const render = (elementHTML, place) => {
+  document.querySelector(place).insertAdjacentHTML(`beforeEnd`, elementHTML);
 };
 
 const clearHtmlInside = (className) => {
