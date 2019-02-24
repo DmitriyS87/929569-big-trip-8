@@ -7,7 +7,7 @@ const offerLi = (offer) => {
 
 const renderOffers = (offers) => {
   return offers.reduce((arr, item) => {
-    return offerLi(item);
+    return (arr !== 0 ? arr : ``) + offerLi(item);
   }, 0);
 };
 
