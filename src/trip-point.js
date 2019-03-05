@@ -5,7 +5,7 @@ const renderOfferItem = (offer) => {
 </li>`;
 };
 
-const renderOffers = (offers) => {
+const renderOffersList = (offers) => {
   return offers.reduce((arr, item) => {
     return (arr !== 0 ? arr : ``) + renderOfferItem(item);
   }, 0);
@@ -22,7 +22,7 @@ export default ({icon = `🚕`, title = `Taxi to Airport`, timeTable = `10:00&nb
     </p>
     <p class="trip-point__price">${price}</p>
       <ul class="trip-point__offers">
-        ${renderOffers(offers)}
+        ${renderOffersList(offers)}
       </ul>
   </article>`;
 };
