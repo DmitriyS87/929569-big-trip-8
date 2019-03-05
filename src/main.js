@@ -15,7 +15,7 @@ const FILTERS_DATA = [{
   textFilter: `Past`
 }];
 
-const tripsData = {
+const TRIPS_DATA = {
   icon: `✈️`,
   title: `Flight to Geneva`,
   timeTable: `10:00&nbsp;&mdash; 11:00`,
@@ -39,7 +39,7 @@ const TRIP_DAY_CLASS = `.trip-day__items`;
 
 clearHTMLInside(FILTER_FORM_CLASS);
 
-const tripPoint = makePointHtml(tripsData);
+const tripPoint = makePointHtml(TRIPS_DATA);
 
 const onClickFilter = () => {
   clearHTMLInside(TRIP_DAY_CLASS);
