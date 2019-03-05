@@ -1,5 +1,5 @@
 
-const offerLi = (offer) => {
+const renderOfferItem = (offer) => {
   return `<li>
   <button class="trip-point__offer">${offer}</button>
 </li>`;
@@ -7,7 +7,7 @@ const offerLi = (offer) => {
 
 const renderOffers = (offers) => {
   return offers.reduce((arr, item) => {
-    return (arr !== 0 ? arr : ``) + offerLi(item);
+    return (arr !== 0 ? arr : ``) + renderOfferItem(item);
   }, 0);
 };
 
