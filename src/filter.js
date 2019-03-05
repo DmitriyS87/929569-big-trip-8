@@ -1,12 +1,7 @@
-const makeFliterHTML = (textFilter, condition) => {
-  return `<input type="radio" id="filter-${textFilter.toLowerCase()}" name="filter" value="${textFilter.toLowerCase()}" ${condition}>
-  <label class="trip-filter__item" for="filter-${textFilter.toLowerCase()}">${textFilter}</label>`;
-};
-
 const renderFilter = ({textFilter, condition = ``}, onClick = () => {}) => {
   const template = document.createElement(`template`);
-  const filterHTML = makeFliterHTML(textFilter, condition);
-  template.innerHTML = filterHTML;
+  template.innerHTML = `<input type="radio" id="filter-${textFilter.toLowerCase()}" name="filter" value="${textFilter.toLowerCase()}" ${condition}>
+  <label class="trip-filter__item" for="filter-${textFilter.toLowerCase()}">${textFilter}</label>`;
   const filter = template.content;
   filter.firstChild.addEventListener(`click`, () => {
     onClick();
