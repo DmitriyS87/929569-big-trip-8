@@ -6,9 +6,7 @@ const renderOfferItem = (offer) => {
 };
 
 const renderOffersList = (offers) => {
-  return offers.reduce((arr, item) => {
-    return (arr !== 0 ? arr : ``) + renderOfferItem(item);
-  }, 0);
+  return offers.map(renderOfferItem).join(``);
 };
 
 export default ({icon = `🚕`, title = `Taxi to Airport`, timeTable = `10:00&nbsp;&mdash; 11:00`, duration = `1h 30m`, price = `&euro;&nbsp;20`, offers = `Order UBER +&euro;&nbsp;20`}) => {
