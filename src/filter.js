@@ -3,7 +3,7 @@ const makeFliterHTML = (textFilter, condition) => {
   <label class="trip-filter__item" for="filter-${textFilter.toLowerCase()}">${textFilter}</label>`;
 };
 
-const makeFilter = ({textFilter, condition = ``}, onClick = () => {}) => {
+const renderFilter = ({textFilter, condition = ``}, onClick = () => {}) => {
   const template = document.createElement(`template`);
   const filterHTML = makeFliterHTML(textFilter, condition);
   template.innerHTML = filterHTML;
@@ -17,7 +17,7 @@ const makeFilter = ({textFilter, condition = ``}, onClick = () => {}) => {
 export default (filtersData, onClick) => {
   const fragment = document.createDocumentFragment();
   const arrayFilters = filtersData.map((filterData) => {
-    return makeFilter(filterData, onClick);
+    return renderFilter(filterData, onClick);
   });
   arrayFilters.forEach((filter) => {
     fragment.appendChild(filter);
