@@ -3,6 +3,7 @@ import {renderHTML} from './utils';
 import {clearHTMLInside} from './utils';
 import {renderObject as renderComponent} from './utils';
 import makePointHtml from './trip-point';
+import data from './data.js';
 
 const FILTERS_DATA = [{
   textFilter: `Everything`,
@@ -21,7 +22,7 @@ const TRIPS_DATA = {
   timeTable: `10:00&nbsp;&mdash; 11:00`,
   duration: `1h 30m`,
   price: `&euro;&nbsp;20`,
-  offers: [`Upgrade to business +&euro;&nbsp;20`, `Select meal +&euro;&nbsp;20`]
+  offers: [`Upgrade to business +&euro;&nbsp;20`, `Select meal +&euro;&nbsp;20`],
 };
 
 const collectItems = (item, count) => {
