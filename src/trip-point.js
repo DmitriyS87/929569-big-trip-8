@@ -13,7 +13,6 @@ const title = (data) => {
 };
 
 export default (data) => {
-  console.log(data);
   return `<article class="trip-point">
     <i class="trip-icon">${data.type.icon}</i>
     <h3 class="trip-point__title">${title(data)}</h3>
