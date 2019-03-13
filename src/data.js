@@ -23,30 +23,28 @@ const ARRAY_POINT_TYPES = [
 
 const MAX_PRICE = 100;
 const DEFAULT_CURRENCY = `&euro`;
-const makeRandomPrice = (max) => {
+const makeRandomCount = (max) => {
   return Math.round(Math.random() * max);
 };
-
-
 const CITIES = [`Moscow`, `Stambul`, `Berlin`, `New-York`, `Prague`, `Amsterdam`, `Minsk`, `Canberra`, `Kiev`, `Brasilia`, `Ottawa`, `Peking`, `Helsinki`, `Paris`];
 
 const OFFERS = [{
   title: `Add luggage`,
-  price: makeRandomPrice(MAX_PRICE),
+  price: makeRandomCount(MAX_PRICE),
   currency: DEFAULT_CURRENCY
 }, {
   title: `Switch to comfort class`,
-  price: makeRandomPrice(MAX_PRICE),
+  price: makeRandomCount(MAX_PRICE),
   currency: DEFAULT_CURRENCY
 },
 {
   title: `Add meal`,
-  price: makeRandomPrice(MAX_PRICE),
+  price: makeRandomCount(MAX_PRICE),
   currency: DEFAULT_CURRENCY
 },
 {
   title: `Choose seats`,
-  price: makeRandomPrice(MAX_PRICE),
+  price: makeRandomCount(MAX_PRICE),
   currency: DEFAULT_CURRENCY
 }];
 
@@ -54,6 +52,10 @@ const TEXT_DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing eli
 
 const getRandomSentences = (text) => {
   return text.split(`.`)[Math.round(Math.random() * 2)];
+};
+
+const gerRandomIndex = (array) => {
+  return Math.floor(Math.random() * array.length);
 };
 
 const getRandomOffers = (array) => {
@@ -85,12 +87,12 @@ const getRandomTimeTable = () => {
 
 export default () => {
   return {
-    type: ARRAY_POINT_TYPES[Math.floor(Math.random() * ARRAY_POINT_TYPES.length)],
-    city: CITIES[Math.floor(Math.random() * CITIES.length)],
+    type: ARRAY_POINT_TYPES[makeRandomCount(ARRAY_POINT_TYPES.length)],
+    city: CITIES[makeRandomCount(CITIES.length)],
     description: getRandomSentences(TEXT_DESCRIPTION),
     timeTable: getRandomTimeTable(),
-    duration: `${Math.floor(Math.random() * 4)}h ${Math.floor(Math.random() * 12) * 5}m`,
-    price: `${DEFAULT_CURRENCY};&nbsp;${Math.floor(Math.random() * 10) * 5}`,
+    duration: `${makeRandomCount(4)}h ${makeRandomCount(60)}m`,
+    price: `${DEFAULT_CURRENCY};&nbsp;${makeRandomCount(50)}`,
     offers: getRandomOffers(OFFERS),
     picture: `http://picsum.photos/300/150?r=${Math.random()}`
   };
