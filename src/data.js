@@ -1,4 +1,4 @@
-const TYPES = [
+const ARRAY_POINT_TYPES = [
   {type: `Taxi`,
     icon: `🚕`},
   {type: `Bus`,
@@ -21,35 +21,32 @@ const TYPES = [
     icon: `🍴`}
 ];
 
+const MAX_PRICE = 100;
 const DEFAULT_CURRENCY = `&euro`;
+const makeRandomPrice = (max) => {
+  return Math.round(Math.random() * max);
+};
+
 
 const CITIES = [`Moscow`, `Stambul`, `Berlin`, `New-York`, `Prague`, `Amsterdam`, `Minsk`, `Canberra`, `Kiev`, `Brasilia`, `Ottawa`, `Peking`, `Helsinki`, `Paris`];
 
 const OFFERS = [{
   title: `Add luggage`,
-  get price() {
-    return Math.round(Math.random() * 100);
-  },
+  price: makeRandomPrice(MAX_PRICE),
   currency: DEFAULT_CURRENCY
 }, {
   title: `Switch to comfort class`,
-  get price() {
-    return Math.round(Math.random() * 100);
-  },
+  price: makeRandomPrice(MAX_PRICE),
   currency: DEFAULT_CURRENCY
 },
 {
   title: `Add meal`,
-  get price() {
-    return Math.round(Math.random() * 100);
-  },
+  price: makeRandomPrice(MAX_PRICE),
   currency: DEFAULT_CURRENCY
 },
 {
   title: `Choose seats`,
-  get price() {
-    return Math.round(Math.random() * 100);
-  },
+  price: makeRandomPrice(MAX_PRICE),
   currency: DEFAULT_CURRENCY
 }];
 
@@ -88,7 +85,7 @@ const getRandomTimeTable = () => {
 
 export default () => {
   return {
-    type: TYPES[Math.floor(Math.random() * TYPES.length)],
+    type: ARRAY_POINT_TYPES[Math.floor(Math.random() * ARRAY_POINT_TYPES.length)],
     city: CITIES[Math.floor(Math.random() * CITIES.length)],
     description: getRandomSentences(TEXT_DESCRIPTION),
     timeTable: getRandomTimeTable(),
