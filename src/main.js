@@ -40,7 +40,7 @@ const TRIP_DAY_CLASS = `.trip-day__items`;
 
 clearHTMLInside(FILTER_FORM_CLASS);
 
-const tripPoint = makePointHtml(TRIPS_DATA);
+const tripPoint = makePointHtml(data());
 
 const onClickFilter = () => {
   clearHTMLInside(TRIP_DAY_CLASS);
