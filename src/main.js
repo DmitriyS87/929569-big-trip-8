@@ -16,7 +16,7 @@ const FILTERS_DATA = [{
   textFilter: `Past`
 }];
 
-const collectItems = (count) => {
+const getArrayPoints = (count) => {
   let arrayPoints = [];
   for (let index = 0; index < count; index++) {
     arrayPoints.push(makePointHtml(data()));
@@ -31,8 +31,7 @@ const TRIP_DAY_CLASS = `.trip-day__items`;
 
 clearHTMLInside(FILTER_FORM_CLASS);
 
-const tripPoint = makePointHtml(data());
-const arrayPoints = collectItems(tripsDefaultCount);
+const arrayPoints = getArrayPoints(tripsDefaultCount);
 const onClickFilter = () => {
   clearHTMLInside(TRIP_DAY_CLASS);
   const filterCount = Math.floor(Math.random() * arrayPoints.length);
