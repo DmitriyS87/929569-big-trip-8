@@ -35,10 +35,7 @@ const arrayPoints = getArrayPoints(tripsDefaultCount);
 const onClickFilter = () => {
   clearHTMLInside(TRIP_DAY_CLASS);
   const filterCount = Math.floor(Math.random() * arrayPoints.length);
-  const filtredPoints = [];
-  for (let i = 0; i < filterCount; i++) {
-    filtredPoints.push(arrayPoints[i]);
-  }
+  const filtredPoints = arrayPoints.slice(0, filterCount);
   renderHTML(filtredPoints.join(` `), TRIP_DAY_CLASS);
 };
 
