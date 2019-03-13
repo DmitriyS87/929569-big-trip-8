@@ -16,15 +16,6 @@ const FILTERS_DATA = [{
   textFilter: `Past`
 }];
 
-const TRIPS_DATA = {
-  icon: `✈️`,
-  title: `Flight to Geneva`,
-  timeTable: `10:00&nbsp;&mdash; 11:00`,
-  duration: `1h 30m`,
-  price: `&euro;&nbsp;20`,
-  offers: [`Upgrade to business +&euro;&nbsp;20`, `Select meal +&euro;&nbsp;20`],
-};
-
 const collectItems = (item, count) => {
   let itemsCollection = ``;
   for (let index = 0; index < count; index++) {
