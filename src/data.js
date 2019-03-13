@@ -54,10 +54,6 @@ const getRandomSentences = (text) => {
   return text.split(`.`)[Math.round(Math.random() * 2)];
 };
 
-const gerRandomIndex = (array) => {
-  return Math.floor(Math.random() * array.length);
-};
-
 const getRandomOffers = (array) => {
   const offers = array.map((item)=>{
     return `${item.title} +${item.currency};&nbsp;${item.price}`;
