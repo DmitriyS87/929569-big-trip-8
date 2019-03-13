@@ -16,12 +16,12 @@ const FILTERS_DATA = [{
   textFilter: `Past`
 }];
 
-const collectItems = (item, count) => {
-  let itemsCollection = ``;
+const collectItems = (count) => {
+  let arrayPoints = [];
   for (let index = 0; index < count; index++) {
-    itemsCollection += item;
+    arrayPoints.push(makePointHtml(data()));
   }
-  return itemsCollection;
+  return arrayPoints;
 };
 
 const tripsDefaultCount = 7;
@@ -32,14 +32,19 @@ const TRIP_DAY_CLASS = `.trip-day__items`;
 clearHTMLInside(FILTER_FORM_CLASS);
 
 const tripPoint = makePointHtml(data());
-
+const arrayPoints = collectItems(tripsDefaultCount);
 const onClickFilter = () => {
   clearHTMLInside(TRIP_DAY_CLASS);
-  renderHTML(collectItems(tripPoint, Math.round(Math.random() * 10)), TRIP_DAY_CLASS);
+  const filterCount = Math.floor(Math.random() * arrayPoints.length);
+  const filtredPoints = [];
+  for (let i = 0; i < filterCount; i++) {
+    filtredPoints.push(arrayPoints[i]);
+  }
+  renderHTML(filtredPoints.join(` `), TRIP_DAY_CLASS);
 };
 
 renderComponent(makeFilters(FILTERS_DATA, onClickFilter), FILTER_FORM_CLASS);
 
 clearHTMLInside(TRIP_DAY_CLASS);
 
-renderHTML(collectItems(tripPoint, tripsDefaultCount), TRIP_DAY_CLASS);
+renderHTML(arrayPoints.join(` `), TRIP_DAY_CLASS);
