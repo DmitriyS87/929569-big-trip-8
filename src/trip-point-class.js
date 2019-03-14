@@ -27,6 +27,9 @@ class TripPointClass {
     return offers.map(this._renderOfferItem).join(``);
   }
 
+  set onClickPoint(fn) {
+    this._onClickPoint = fn;
+  }
 
   get template() {
     return `<article class="trip-point">
