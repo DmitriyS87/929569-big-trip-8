@@ -30,7 +30,7 @@ class TripPointClass {
 
   get template() {
     return `<article class="trip-point">
-    <i class="trip-icon">${this._type}</i>
+    <i class="trip-icon">${this._type.icon}</i>
     <h3 class="trip-point__title">${this._type.type} to ${this._city}</h3>
     <p class="trip-point__schedule">
       <span class="trip-point__timetable">${this._timeTable}</span>
@@ -59,4 +59,4 @@ class TripPointClass {
 
 
 }
-export const TripPoint = new TripPointClass();
+export const TripPoint = TripPointClass;
