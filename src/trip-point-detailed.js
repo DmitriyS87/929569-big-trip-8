@@ -3,7 +3,7 @@ const createElement = (template) => {
   container.innerHTML = template;
   return container.firstChild;
 };
-class TripPointClass {
+class TripPointDetailedClass {
   constructor(data) {
     this._type = data.type;
     this._city = data.city;
@@ -160,4 +160,4 @@ class TripPointClass {
 
 
 }
-export const TripPoint = TripPointClass;
+export const TripPointDetailed = TripPointDetailedClass;
