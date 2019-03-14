@@ -1,3 +1,9 @@
+const createElement = (template) => {
+  const container = document.createElement(`div`);
+  container.innerHTML = template;
+  return container.firstChild;
+};
+
 class TripPointClass {
   constructor(data) {
     this.data = data;
