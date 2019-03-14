@@ -4,6 +4,7 @@ import {clearHTMLInside} from './utils';
 import {renderObject as renderComponent} from './utils';
 import makePointHtml from './trip-point';
 import data from './data.js';
+import {TripPoint} from './trip-point-class';
 
 const FILTERS_DATA = [{
   textFilter: `Everything`,
