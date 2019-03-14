@@ -45,7 +45,7 @@ class TripPointClass {
 
   render() {
     this._element = createElement(this.template);
-
+    return this._element;
   }
 
 
