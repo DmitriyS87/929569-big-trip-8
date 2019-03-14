@@ -3,11 +3,16 @@ const createElement = (template) => {
   container.innerHTML = template;
   return container.firstChild;
 };
-
 class TripPointClass {
   constructor(data) {
-    this.data = data;
-
+    this.type = data.type;
+    this.city = data.city;
+    this.price = data.price;
+    this.description = data.description;
+    this.timeTable = data.timeTable;
+    this.duration = data.duration;
+    this.offers = data.offers;
+    this.picture = data.picture;
 
     this._element = null;
   }
