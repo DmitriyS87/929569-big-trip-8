@@ -43,6 +43,15 @@ class TripPointClass {
   </article>`;
   }
 
+  bind() {
+    this._element.querySelector().addEventListener().bind(this);
+
+  }
+
+  unbind() {
+    this._element.querySelector().removeEventListener().bind(this);
+  }
+
   render() {
     this._element = createElement(this.template);
     return this._element;
