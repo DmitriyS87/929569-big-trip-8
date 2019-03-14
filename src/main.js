@@ -3,6 +3,7 @@ import {renderHTML} from './utils';
 import {clearHTMLInside} from './utils';
 import {renderObject as renderComponent} from './utils';
 import makePointHtml from './trip-point';
+import data from './data.js';
 
 const FILTERS_DATA = [{
   textFilter: `Everything`,
@@ -15,21 +16,12 @@ const FILTERS_DATA = [{
   textFilter: `Past`
 }];
 
-const TRIPS_DATA = {
-  icon: `✈️`,
-  title: `Flight to Geneva`,
-  timeTable: `10:00&nbsp;&mdash; 11:00`,
-  duration: `1h 30m`,
-  price: `&euro;&nbsp;20`,
-  offers: [`Upgrade to business +&euro;&nbsp;20`, `Select meal +&euro;&nbsp;20`]
-};
-
-const collectItems = (item, count) => {
-  let itemsCollection = ``;
+const getArrayPoints = (count) => {
+  let arrayPoints = [];
   for (let index = 0; index < count; index++) {
-    itemsCollection += item;
+    arrayPoints.push(makePointHtml(data()));
   }
-  return itemsCollection;
+  return arrayPoints;
 };
 
 const tripsDefaultCount = 7;
@@ -39,15 +31,16 @@ const TRIP_DAY_CLASS = `.trip-day__items`;
 
 clearHTMLInside(FILTER_FORM_CLASS);
 
-const tripPoint = makePointHtml(TRIPS_DATA);
-
+const arrayPoints = getArrayPoints(tripsDefaultCount);
 const onClickFilter = () => {
   clearHTMLInside(TRIP_DAY_CLASS);
-  renderHTML(collectItems(tripPoint, Math.round(Math.random() * 10)), TRIP_DAY_CLASS);
+  const filterCount = Math.floor(Math.random() * arrayPoints.length);
+  const filtredPoints = arrayPoints.slice(0, filterCount);
+  renderHTML(filtredPoints.join(` `), TRIP_DAY_CLASS);
 };
 
 renderComponent(makeFilters(FILTERS_DATA, onClickFilter), FILTER_FORM_CLASS);
 
 clearHTMLInside(TRIP_DAY_CLASS);
 
-renderHTML(collectItems(tripPoint, tripsDefaultCount), TRIP_DAY_CLASS);
+renderHTML(arrayPoints.join(` `), TRIP_DAY_CLASS);
