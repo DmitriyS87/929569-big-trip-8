@@ -33,11 +33,17 @@ const getArrayPoints = (count) => {
       document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPointDetailed.element, tripPoint.element);
       tripPoint.unrender();
     };
-    tripPointDetailed.onClickDetiledPoint = () => {
+    tripPointDetailed.onSaveClick = () => {
       tripPoint.render();
       document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
       tripPointDetailed.unrender();
     };
+    tripPointDetailed.onResetClick = () => {
+      tripPoint.render();
+      document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
+      tripPointDetailed.unrender();
+    };
+
     document.querySelector(TRIP_DAY_CLASS).appendChild(tripPoint.render());
   }
   return arrayPoints;

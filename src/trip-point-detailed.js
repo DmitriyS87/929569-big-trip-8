@@ -15,6 +15,8 @@ class TripPointDetailedClass {
     this._picture = data.picture;
 
     this._element = null;
+    this._onSaveClick = undefined;
+    this._onResetClick = undefined;
   }
 
   _renderOfferItem(offer) {
@@ -29,6 +31,14 @@ class TripPointDetailedClass {
 
   set onClickDetiledPoint(fn) {
     this._onClickPoint = fn;
+  }
+
+  set onSaveClick(fn) {
+    this._onSaveClick = fn;
+  }
+
+  set onResetClick(fn) {
+    this._onResetClick = fn;
   }
 
   get element() {
@@ -151,22 +161,44 @@ class TripPointDetailedClass {
   </article>`;
   }
 
-  bind() {
-    this._element.addEventListener(`click`, this._onClickPoint);
+  _makeEventListener(elementClass, onClickHandler) {
+    console.log(this._element);
+    console.log(elementClass);
+    console.log(onClickHandler);
+
+    this._element.querySelector(elementClass).addEventListener(`click`, onClickHandler);
   }
 
-  unbind() {
-    this._element.removeEventListener(`click`, this._onClickPoint);
+  _removeEventListener(elementClass, onClickHandler) {
+    this._element.querySelector(elementClass).removeEventListener(`click`, onClickHandler);
+  }
+
+  bindSave() {
+    this._makeEventListener(`.point__buttons .point__button:first-child`, this._onSaveClick);
+  }
+
+  unbindSave() {
+    this._removeEventListener(`.point__buttons .point__button:first-child`, this._onSaveClick);
+  }
+
+  bindReset() {
+    this._makeEventListener(`.point__buttons .point__button:last-child`, this._onResetClick);
+  }
+
+  unbindReset() {
+    this._removeEventListener(`.point__buttons .point__button:last-child`, this._onResetClick);
   }
 
   render() {
     this._element = createElement(this.template);
-    this.bind();
+    this.bindSave();
+    this.bindReset();
     return this._element;
   }
 
   unrender() {
-    this.unbind();
+    this.unbindSave();
+    this.unbindReset();
     this._element = null;
     return this._element;
   }
