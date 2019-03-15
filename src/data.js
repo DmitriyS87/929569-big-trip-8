@@ -22,7 +22,7 @@ const ARRAY_POINT_TYPES = [
 ];
 
 const MAX_PRICE = 100;
-const DEFAULT_CURRENCY = `&euro`;
+const DEFAULT_CURRENCY = `&euro;`;
 
 const makeRandomCount = (max) => {
   return Math.floor(Math.random() * max);
@@ -57,9 +57,6 @@ const getRandomSentences = (text) => {
 };
 
 const getRandomOffers = (arrayOffers) => {
-  /* const offers = array.map((item)=>{
-    return `${item.title} +${item.currency};&nbsp;${item.price}`;
-  });*/
   const count = makeRandomCount(3);
   const exportOffers = [];
   if (count > 0) {
@@ -90,7 +87,10 @@ export default () => {
     description: getRandomSentences(TEXT_DESCRIPTION),
     timeTable: getRandomTimeTable(),
     duration: `${makeRandomCount(5)}h ${makeRandomCount(61)}m`,
-    price: `${DEFAULT_CURRENCY};&nbsp;${makeRandomCount(51)}`,
+    price: {
+      currency: DEFAULT_CURRENCY,
+      count: makeRandomCount(51)
+    },
     offers: getRandomOffers(OFFERS),
     picture: `http://picsum.photos/300/150?r=${Math.random()}`
   };

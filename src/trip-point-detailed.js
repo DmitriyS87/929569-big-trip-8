@@ -104,8 +104,8 @@ class TripPointDetailedClass {
 
         <label class="point__price">
           write price
-          <span class="point__price-currency">€</span>
-          <input class="point__input" type="text" value="${this._price}" name="price">
+          <span class="point__price-currency">${this._price.currency}</span>
+          <input class="point__input" type="text" value="${this._price.count}" name="price">
         </label>
 
         <div class="point__buttons">

@@ -43,7 +43,7 @@ class TripPointClass {
       <span class="trip-point__timetable">${this._timeTable}</span>
       <span class="trip-point__duration">${this._duration}</span>
     </p>
-    <p class="trip-point__price">${this._price}</p>
+    <p class="trip-point__price">${this._price.currency}&nbsp;${this._price.count}</p>
       <ul class="trip-point__offers">
         ${this._renderOffersList(this._offers)}
       </ul>
