@@ -2,7 +2,6 @@ import makeFilters from './filter';
 import {renderHTML} from './utils';
 import {clearHTMLInside} from './utils';
 import {renderObject as renderComponent} from './utils';
-import makePointHtml from './trip-point';
 import data from './data.js';
 import {TripPoint} from './trip-point-class';
 import {TripPointDetailed} from './trip-point-detailed';
