@@ -5,6 +5,7 @@ import {renderObject as renderComponent} from './utils';
 import makePointHtml from './trip-point';
 import data from './data.js';
 import {TripPoint} from './trip-point-class';
+import {TripPointDetailed} from './trip-point-detailed';
 
 const FILTER_FORM_CLASS = `.trip-filter`;
 const TRIP_DAY_CLASS = `.trip-day__items`;
@@ -25,8 +26,19 @@ const getArrayPoints = (count) => {
   let arrayPoints = [];
   for (let index = 0; index < count; index++) {
     let dataElement = data();
-    let tripPointElement = new TripPoint(dataElement);
-    document.querySelector(TRIP_DAY_CLASS).appendChild(tripPointElement.render());
+    let tripPoint = new TripPoint(dataElement);
+    let tripPointDetailed = new TripPointDetailed(dataElement);
+    tripPoint.onClickPoint = () => {
+      tripPointDetailed.render();
+      document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPointDetailed.element, tripPoint.element);
+      tripPoint.unrender();
+    };
+    tripPointDetailed.onClickDetiledPoint = () => {
+      tripPoint.render();
+      document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
+      tripPointDetailed.unrender();
+    };
+    document.querySelector(TRIP_DAY_CLASS).appendChild(tripPoint.render());
   }
   return arrayPoints;
 };
