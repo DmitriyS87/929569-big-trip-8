@@ -46,7 +46,7 @@ class TripPointDetailedClass {
   get element() {
     return this._element;
   }
-  // ${this._timeTable}
+
   get template() {
     return `<article class="point">
     <form action="" method="get">
@@ -57,7 +57,7 @@ class TripPointDetailedClass {
         </label>
 
         <div class="travel-way">
-          <label class="travel-way__label" for="travel-way__toggle">✈️</label>
+          <label class="travel-way__label" for="travel-way__toggle">${this._type.icon}</label>
 
           <input type="checkbox" class="travel-way__toggle visually-hidden" id="travel-way__toggle">
 
@@ -87,8 +87,8 @@ class TripPointDetailedClass {
         </div>
 
         <div class="point__destination-wrap">
-          <label class="point__destination-label" for="destination">Flight to</label>
-          <input class="point__destination-input" list="destination-select" id="destination" value="Chamonix" name="destination">
+          <label class="point__destination-label" for="destination">${this._type.type} to</label>
+          <input class="point__destination-input" list="destination-select" id="destination" value="${this._city}" name="destination">
           <datalist id="destination-select">
             <option value="airport"></option>
             <option value="Geneva"></option>
