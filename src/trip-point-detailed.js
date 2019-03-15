@@ -165,5 +165,11 @@ class TripPointDetailedClass {
     return this._element;
   }
 
+  unrender() {
+    this.unbind();
+    this._element = null;
+    return this._element;
+  }
+
 }
 export const TripPointDetailed = TripPointDetailedClass;

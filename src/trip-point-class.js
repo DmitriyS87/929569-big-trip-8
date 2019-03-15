@@ -66,6 +66,12 @@ class TripPointClass {
     return this._element;
   }
 
+  unrender() {
+    this.unbind();
+    this._element = null;
+    return this._element;
+  }
+
 
 }
 export const TripPoint = TripPointClass;
