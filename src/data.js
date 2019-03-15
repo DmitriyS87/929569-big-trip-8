@@ -31,21 +31,21 @@ const CITIES = [`Moscow`, `Stambul`, `Berlin`, `New-York`, `Prague`, `Amsterdam`
 
 const OFFERS = [{
   title: `Add luggage`,
-  price: makeRandomCount(MAX_PRICE),
+  price: makeRandomCount(MAX_PRICE + 1),
   currency: DEFAULT_CURRENCY
 }, {
   title: `Switch to comfort class`,
-  price: makeRandomCount(MAX_PRICE),
+  price: makeRandomCount(MAX_PRICE + 1),
   currency: DEFAULT_CURRENCY
 },
 {
   title: `Add meal`,
-  price: makeRandomCount(MAX_PRICE),
+  price: makeRandomCount(MAX_PRICE + 1),
   currency: DEFAULT_CURRENCY
 },
 {
   title: `Choose seats`,
-  price: makeRandomCount(MAX_PRICE),
+  price: makeRandomCount(MAX_PRICE + 1),
   currency: DEFAULT_CURRENCY
 }];
 
@@ -56,15 +56,15 @@ const getRandomSentences = (text) => {
   return data[makeRandomCount(data.length)];
 };
 
-const getRandomOffers = (array) => {
-  const offers = array.map((item)=>{
+const getRandomOffers = (arrayOffers) => {
+  /* const offers = array.map((item)=>{
     return `${item.title} +${item.currency};&nbsp;${item.price}`;
-  });
-  const count = makeRandomCount(2);
+  });*/
+  const count = makeRandomCount(3);
   const exportOffers = [];
   if (count > 0) {
     for (let i = 0; i < count; i++) {
-      exportOffers.push(offers[makeRandomCount(offers.length)]);
+      exportOffers.push(arrayOffers[makeRandomCount(arrayOffers.length)]);
     }
   }
   return exportOffers;
@@ -89,8 +89,8 @@ export default () => {
     city: CITIES[makeRandomCount(CITIES.length)],
     description: getRandomSentences(TEXT_DESCRIPTION),
     timeTable: getRandomTimeTable(),
-    duration: `${makeRandomCount(4)}h ${makeRandomCount(60)}m`,
-    price: `${DEFAULT_CURRENCY};&nbsp;${makeRandomCount(50)}`,
+    duration: `${makeRandomCount(5)}h ${makeRandomCount(61)}m`,
+    price: `${DEFAULT_CURRENCY};&nbsp;${makeRandomCount(51)}`,
     offers: getRandomOffers(OFFERS),
     picture: `http://picsum.photos/300/150?r=${Math.random()}`
   };

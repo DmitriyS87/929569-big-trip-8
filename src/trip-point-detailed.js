@@ -19,14 +19,12 @@ class TripPointDetailedClass {
     this._onResetClick = undefined;
   }
 
-  _renderOfferItem(offer) {
-    return `<li>
-    <button class="trip-point__offer">${offer}</button>
-  </li>`;
-  }
-
   _renderOffersList(offers) {
-    return offers.map(this._renderOfferItem).join(``);
+    return offers.map((item)=>{
+      return `<li>
+      <button class="trip-point__offer">${item.title} +${item.currency};&nbsp;${item.price}</button>
+    </li>`;
+    }).join(``);
   }
 
   set onClickDetiledPoint(fn) {
