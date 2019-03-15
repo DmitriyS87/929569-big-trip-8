@@ -162,10 +162,6 @@ class TripPointDetailedClass {
   }
 
   _makeEventListener(elementClass, onClickHandler) {
-    console.log(this._element);
-    console.log(elementClass);
-    console.log(onClickHandler);
-
     this._element.querySelector(elementClass).addEventListener(`click`, onClickHandler);
   }
 
