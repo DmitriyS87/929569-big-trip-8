@@ -24,7 +24,7 @@ const ARRAY_POINT_TYPES = [
 const MAX_PRICE = 100;
 const DEFAULT_CURRENCY = `&euro`;
 const makeRandomCount = (max) => {
-  return Math.round(Math.random() * max);
+  return Math.floor(Math.random() * max);
 };
 const CITIES = [`Moscow`, `Stambul`, `Berlin`, `New-York`, `Prague`, `Amsterdam`, `Minsk`, `Canberra`, `Kiev`, `Brasilia`, `Ottawa`, `Peking`, `Helsinki`, `Paris`];
 
