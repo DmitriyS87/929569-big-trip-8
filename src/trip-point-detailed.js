@@ -46,7 +46,7 @@ class TripPointDetailedClass {
   get element() {
     return this._element;
   }
-
+  // ${this._timeTable}
   get template() {
     return `<article class="point">
     <form action="" method="get">
@@ -99,7 +99,7 @@ class TripPointDetailedClass {
 
         <label class="point__time">
           choose time
-          <input class="point__input" type="text" value="00:00 — 00:00" name="time" placeholder="00:00 — 00:00">
+          <input class="point__input" type="text" value="${this._timeTable.startTime}&nbsp;&mdash; ${this._timeTable.endTime}" name="time" placeholder="00:00 — 00:00">
         </label>
 
         <label class="point__price">

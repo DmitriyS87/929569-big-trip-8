@@ -69,15 +69,19 @@ const getRandomOffers = (arrayOffers) => {
 
 const timeOptions = {
   hour: `numeric`,
-  minute: `numeric`
+  minute: `numeric`,
+  hour12: false
 };
 
 const getRandomTimeTable = () => {
-  const dateStart = Date.now() + Math.round(24 * Math.random()) * 60 * 60 * 1000;
-  const dateFinish = dateStart + Math.round(6 * Math.random()) * 60 * 60 * 1000;
+  const dateStart = Date.now() + makeRandomCount(25) * 60 * 60 * 1000;
+  const dateFinish = dateStart + makeRandomCount(7) * 60 * 60 * 1000;
   const start = new Intl.DateTimeFormat(`en-US`, timeOptions).format(dateStart);
   const end = new Intl.DateTimeFormat(`en-US`, timeOptions).format(dateFinish);
-  return `${start}&nbsp;&mdash; ${end}`;
+  return {
+    startTime: start,
+    endTime: end
+  };
 };
 
 export default () => {

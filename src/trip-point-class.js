@@ -40,7 +40,7 @@ class TripPointClass {
     <i class="trip-icon">${this._type.icon}</i>
     <h3 class="trip-point__title">${this._type.type} to ${this._city}</h3>
     <p class="trip-point__schedule">
-      <span class="trip-point__timetable">${this._timeTable}</span>
+      <span class="trip-point__timetable">${this._timeTable.startTime}&nbsp;&mdash; ${this._timeTable.endTime}</span>
       <span class="trip-point__duration">${this._duration}</span>
     </p>
     <p class="trip-point__price">${this._price.currency}&nbsp;${this._price.count}</p>
