@@ -3,8 +3,8 @@ import {renderHTML} from './utils';
 import {clearHTMLInside} from './utils';
 import {renderObject as renderComponent} from './utils';
 import data from './data.js';
-import {TripPoint} from './trip-point-class';
-import {TripPointDetailed} from './trip-point-detailed';
+import TripPoint from './trip-point';
+import TripPointDetailed from './trip-point-detailed';
 
 const FILTER_FORM_CLASS = `.trip-filter`;
 const TRIP_DAY_CLASS = `.trip-day__items`;
