@@ -60,11 +60,11 @@ const getRandomOffers = (array) => {
   const offers = array.map((item)=>{
     return `${item.title} +${item.currency};&nbsp;${item.price}`;
   });
-  const count = Math.round(Math.random() * 2);
+  const count = makeRandomCount(2);
   const exportOffers = [];
   if (count > 0) {
     for (let i = 0; i < count; i++) {
-      exportOffers.push(offers[Math.floor(Math.random() * offers.length)]);
+      exportOffers.push(offers[makeRandomCount(offers.length)]);
     }
   }
   return exportOffers;
