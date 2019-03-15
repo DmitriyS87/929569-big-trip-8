@@ -15,6 +15,8 @@ class TripPointClass {
     this._picture = data.picture;
 
     this._element = null;
+    this._onClickPoint = null;
+    this._onClickListener = null;
   }
 
   _renderOfferItem(offer) {
@@ -29,6 +31,10 @@ class TripPointClass {
 
   set onClickPoint(fn) {
     this._onClickPoint = fn;
+  }
+
+  get element() {
+    return this._element;
   }
 
   get template() {
@@ -47,16 +53,16 @@ class TripPointClass {
   }
 
   bind() {
-    this._element.querySelector().addEventListener().bind(this);
-
+    this._element.addEventListener(`click`, this._onClickPoint);
   }
 
   unbind() {
-    this._element.querySelector().removeEventListener().bind(this);
+    this._element.removeEventListener(`click`, this._onClickPoint);
   }
 
   render() {
     this._element = createElement(this.template);
+    this.bind();
     return this._element;
   }
 

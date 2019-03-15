@@ -31,6 +31,10 @@ class TripPointDetailedClass {
     this._onClickPoint = fn;
   }
 
+  get element() {
+    return this._element;
+  }
+
   get template() {
     return `<article class="point">
     <form action="" method="get">
@@ -148,19 +152,18 @@ class TripPointDetailedClass {
   }
 
   bind() {
-    this._element.querySelector().addEventListener().bind(this);
-
+    this._element.addEventListener(`click`, this._onClickPoint);
   }
 
   unbind() {
-    this._element.querySelector().removeEventListener().bind(this);
+    this._element.removeEventListener(`click`, this._onClickPoint);
   }
 
   render() {
     this._element = createElement(this.template);
+    this.bind();
     return this._element;
   }
-
 
 }
 export const TripPointDetailed = TripPointDetailedClass;
