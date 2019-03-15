@@ -27,6 +27,10 @@ class TripPointDetailedClass {
     }).join(``);
   }
 
+  _replaceSpace(text) {
+    return text.replace(/\b\s/ig, `-`);
+  }
+
   set onClickDetiledPoint(fn) {
     this._onClickPoint = fn;
   }
@@ -101,7 +105,7 @@ class TripPointDetailedClass {
         <label class="point__price">
           write price
           <span class="point__price-currency">€</span>
-          <input class="point__input" type="text" value="160" name="price">
+          <input class="point__input" type="text" value="${this._price}" name="price">
         </label>
 
         <div class="point__buttons">
@@ -120,37 +124,20 @@ class TripPointDetailedClass {
           <h3 class="point__details-title">offers</h3>
 
           <div class="point__offers-wrap">
-            <input class="point__offers-input visually-hidden" type="checkbox" id="add-luggage" name="offer" value="add-luggage">
-            <label for="add-luggage" class="point__offers-label">
-              <span class="point__offer-service">Add luggage</span> + €<span class="point__offer-price">30</span>
-            </label>
-
-            <input class="point__offers-input visually-hidden" type="checkbox" id="switch-to-comfort-class" name="offer" value="switch-to-comfort-class">
-            <label for="switch-to-comfort-class" class="point__offers-label">
-              <span class="point__offer-service">Switch to comfort class</span> + €<span class="point__offer-price">100</span>
-            </label>
-
-            <input class="point__offers-input visually-hidden" type="checkbox" id="add-meal" name="offer" value="add-meal">
-            <label for="add-meal" class="point__offers-label">
-              <span class="point__offer-service">Add meal </span> + €<span class="point__offer-price">15</span>
-            </label>
-
-            <input class="point__offers-input visually-hidden" type="checkbox" id="choose-seats" name="offer" value="choose-seats">
-            <label for="choose-seats" class="point__offers-label">
-              <span class="point__offer-service">Choose seats</span> + €<span class="point__offer-price">5</span>
-            </label>
+            ${this._offers.map((offer) => {
+    return `<input class="point__offers-input visually-hidden" type="checkbox" id="${this._replaceSpace(offer.title)}" name="offer" value="${this._replaceSpace(offer.title)}">
+              <label for="${this._replaceSpace(offer.title)}" class="point__offers-label">
+                <span class="point__offer-service">${offer.title}</span> + ${offer.currency}<span class="point__offer-price">${offer.price}</span>
+              </label>`;
+  })}
           </div>
 
         </section>
         <section class="point__destination">
           <h3 class="point__details-title">Destination</h3>
-          <p class="point__destination-text">Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
+          <p class="point__destination-text">${this._description}</p>
           <div class="point__destination-images">
-            <img src="http://picsum.photos/330/140?r=123" alt="picture from place" class="point__destination-image">
-            <img src="http://picsum.photos/300/200?r=1234" alt="picture from place" class="point__destination-image">
-            <img src="http://picsum.photos/300/100?r=12345" alt="picture from place" class="point__destination-image">
-            <img src="http://picsum.photos/200/300?r=123456" alt="picture from place" class="point__destination-image">
-            <img src="http://picsum.photos/100/300?r=1234567" alt="picture from place" class="point__destination-image">
+            <img src="${this._picture}" alt="picture from place" class="point__destination-image">
           </div>
         </section>
         <input type="hidden" class="point__total-price" name="total-price" value="">
