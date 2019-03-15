@@ -28,7 +28,7 @@ class TripPoint {
   }
 
   set onClickPoint(fn) {
-    this._onClickPoint = fn;
+    this._onClickPoint = fn.bind(this);
   }
 
   get element() {

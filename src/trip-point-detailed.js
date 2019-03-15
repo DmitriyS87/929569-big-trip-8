@@ -32,7 +32,7 @@ class TripPointDetailed {
   }
 
   set onClickDetiledPoint(fn) {
-    this._onClickPoint = fn;
+    this._onClickPoint = fn.bind(this);
   }
 
   set onSaveClick(fn) {
