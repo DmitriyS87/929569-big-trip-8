@@ -23,6 +23,7 @@ const ARRAY_POINT_TYPES = [
 
 const MAX_PRICE = 100;
 const DEFAULT_CURRENCY = `&euro`;
+
 const makeRandomCount = (max) => {
   return Math.floor(Math.random() * max);
 };
@@ -51,7 +52,8 @@ const OFFERS = [{
 const TEXT_DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
 
 const getRandomSentences = (text) => {
-  return text.split(`.`)[Math.round(Math.random() * 2)];
+  let data = text.split(`.`);
+  return data[makeRandomCount(data.length)];
 };
 
 const getRandomOffers = (array) => {
