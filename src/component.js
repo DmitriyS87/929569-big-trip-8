@@ -30,11 +30,9 @@ class Component {
   }
 
   createListeners() {
-    this._element.addEventListener(`click`, this._onClickPoint);
   }
 
   removeListeners() {
-    this._element.removeEventListener(`click`, this._onClickPoint);
   }
 
   render() {
