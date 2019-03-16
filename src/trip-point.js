@@ -16,6 +16,14 @@ class TripPoint extends Component {
     this._onClickListener = null;
   }
 
+  _renderOffersList(offers) {
+    return offers.map((item)=>{
+      return `<li>
+      <button class="trip-point__offer">${item.title} +${item.currency};&nbsp;${item.price}</button>
+    </li>`;
+    }).join(``);
+  }
+
   set onClickPoint(fn) {
     this._onClickPoint = fn.bind(this);
   }
