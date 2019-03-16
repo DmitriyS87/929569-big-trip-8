@@ -1,6 +1,6 @@
-import Trip from './trip-component';
+import Component from './component';
 
-class TripPoint extends Trip {
+class TripPoint extends Component {
   constructor(data) {
     super();
     this._type = data.type;

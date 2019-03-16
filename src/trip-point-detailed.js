@@ -1,5 +1,5 @@
-import Trip from './trip-component';
-class TripPointDetailed extends Trip {
+import Component from './component';
+class TripPointDetailed extends Component {
   constructor(data) {
     super();
     this._type = data.type;

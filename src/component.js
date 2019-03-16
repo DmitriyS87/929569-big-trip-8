@@ -4,9 +4,9 @@ const createElement = (template) => {
   return container.firstChild;
 };
 
-class Trip {
+class Component {
   constructor() {
-    if (new.target === Trip) {
+    if (new.target === Component) {
       throw new Error(`Can't instantiate Component, only concrete one.`);
     }
 
@@ -50,4 +50,4 @@ class Trip {
   }
 }
 
-export default Trip;
+export default Component;
