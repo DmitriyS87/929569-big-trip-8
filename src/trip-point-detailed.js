@@ -24,11 +24,11 @@ class TripPointDetailed extends Trip {
   }
 
   set onSaveClick(fn) {
-    this._onSaveClick = fn;
+    this._onSaveClick = fn.bind(this);
   }
 
   set onResetClick(fn) {
-    this._onResetClick = fn;
+    this._onResetClick = fn.bind(this);
   }
 
   get template() {
