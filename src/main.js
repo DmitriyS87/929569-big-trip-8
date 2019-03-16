@@ -2,8 +2,13 @@ import makeFilters from './filter';
 import {renderHTML} from './utils';
 import {clearHTMLInside} from './utils';
 import {renderObject as renderComponent} from './utils';
-import makePointHtml from './trip-point';
 import data from './data.js';
+import TripPoint from './trip-point';
+import TripPointDetailed from './trip-point-detailed';
+
+const FILTER_FORM_CLASS = `.trip-filter`;
+const TRIP_DAY_CLASS = `.trip-day__items`;
+
 
 const FILTERS_DATA = [{
   textFilter: `Everything`,
@@ -19,19 +24,35 @@ const FILTERS_DATA = [{
 const getArrayPoints = (count) => {
   let arrayPoints = [];
   for (let index = 0; index < count; index++) {
-    arrayPoints.push(makePointHtml(data()));
+    let dataElement = data();
+    let tripPoint = new TripPoint(dataElement);
+    let tripPointDetailed = new TripPointDetailed(dataElement);
+    tripPoint.onClickPoint = () => {
+      tripPointDetailed.render();
+      document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPointDetailed.element, tripPoint.element);
+      tripPoint.unrender();
+    };
+    tripPointDetailed.onSaveClick = () => {
+      tripPoint.render();
+      document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
+      tripPointDetailed.unrender();
+    };
+    tripPointDetailed.onResetClick = () => {
+      tripPoint.render();
+      document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
+      tripPointDetailed.unrender();
+    };
+
+    document.querySelector(TRIP_DAY_CLASS).appendChild(tripPoint.render());
   }
   return arrayPoints;
 };
 
 const tripsDefaultCount = 7;
 
-const FILTER_FORM_CLASS = `.trip-filter`;
-const TRIP_DAY_CLASS = `.trip-day__items`;
 
 clearHTMLInside(FILTER_FORM_CLASS);
 
-const arrayPoints = getArrayPoints(tripsDefaultCount);
 const onClickFilter = () => {
   clearHTMLInside(TRIP_DAY_CLASS);
   const filterCount = Math.floor(Math.random() * arrayPoints.length);
@@ -42,5 +63,5 @@ const onClickFilter = () => {
 renderComponent(makeFilters(FILTERS_DATA, onClickFilter), FILTER_FORM_CLASS);
 
 clearHTMLInside(TRIP_DAY_CLASS);
-
-renderHTML(arrayPoints.join(` `), TRIP_DAY_CLASS);
+const arrayPoints = getArrayPoints(tripsDefaultCount);
+// renderHTML(arrayPoints.join(` `), TRIP_DAY_CLASS);
