@@ -19,10 +19,6 @@ class TripPointDetailed extends Trip {
     return text.replace(/\b\s/ig, `-`);
   }
 
-  set onClickDetiledPoint(fn) {
-    this._onClickPoint = fn.bind(this);
-  }
-
   set onSaveClick(fn) {
     this._onSaveClick = fn.bind(this);
   }
