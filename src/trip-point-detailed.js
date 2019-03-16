@@ -15,14 +15,6 @@ class TripPointDetailed extends Trip {
     this._onResetClick = undefined;
   }
 
-  _renderOffersList(offers) {
-    return offers.map((item)=>{
-      return `<li>
-      <button class="trip-point__offer">${item.title} +${item.currency};&nbsp;${item.price}</button>
-    </li>`;
-    }).join(``);
-  }
-
   _replaceSpace(text) {
     return text.replace(/\b\s/ig, `-`);
   }

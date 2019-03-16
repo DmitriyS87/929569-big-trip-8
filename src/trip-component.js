@@ -13,6 +13,14 @@ class Trip {
     this._element = null;
   }
 
+  _renderOffersList(offers) {
+    return offers.map((item)=>{
+      return `<li>
+      <button class="trip-point__offer">${item.title} +${item.currency};&nbsp;${item.price}</button>
+    </li>`;
+    }).join(``);
+  }
+
   get element() {
     return this._element;
   }
