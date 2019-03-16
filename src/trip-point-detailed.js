@@ -1,10 +1,7 @@
-const createElement = (template) => {
-  const container = document.createElement(`div`);
-  container.innerHTML = template;
-  return container.firstChild;
-};
-class TripPointDetailed {
+import Component from './component';
+class TripPointDetailed extends Component {
   constructor(data) {
+    super();
     this._type = data.type;
     this._city = data.city;
     this._price = data.price;
@@ -14,10 +11,10 @@ class TripPointDetailed {
     this._offers = data.offers;
     this._picture = data.picture;
 
-    this._element = null;
     this._onSaveClick = undefined;
     this._onResetClick = undefined;
   }
+
 
   _renderOffersList(offers) {
     return offers.map((item)=>{
@@ -31,20 +28,12 @@ class TripPointDetailed {
     return text.replace(/\b\s/ig, `-`);
   }
 
-  set onClickDetiledPoint(fn) {
-    this._onClickPoint = fn.bind(this);
-  }
-
   set onSaveClick(fn) {
-    this._onSaveClick = fn;
+    this._onSaveClick = fn.bind(this);
   }
 
   set onResetClick(fn) {
-    this._onResetClick = fn;
-  }
-
-  get element() {
-    return this._element;
+    this._onResetClick = fn.bind(this);
   }
 
   get template() {
@@ -146,42 +135,14 @@ class TripPointDetailed {
   </article>`;
   }
 
-  _makeEventListener(elementClass, onClickHandler) {
-    this._element.querySelector(elementClass).addEventListener(`click`, onClickHandler);
+  createListeners() {
+    this._element.querySelector(`.point__buttons .point__button:first-child`).addEventListener(`click`, this._onSaveClick);
+    this._element.querySelector(`.point__buttons .point__button:last-child`).addEventListener(`click`, this._onResetClick);
   }
 
-  _removeEventListener(elementClass, onClickHandler) {
-    this._element.querySelector(elementClass).removeEventListener(`click`, onClickHandler);
-  }
-
-  bindSave() {
-    this._makeEventListener(`.point__buttons .point__button:first-child`, this._onSaveClick);
-  }
-
-  unbindSave() {
-    this._removeEventListener(`.point__buttons .point__button:first-child`, this._onSaveClick);
-  }
-
-  bindReset() {
-    this._makeEventListener(`.point__buttons .point__button:last-child`, this._onResetClick);
-  }
-
-  unbindReset() {
-    this._removeEventListener(`.point__buttons .point__button:last-child`, this._onResetClick);
-  }
-
-  render() {
-    this._element = createElement(this.template);
-    this.bindSave();
-    this.bindReset();
-    return this._element;
-  }
-
-  unrender() {
-    this.unbindSave();
-    this.unbindReset();
-    this._element = null;
-    return this._element;
+  removeListeners() {
+    this._element.querySelector(`.point__buttons .point__button:first-child`).removeEventListener(`click`, this._onSaveClick);
+    this._element.querySelector(`.point__buttons .point__button:last-child`).removeEventListener(`click`, this._onResetClick);
   }
 
 }
