@@ -21,22 +21,22 @@ class Trip {
     throw new Error(`You have to define template!`);
   }
 
-  bind() {
+  createListeners() {
     this._element.addEventListener(`click`, this._onClickPoint);
   }
 
-  unbind() {
+  removeListeners() {
     this._element.removeEventListener(`click`, this._onClickPoint);
   }
 
   render() {
     this._element = createElement(this.template);
-    this.bind();
+    this.createListeners();
     return this._element;
   }
 
   unrender() {
-    this.unbind();
+    this.removeListeners();
     this._element = null;
     return this._element;
   }
