@@ -1,12 +1,8 @@
 import Trip from './trip-component';
 
-const createElement = (template) => {
-  const container = document.createElement(`div`);
-  container.innerHTML = template;
-  return container.firstChild;
-};
-class TripPoint {
+class TripPoint extends Trip {
   constructor(data) {
+    super();
     this._type = data.type;
     this._city = data.city;
     this._price = data.price;
@@ -16,7 +12,6 @@ class TripPoint {
     this._offers = data.offers;
     this._picture = data.picture;
 
-    this._element = null;
     this._onClickPoint = null;
     this._onClickListener = null;
   }
@@ -31,10 +26,6 @@ class TripPoint {
 
   set onClickPoint(fn) {
     this._onClickPoint = fn.bind(this);
-  }
-
-  get element() {
-    return this._element;
   }
 
   get template() {
@@ -52,26 +43,13 @@ class TripPoint {
   </article>`;
   }
 
-  bind() {
+  createListeners() {
     this._element.addEventListener(`click`, this._onClickPoint);
   }
 
-  unbind() {
+  removeListeners() {
     this._element.removeEventListener(`click`, this._onClickPoint);
   }
-
-  render() {
-    this._element = createElement(this.template);
-    this.bind();
-    return this._element;
-  }
-
-  unrender() {
-    this.unbind();
-    this._element = null;
-    return this._element;
-  }
-
 
 }
 export default TripPoint;
