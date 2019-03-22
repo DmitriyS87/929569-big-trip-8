@@ -11,25 +11,80 @@ class TripPointDetailed extends Component {
     this._offers = data.offers;
     this._picture = data.picture;
 
-    this._onSaveClick = undefined;
+    this._onChangeDestination = this._onChangeDestination.bind(this);
+
+    this._onSaveButtonClick = this._onSaveButtonClick.bind(this);
+
     this._onResetClick = undefined;
-  }
-
-
-  _renderOffersList(offers) {
-    return offers.map((item)=>{
-      return `<li>
-      <button class="trip-point__offer">${item.title} +${item.currency};&nbsp;${item.price}</button>
-    </li>`;
-    }).join(``);
   }
 
   _replaceSpace(text) {
     return text.replace(/\b\s/ig, `-`);
   }
 
+  _onSaveButtonClick(evt) {
+    evt.preventDefault();
+    const formData = new FormData(this._element.childNodes[1]);
+
+    const newData = this._processForm(formData);
+    if (typeof this._onSaveClick === `function`) {
+      this._onSaveClick(newData);
+    }
+
+    this.update(newData);
+  }
+  _processForm(formData) {
+    const clipboard = {
+      // type: ``,
+      city: ``,
+      // description: ``,
+      // timeTable: ``,
+      // duration: ``,
+      price: ``
+      // offers: ``,
+      // picture: ``
+    };
+
+    const translator = TripPointDetailed.createMaper(clipboard);
+
+    for (let pair of formData.entries()) {
+      let [key, value] = pair;
+      if (translator.has(key)) {
+        translator.get(key)(value);
+      }
+    }
+    return clipboard;
+  }
+
+  static createMaper(target) {
+    return new Map([
+      // [`day` ], // дата скрыта
+      /* [`travel-way`, (value) => {
+        target.type = value;
+        return target.type;
+      }], *///  data.type на чем через выбор чекбокса
+      [`destination`, (value) => {
+        target.city = value;
+        return target.city;
+      }], // data.city куда
+      //  [`time` ], // data.timeTable период времени, тут же вычисление продолжительности
+      [`price`, (value) => {
+        target.price = value;
+        return target.price;
+      }] // data.price цена точки
+    // [`offer`], // data.offers если выбран, данные не меняются меняется состояние и цена
+    // [`total-price`] // общая цена маршрута скрыта
+      // нету data.description - section или p / data.duration - вычисление /  data.picture;
+    ]);
+
+  }
+
+  _onChangeDestination(evt) {
+    this._city = evt.target.value;
+  }
+
   set onSaveClick(fn) {
-    this._onSaveClick = fn.bind(this);
+    this._onSaveClick = fn;
   }
 
   set onResetClick(fn) {
@@ -135,14 +190,35 @@ class TripPointDetailed extends Component {
   </article>`;
   }
 
+  update(newData) {
+    this._city = newData.city;
+    // this._type = newData.type;
+    // this._price = newData.price;
+  }
+
   createListeners() {
-    this._element.querySelector(`.point__buttons .point__button:first-child`).addEventListener(`click`, this._onSaveClick);
+    this._element.querySelector(`.point__buttons .point__button:first-child`).addEventListener(`click`, this._onSaveButtonClick);
     this._element.querySelector(`.point__buttons .point__button:last-child`).addEventListener(`click`, this._onResetClick);
+    this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onChangeDestination);
+    /*
+    travel-way__toggle travel-way__select-group travel-way__select-input checkbox
+    point__destination-input input (text?)
+    point__input       time
+    point__input       price
+    point__offers-input  value queryselectorAll();
+
+
+    point__button point__button--save firstchild
+    point__button                     lastchild
+
+
+    */
   }
 
   removeListeners() {
     this._element.querySelector(`.point__buttons .point__button:first-child`).removeEventListener(`click`, this._onSaveClick);
     this._element.querySelector(`.point__buttons .point__button:last-child`).removeEventListener(`click`, this._onResetClick);
+    this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onChangeDestination);
   }
 
 }

@@ -43,6 +43,12 @@ class TripPoint extends Component {
   </article>`;
   }
 
+  update(newData) {
+    this._city = newData.city;
+    // this._type = newData.type;
+    // this._price = newData.price;
+  }
+
   createListeners() {
     this._element.addEventListener(`click`, this._onClickPoint);
   }
