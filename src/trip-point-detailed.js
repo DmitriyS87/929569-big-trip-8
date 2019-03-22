@@ -1,5 +1,8 @@
 import Component from './component';
 
+const flatpickr = require(`flatpickr`);
+const moment = require(`moment`);
+
 const DRIVE_TYPE_MAP = new Map([
   [`Taxi`, `🚕`],
   [`Bus`, `🚌`],
