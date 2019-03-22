@@ -15,6 +15,10 @@ const STAY_TYPE_MAP = new Map([
   [`Sightseeing`, `🏛`],
   [`Restaurant`, `🍴`]
 ]);
+
+const _replaceDash = (text) => {
+  return text.replace(/\b-/ig, ` `);
+};
 class TripPointDetailed extends Component {
   constructor(data) {
     super();
@@ -63,8 +67,8 @@ class TripPointDetailed extends Component {
       price: {
         currency: `&euro;`,
         count: ``
-      }
-      // offers: ``,
+      },
+      offers: [],
       // picture: ``
     };
 
@@ -72,7 +76,7 @@ class TripPointDetailed extends Component {
 
     for (let pair of formData.entries()) {
       let [key, value] = pair;
-      console.log(`${key} : ${value}`);
+      console.log(pair);
       if (translator.has(key)) {
         translator.get(key)(value);
       }
@@ -100,8 +104,17 @@ class TripPointDetailed extends Component {
       [`price`, (value) => {
         target.price.count = value;
         return target.price;
-      }] // data.price цена точки
-    // [`offer`], // data.offers если выбран, данные не меняются меняется состояние и цена
+      }], // data.price цена точки
+      [`offer`, (value) => {
+        target.offers.push({
+          title: value,
+          price: `${Array.from(document.querySelectorAll(`.point__offers-label`)).find((item) => {
+            return item.children[0].innerText === _replaceDash(value);
+          }).children[1].innerText}`,
+          currency: `&euro;`
+        });
+        return target.offers;
+      }], // data.offers если выбран, данные не меняются меняется состояние и цена
     // [`total-price`] // общая цена маршрута скрыта
       // нету data.description - section или p / data.duration - вычисление /  data.picture;
     ]);
@@ -223,6 +236,7 @@ class TripPointDetailed extends Component {
     this._city = newData.city;
     this._type = newData.type;
     this._price = newData.price;
+
   }
 
   createListeners() {

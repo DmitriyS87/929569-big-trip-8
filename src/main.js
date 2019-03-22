@@ -33,17 +33,20 @@ const getArrayPoints = (count) => {
       tripPoint.unrender();
     };
     tripPointDetailed.onSaveClick = (newData) => {
-      data.city = newData.city;
-      data.type = newData.type;
-      data.price = newData.price;
+      dataElement.city = newData.city;
+      dataElement.type = newData.type;
+      dataElement.price = newData.price;
+      dataElement.offers = newData.offers;
       // tripPointDetailed.trowNewData
-      tripPoint.update(data);
+      tripPoint.update(dataElement);
       tripPoint.render();
       document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
       tripPointDetailed.unrender();
     };
     tripPointDetailed.onResetClick = () => {
-      tripPoint.update();
+      tripPoint.render();
+      document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
+      tripPointDetailed.unrender();
     };
 
     document.querySelector(TRIP_DAY_CLASS).appendChild(tripPoint.render());
