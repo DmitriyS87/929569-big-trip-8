@@ -35,7 +35,7 @@ const getArrayPoints = (count) => {
     tripPointDetailed.onSaveClick = (newData) => {
       data.city = newData.city;
       data.type = newData.type;
-      // data.price = newData.price;
+      data.price = newData.price;
       // tripPointDetailed.trowNewData
       tripPoint.update(data);
       tripPoint.render();

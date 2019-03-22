@@ -60,7 +60,10 @@ class TripPointDetailed extends Component {
       // description: ``,
       // timeTable: ``,
       // duration: ``,
-      price: ``
+      price: {
+        currency: `&euro;`,
+        count: ``
+      }
       // offers: ``,
       // picture: ``
     };
@@ -95,7 +98,7 @@ class TripPointDetailed extends Component {
       }], // data.city куда
       //  [`time` ], // data.timeTable период времени, тут же вычисление продолжительности
       [`price`, (value) => {
-        target.price = value;
+        target.price.count = value;
         return target.price;
       }] // data.price цена точки
     // [`offer`], // data.offers если выбран, данные не меняются меняется состояние и цена
@@ -219,7 +222,7 @@ class TripPointDetailed extends Component {
   update(newData) {
     this._city = newData.city;
     this._type = newData.type;
-    // this._price = newData.price;
+    this._price = newData.price;
   }
 
   createListeners() {
