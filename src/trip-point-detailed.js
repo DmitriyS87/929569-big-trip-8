@@ -1,4 +1,20 @@
 import Component from './component';
+
+const DRIVE_TYPE_MAP = new Map([
+  [`Taxi`, `🚕`],
+  [`Bus`, `🚌`],
+  [`Train`, `🚂`],
+  [`Flight`, `✈️`],
+  [`Ship`, `🛳️`],
+  [`Transport`, `🚊`],
+  [`Drive`, `🚗`]
+]);
+
+const STAY_TYPE_MAP = new Map([
+  [`Check-in`, `🏨`],
+  [`Sightseeing`, `🏛`],
+  [`Restaurant`, `🍴`]
+]);
 class TripPointDetailed extends Component {
   constructor(data) {
     super();
@@ -12,6 +28,7 @@ class TripPointDetailed extends Component {
     this._picture = data.picture;
 
     this._onChangeDestination = this._onChangeDestination.bind(this);
+    this._onClickTravelWay = this._onClickTravelWay.bind(this);
 
     this._onSaveButtonClick = this._onSaveButtonClick.bind(this);
 
@@ -35,7 +52,10 @@ class TripPointDetailed extends Component {
   }
   _processForm(formData) {
     const clipboard = {
-      // type: ``,
+      type: {
+        type: ``,
+        icon: ``
+      },
       city: ``,
       // description: ``,
       // timeTable: ``,
@@ -49,6 +69,7 @@ class TripPointDetailed extends Component {
 
     for (let pair of formData.entries()) {
       let [key, value] = pair;
+      console.log(`${key} : ${value}`);
       if (translator.has(key)) {
         translator.get(key)(value);
       }
@@ -56,13 +77,18 @@ class TripPointDetailed extends Component {
     return clipboard;
   }
 
+  _partialUpdate() {
+
+  }
+
   static createMaper(target) {
     return new Map([
       // [`day` ], // дата скрыта
-      /* [`travel-way`, (value) => {
-        target.type = value;
+      [`travel-way`, (value) => {
+        target.type.type = value;
+        target.type.icon = DRIVE_TYPE_MAP.has(value) ? DRIVE_TYPE_MAP.get(value) : STAY_TYPE_MAP.get(value);
         return target.type;
-      }], *///  data.type на чем через выбор чекбокса
+      }], //  data.type на чем через выбор чекбокса
       [`destination`, (value) => {
         target.city = value;
         return target.city;
@@ -80,7 +106,16 @@ class TripPointDetailed extends Component {
   }
 
   _onChangeDestination(evt) {
-    this._city = evt.target.value;
+    this._city = evt.target.value; // зачем нужен? по типу инпута оверхэд, только при валидации
+  }
+
+  _onClickTravelWay(evt) {
+    if (evt.target.name === `travel-way`) {
+      this._type.type = evt.target.value;
+      this._type.icon = DRIVE_TYPE_MAP.has(this._type.type) ? DRIVE_TYPE_MAP.get(this._type.type) : STAY_TYPE_MAP.get(this._type.type);
+      this._element.querySelector(`.travel-way__label`).innerText = this._type.icon;
+      this._element.querySelector(`.point__destination-label`).innerText = `${evt.target.value} ${STAY_TYPE_MAP.has(evt.target.value) ? ` in` : ` to`}`;
+    }
   }
 
   set onSaveClick(fn) {
@@ -92,6 +127,16 @@ class TripPointDetailed extends Component {
   }
 
   get template() {
+    const renderGroupTravelWay = (map) => {
+      return `<div class="travel-way__select-group">
+      ${Array.from(map.keys()).map((key)=>{
+    return `<input class="travel-way__select-input visually-hidden" type="radio" id="travel-way-${key}" name="travel-way" value="${key}" ${key.toLowerCase() === this._type.type.toLowerCase() ? `checked` : ``}>
+        <label class="travel-way__select-label" for="travel-way-${key}">${map.get(key)} ${key}</label>
+        `;
+  }).join(` `)}
+    </div>`;
+    };
+
     return `<article class="point">
     <form action="" method="get">
       <header class="point__header">
@@ -106,27 +151,8 @@ class TripPointDetailed extends Component {
           <input type="checkbox" class="travel-way__toggle visually-hidden" id="travel-way__toggle">
 
           <div class="travel-way__select">
-            <div class="travel-way__select-group">
-              <input class="travel-way__select-input visually-hidden" type="radio" id="travel-way-taxi" name="travel-way" value="taxi">
-              <label class="travel-way__select-label" for="travel-way-taxi">🚕 taxi</label>
-
-              <input class="travel-way__select-input visually-hidden" type="radio" id="travel-way-bus" name="travel-way" value="bus">
-              <label class="travel-way__select-label" for="travel-way-bus">🚌 bus</label>
-
-              <input class="travel-way__select-input visually-hidden" type="radio" id="travel-way-train" name="travel-way" value="train">
-              <label class="travel-way__select-label" for="travel-way-train">🚂 train</label>
-
-              <input class="travel-way__select-input visually-hidden" type="radio" id="travel-way-flight" name="travel-way" value="train" checked>
-              <label class="travel-way__select-label" for="travel-way-flight">✈️ flight</label>
-            </div>
-
-            <div class="travel-way__select-group">
-              <input class="travel-way__select-input visually-hidden" type="radio" id="travel-way-check-in" name="travel-way" value="check-in">
-              <label class="travel-way__select-label" for="travel-way-check-in">🏨 check-in</label>
-
-              <input class="travel-way__select-input visually-hidden" type="radio" id="travel-way-sightseeing" name="travel-way" value="sight-seeing">
-              <label class="travel-way__select-label" for="travel-way-sightseeing">🏛 sightseeing</label>
-            </div>
+          ${renderGroupTravelWay(DRIVE_TYPE_MAP)}
+          ${renderGroupTravelWay(STAY_TYPE_MAP)}
           </div>
         </div>
 
@@ -192,7 +218,7 @@ class TripPointDetailed extends Component {
 
   update(newData) {
     this._city = newData.city;
-    // this._type = newData.type;
+    this._type = newData.type;
     // this._price = newData.price;
   }
 
@@ -200,6 +226,9 @@ class TripPointDetailed extends Component {
     this._element.querySelector(`.point__buttons .point__button:first-child`).addEventListener(`click`, this._onSaveButtonClick);
     this._element.querySelector(`.point__buttons .point__button:last-child`).addEventListener(`click`, this._onResetClick);
     this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onChangeDestination);
+    this._element.querySelector(`.travel-way__select`).addEventListener(`click`, this._onClickTravelWay);
+    // console.log(this._element.querySelector(`.travel-way__toggle`));
+    // console.log(this._element.querySelector(`.travel-way__select-group`));
     /*
     travel-way__toggle travel-way__select-group travel-way__select-input checkbox
     point__destination-input input (text?)
@@ -219,6 +248,7 @@ class TripPointDetailed extends Component {
     this._element.querySelector(`.point__buttons .point__button:first-child`).removeEventListener(`click`, this._onSaveClick);
     this._element.querySelector(`.point__buttons .point__button:last-child`).removeEventListener(`click`, this._onResetClick);
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onChangeDestination);
+    this._element.querySelector(`.travel-way__select`).removeEventListener(`click`, this._onClickTravelWay);
   }
 
 }

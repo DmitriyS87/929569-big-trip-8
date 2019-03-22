@@ -45,7 +45,7 @@ class TripPoint extends Component {
 
   update(newData) {
     this._city = newData.city;
-    // this._type = newData.type;
+    this._type = newData.type;
     // this._price = newData.price;
   }
 
