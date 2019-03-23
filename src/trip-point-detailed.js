@@ -53,15 +53,19 @@ class TripPointDetailed extends Component {
 
   _onSaveButtonClick(evt) {
     evt.preventDefault();
-    const formData = new FormData(this._element.childNodes[1]);
+    if (this._element.querySelector(`.point__price .point__input`).checkValidity()) {
+      const formData = new FormData(this._element.childNodes[1]);
+      const newData = this._processForm(formData);
+      if (typeof this._onSaveClick === `function`) {
+        this._onSaveClick(newData);
+      }
 
-    const newData = this._processForm(formData);
-    if (typeof this._onSaveClick === `function`) {
-      this._onSaveClick(newData);
+      this.update(newData);
     }
 
-    this.update(newData);
   }
+
+
   _processForm(formData) {
     const clipboard = {
       type: {
@@ -208,7 +212,7 @@ class TripPointDetailed extends Component {
         <label class="point__price">
           write price
           <span class="point__price-currency">${this._price.currency}</span>
-          <input class="point__input" type="text" value="${this._price.count}" name="price">
+          <input class="point__input" type="number" style="-webkit-appearance: none; margin: 0; -moz-appearance:textfield;" value="${this._price.count}" name="price">
         </label>
 
         <div class="point__buttons">
