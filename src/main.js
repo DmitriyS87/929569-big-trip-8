@@ -6,6 +6,7 @@ import data from './data.js';
 import TripPoint from './trip-point';
 import TripPointDetailed from './trip-point-detailed';
 
+const moment = require(`moment`);
 const FILTER_FORM_CLASS = `.trip-filter`;
 const TRIP_DAY_CLASS = `.trip-day__items`;
 
@@ -37,7 +38,10 @@ const getArrayPoints = (count) => {
       dataElement.type = newData.type;
       dataElement.price = newData.price;
       dataElement.offers = newData.offers;
-      // tripPointDetailed.trowNewData
+      dataElement.timeTable = newData.timeTable;
+      const duration = moment.duration(moment(newData.timeTable.endTime, `HH:mm`) - moment(newData.timeTable.startTime, `HH:mm`));
+      dataElement.duration = `${duration.get(`H`)}H ${duration.get(`M`)}M`;
+
       tripPoint.update(dataElement);
       tripPoint.render();
       document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
@@ -70,4 +74,4 @@ renderComponent(makeFilters(FILTERS_DATA, onClickFilter), FILTER_FORM_CLASS);
 
 clearHTMLInside(TRIP_DAY_CLASS);
 const arrayPoints = getArrayPoints(tripsDefaultCount);
-// renderHTML(arrayPoints.join(` `), TRIP_DAY_CLASS);
+

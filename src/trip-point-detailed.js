@@ -1,7 +1,6 @@
 import Component from './component';
 
 const flatpickr = require(`flatpickr`);
-const moment = require(`moment`);
 
 const DRIVE_TYPE_MAP = new Map([
   [`Taxi`, `🚕`],
@@ -34,8 +33,9 @@ class TripPointDetailed extends Component {
     this._offers = data.offers;
     this._picture = data.picture;
 
-    this._onChangeDestination = this._onChangeDestination.bind(this);
     this._onClickTravelWay = this._onClickTravelWay.bind(this);
+
+    this._onChangeTimeInput = this._onChangeTimeInput.bind(this);
 
     this._onSaveButtonClick = this._onSaveButtonClick.bind(this);
 
@@ -64,22 +64,20 @@ class TripPointDetailed extends Component {
         icon: ``
       },
       city: ``,
-      // description: ``,
-      // timeTable: ``,
-      // duration: ``,
+      timeTable: {
+        startTime: `00:00`,
+        endTime: `00:00`
+      },
       price: {
         currency: `&euro;`,
         count: ``
       },
       offers: [],
-      // picture: ``
     };
 
     const translator = TripPointDetailed.createMaper(clipboard);
-
     for (let pair of formData.entries()) {
       let [key, value] = pair;
-      console.log(pair);
       if (translator.has(key)) {
         translator.get(key)(value);
       }
@@ -93,21 +91,25 @@ class TripPointDetailed extends Component {
 
   static createMaper(target) {
     return new Map([
-      // [`day` ], // дата скрыта
       [`travel-way`, (value) => {
         target.type.type = value;
         target.type.icon = DRIVE_TYPE_MAP.has(value) ? DRIVE_TYPE_MAP.get(value) : STAY_TYPE_MAP.get(value);
         return target.type;
-      }], //  data.type на чем через выбор чекбокса
+      }],
       [`destination`, (value) => {
         target.city = value;
         return target.city;
-      }], // data.city куда
-      //  [`time` ], // data.timeTable период времени, тут же вычисление продолжительности
+      }],
+      [`time`, (value) => {
+        const arrayValue = value.split(` to `);
+        target.timeTable.startTime = arrayValue[0];
+        target.timeTable.endTime = arrayValue[1];
+        return target.timeTable;
+      }],
       [`price`, (value) => {
         target.price.count = value;
         return target.price;
-      }], // data.price цена точки
+      }],
       [`offer`, (value) => {
         target.offers.push({
           title: value,
@@ -117,15 +119,9 @@ class TripPointDetailed extends Component {
           currency: `&euro;`
         });
         return target.offers;
-      }], // data.offers если выбран, данные не меняются меняется состояние и цена
-    // [`total-price`] // общая цена маршрута скрыта
-      // нету data.description - section или p / data.duration - вычисление /  data.picture;
+      }]
     ]);
 
-  }
-
-  _onChangeDestination(evt) {
-    this._city = evt.target.value; // зачем нужен? по типу инпута оверхэд, только при валидации
   }
 
   _onClickTravelWay(evt) {
@@ -239,7 +235,11 @@ class TripPointDetailed extends Component {
     this._city = newData.city;
     this._type = newData.type;
     this._price = newData.price;
+    this.timeTable = newData.timeTable;
+    this._duration = newData.duration;
+  }
 
+  _onChangeTimeInput() {
   }
 
   createListeners() {
@@ -247,21 +247,12 @@ class TripPointDetailed extends Component {
     this._element.querySelector(`.point__buttons .point__button:last-child`).addEventListener(`click`, this._onResetClick);
     this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onChangeDestination);
     this._element.querySelector(`.travel-way__select`).addEventListener(`click`, this._onClickTravelWay);
-    // console.log(this._element.querySelector(`.travel-way__toggle`));
-    // console.log(this._element.querySelector(`.travel-way__select-group`));
-    /*
-    travel-way__toggle travel-way__select-group travel-way__select-input checkbox
-    point__destination-input input (text?)
-    point__input       time
-    point__input       price
-    point__offers-input  value queryselectorAll();
-
-
-    point__button point__button--save firstchild
-    point__button                     lastchild
-
-
-    */
+    flatpickr(this._element.querySelector(`.point__time .point__input`), {
+      enableTime: true,
+      // noCalendar: true,
+      dateFormat: `H:i`,
+      mode: `range`,
+    });
   }
 
   removeListeners() {

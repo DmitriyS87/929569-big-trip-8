@@ -48,6 +48,8 @@ class TripPoint extends Component {
     this._type = newData.type;
     this._price = newData.price;
     this._offers = newData.offers;
+    this._timeTable = newData.timeTable;
+    this._duration = newData.duration;
   }
 
   createListeners() {
