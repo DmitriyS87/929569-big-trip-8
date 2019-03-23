@@ -19,7 +19,7 @@ class TripPoint extends Component {
   _renderOffersList(offers) {
     return offers.map((item)=>{
       return `<li>
-      <button class="trip-point__offer">${item.title} +${item.currency};&nbsp;${item.price}</button>
+      <button class="trip-point__offer">${item.title} +${item.currency}&nbsp;${item.price}</button>
     </li>`;
     }).join(``);
   }
@@ -41,6 +41,14 @@ class TripPoint extends Component {
         ${this._renderOffersList(this._offers)}
       </ul>
   </article>`;
+  }
+
+  update(newData) {
+    this._city = newData.city;
+    this._type = newData.type;
+    this._price = newData.price;
+    this._timeTable = newData.timeTable;
+    this._duration = newData.duration;
   }
 
   createListeners() {

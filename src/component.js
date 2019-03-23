@@ -21,6 +21,9 @@ class Component {
     throw new Error(`You have to define template!`);
   }
 
+  update() {
+  }
+
   createListeners() {
   }
 
