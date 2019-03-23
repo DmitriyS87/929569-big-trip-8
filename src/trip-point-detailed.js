@@ -21,6 +21,11 @@ const STAY_TYPE_MAP = new Map([
 const _replaceDash = (text) => {
   return text.replace(/\b-/ig, ` `);
 };
+
+const _getMatchString = (text, pattern) => {
+  const arrayText = text.match(pattern);
+  return arrayText[0].trim();
+};
 class TripPointDetailed extends Component {
   constructor(data) {
     super();
@@ -35,7 +40,7 @@ class TripPointDetailed extends Component {
 
     this._onClickTravelWay = this._onClickTravelWay.bind(this);
 
-    this._onChangeTimeInput = this._onChangeTimeInput.bind(this);
+    this._onClickTimeInput = this._onClickTimeInput.bind(this);
 
     this._onSaveButtonClick = this._onSaveButtonClick.bind(this);
 
@@ -101,9 +106,8 @@ class TripPointDetailed extends Component {
         return target.city;
       }],
       [`time`, (value) => {
-        const arrayValue = value.split(` to `);
-        target.timeTable.startTime = arrayValue[0];
-        target.timeTable.endTime = arrayValue[1];
+        target.timeTable.startTime = _getMatchString(value, /\d\d\:\d\d\s/ig);
+        target.timeTable.endTime = _getMatchString(value, /\s\d\d\:\d\d/ig);
         return target.timeTable;
       }],
       [`price`, (value) => {
@@ -121,7 +125,6 @@ class TripPointDetailed extends Component {
         return target.offers;
       }]
     ]);
-
   }
 
   _onClickTravelWay(evt) {
@@ -131,6 +134,21 @@ class TripPointDetailed extends Component {
       this._element.querySelector(`.travel-way__label`).innerText = this._type.icon;
       this._element.querySelector(`.point__destination-label`).innerText = `${evt.target.value} ${STAY_TYPE_MAP.has(evt.target.value) ? ` in` : ` to`}`;
     }
+  }
+
+  _onClickTimeInput(evt) {
+    const newTime = flatpickr(this._element.querySelector(`.point__time .point__input`), {
+      enableTime: true,
+      dateFormat: `H:i`,
+      mode: `range`,
+      clickOpens: false,
+      locale: {
+        rangeSeparator: ` — `
+      },
+      defaultDate: [_getMatchString(evt.target.value, /\d\d\:\d\d\s/ig), _getMatchString(evt.target.value, /\s\d\d\:\d\d/ig)]
+
+    });
+    newTime.open();
   }
 
   set onSaveClick(fn) {
@@ -239,20 +257,12 @@ class TripPointDetailed extends Component {
     this._duration = newData.duration;
   }
 
-  _onChangeTimeInput() {
-  }
-
   createListeners() {
     this._element.querySelector(`.point__buttons .point__button:first-child`).addEventListener(`click`, this._onSaveButtonClick);
     this._element.querySelector(`.point__buttons .point__button:last-child`).addEventListener(`click`, this._onResetClick);
     this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onChangeDestination);
     this._element.querySelector(`.travel-way__select`).addEventListener(`click`, this._onClickTravelWay);
-    flatpickr(this._element.querySelector(`.point__time .point__input`), {
-      enableTime: true,
-      // noCalendar: true,
-      dateFormat: `H:i`,
-      mode: `range`,
-    });
+    this._element.querySelector(`.point__time .point__input`).addEventListener(`click`, this._onClickTimeInput);
   }
 
   removeListeners() {
@@ -260,6 +270,7 @@ class TripPointDetailed extends Component {
     this._element.querySelector(`.point__buttons .point__button:last-child`).removeEventListener(`click`, this._onResetClick);
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onChangeDestination);
     this._element.querySelector(`.travel-way__select`).removeEventListener(`click`, this._onClickTravelWay);
+    this._element.querySelector(`.point__time .point__input`).removeEventListener(`click`, this._onClickTimeInput);
   }
 
 }
