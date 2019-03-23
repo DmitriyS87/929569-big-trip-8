@@ -47,7 +47,7 @@ const getArrayPoints = (count) => {
       document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
       tripPointDetailed.unrender();
     };
-    tripPointDetailed.onResetClick = () => {
+    tripPointDetailed.onDelete = () => {
       tripPoint.render();
       document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
       tripPointDetailed.unrender();

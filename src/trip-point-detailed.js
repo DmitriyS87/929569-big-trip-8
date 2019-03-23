@@ -44,7 +44,7 @@ class TripPointDetailed extends Component {
 
     this._onSaveButtonClick = this._onSaveButtonClick.bind(this);
 
-    this._onResetClick = undefined;
+    this._onDeleteClick = this._onDeleteClick.bind(this);
   }
 
   _replaceSpace(text) {
@@ -159,8 +159,8 @@ class TripPointDetailed extends Component {
     this._onSaveClick = fn;
   }
 
-  set onResetClick(fn) {
-    this._onResetClick = fn.bind(this);
+  set onDelete(fn) {
+    this._onDeleteClick = fn;
   }
 
   get template() {
@@ -263,7 +263,7 @@ class TripPointDetailed extends Component {
 
   createListeners() {
     this._element.querySelector(`.point__buttons .point__button:first-child`).addEventListener(`click`, this._onSaveButtonClick);
-    this._element.querySelector(`.point__buttons .point__button:last-child`).addEventListener(`click`, this._onResetClick);
+    this._element.querySelector(`.point__buttons .point__button:last-child`).addEventListener(`click`, this._onDeleteClick);
     this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onChangeDestination);
     this._element.querySelector(`.travel-way__select`).addEventListener(`click`, this._onClickTravelWay);
     this._element.querySelector(`.point__time .point__input`).addEventListener(`click`, this._onClickTimeInput);
@@ -271,7 +271,7 @@ class TripPointDetailed extends Component {
 
   removeListeners() {
     this._element.querySelector(`.point__buttons .point__button:first-child`).removeEventListener(`click`, this._onSaveClick);
-    this._element.querySelector(`.point__buttons .point__button:last-child`).removeEventListener(`click`, this._onResetClick);
+    this._element.querySelector(`.point__buttons .point__button:last-child`).removeEventListener(`click`, this._onDeleteClick);
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onChangeDestination);
     this._element.querySelector(`.travel-way__select`).removeEventListener(`click`, this._onClickTravelWay);
     this._element.querySelector(`.point__time .point__input`).removeEventListener(`click`, this._onClickTimeInput);
