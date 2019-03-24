@@ -23,8 +23,11 @@ const _replaceDash = (text) => {
 };
 
 const _getMatchString = (text, pattern) => {
-  const arrayText = text.match(pattern);
-  return arrayText[0].trim();
+  if (text !== null) {
+    const arrayText = text.match(pattern);
+    return arrayText[0].trim();
+  }
+  return `00:00`;
 };
 class TripPointDetailed extends Component {
   constructor(data) {
