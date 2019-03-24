@@ -46,6 +46,14 @@ class TripPoint extends Component {
   </article>`;
   }
 
+  set display(display) {
+    this._display = display;
+  }
+
+  get date() {
+    return this._date;
+  }
+
   update(newData) {
     this._city = newData.city;
     this._type = newData.type;
