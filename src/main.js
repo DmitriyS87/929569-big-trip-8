@@ -22,6 +22,14 @@ const FILTERS_DATA = [{
   textFilter: `Past`
 }];
 
+const generateArrayPoints = (count) => {
+  const arrayPoints = [];
+  for (let index = 0; index < count; index++) {
+    arrayPoints.push(data());
+  }
+  return arrayPoints;
+};
+
 const getArrayPoints = (count) => {
   let arrayPoints = [];
   for (let index = 0; index < count; index++) {
@@ -48,9 +56,10 @@ const getArrayPoints = (count) => {
       tripPointDetailed.unrender();
     };
     tripPointDetailed.onDelete = () => {
-      tripPoint.render();
-      document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
-      tripPointDetailed.unrender();
+      console.log(`delete`);
+      // tripPoint.render();
+      // document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
+      // tripPointDetailed.unrender();
     };
 
     document.querySelector(TRIP_DAY_CLASS).appendChild(tripPoint.render());
