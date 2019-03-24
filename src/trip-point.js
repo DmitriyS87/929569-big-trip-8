@@ -3,6 +3,7 @@ import Component from './component';
 class TripPoint extends Component {
   constructor(data) {
     super();
+    this._date = data.date;
     this._type = data.type;
     this._city = data.city;
     this._price = data.price;
@@ -11,6 +12,8 @@ class TripPoint extends Component {
     this._duration = data.duration;
     this._offers = data.offers;
     this._picture = data.picture;
+
+    this._display = data.display;
 
     this._onClickPoint = null;
     this._onClickListener = null;
@@ -29,7 +32,7 @@ class TripPoint extends Component {
   }
 
   get template() {
-    return `<article class="trip-point">
+    return `<article class="trip-point" ${this._display ? `` : `style="display:none"`}>
     <i class="trip-icon">${this._type.icon}</i>
     <h3 class="trip-point__title">${this._type.type} to ${this._city}</h3>
     <p class="trip-point__schedule">
@@ -52,7 +55,9 @@ class TripPoint extends Component {
   }
 
   createListeners() {
-    this._element.addEventListener(`click`, this._onClickPoint);
+    if (this._display) {
+      this._element.addEventListener(`click`, this._onClickPoint);
+    }
   }
 
   removeListeners() {

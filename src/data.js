@@ -1,3 +1,5 @@
+const moment = require(`moment`);
+
 const ARRAY_POINT_TYPES = [
   {type: `Taxi`,
     icon: `🚕`},
@@ -67,25 +69,24 @@ const getRandomOffers = (arrayOffers) => {
   return exportOffers;
 };
 
-const timeOptions = {
-  hour: `numeric`,
-  minute: `numeric`,
-  hour12: false
-};
-
 const getRandomTimeTable = () => {
-  const dateStart = Date.now() + makeRandomCount(25) * 60 * 60 * 1000;
-  const dateFinish = dateStart + makeRandomCount(7) * 60 * 60 * 1000;
-  const start = new Intl.DateTimeFormat(`en-US`, timeOptions).format(dateStart);
-  const end = new Intl.DateTimeFormat(`en-US`, timeOptions).format(dateFinish);
+  const timeStart = moment().add(makeRandomCount(13) - makeRandomCount(13), `h`).add(makeRandomCount(61), `m`);
+  const timeFinish = moment(timeStart).add(makeRandomCount(10), `h`).add(makeRandomCount(31), `m`);
+  const start = moment(timeStart).format(`HH:mm`);
+  const end = moment(timeFinish).format(`HH:mm`);
   return {
     startTime: start,
     endTime: end
   };
 };
 
+const getRandomDate = () => {
+  return moment().add(makeRandomCount(7) - makeRandomCount(7), `d`).format(`DD MMM`);
+};
+
 export default () => {
   return {
+    date: getRandomDate(),
     type: ARRAY_POINT_TYPES[makeRandomCount(ARRAY_POINT_TYPES.length)],
     city: CITIES[makeRandomCount(CITIES.length)],
     description: getRandomSentences(TEXT_DESCRIPTION),

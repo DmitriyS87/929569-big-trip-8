@@ -4,6 +4,8 @@ import data from './data.js';
 import TripPoint from './trip-point';
 import TripPointDetailed from './trip-point-detailed';
 
+const array = require(`lodash/array`);
+
 const moment = require(`moment`);
 
 const FILTER_FORM_CLASS = `.trip-filter`;
@@ -12,21 +14,42 @@ const TRIP_DAY_CLASS = `.trip-day__items`;
 
 const FILTERS_DATA = [{
   textFilter: `Everything`,
-  checked: true
+  checked: true,
+  doFilter(point) {
+    if (point !== null) {
+      point.display = true;
+    }
+    return point;
+  }
 },
 {
   textFilter: `Future`,
-  checked: false
+  checked: false,
+  doFilter(point) {
+    if (point !== null) {
+      moment().isBefore(moment(point.date, `DD MMM`)) ? point.display = true : point.display = false;
+      return point;
+    }
+    return null;
+  }
 },
 {
   textFilter: `Past`,
-  checked: false
+  checked: false,
+  doFilter(point) {
+    if (point !== null) {
+      moment(point.date, `DD MMM`).isBefore(moment()) ? point.display = true : point.display = false;
+      return point;
+    }
+    return null;
+  }
 }];
 
 const generateArrayPoints = (count) => {
   const arrayPoints = [];
   for (let index = 0; index < count; index++) {
     arrayPoints.push(data());
+    arrayPoints[index].display = true;
   }
   return arrayPoints;
 };
@@ -74,16 +97,21 @@ clearHTMLInside(FILTER_FORM_CLASS);
 
 const arrayFilters = [];
 
+clearHTMLInside(TRIP_DAY_CLASS);
+const arrayPoints = generateArrayPoints(tripsDefaultCount);
+renderPoints(arrayPoints);
+
+
 for (let filterData of FILTERS_DATA) {
   let filter = new Filter(filterData);
   filter.onFilter = () => {
-    console.log(`filter`);
+    clearHTMLInside(TRIP_DAY_CLASS);
+    renderPoints(arrayPoints.map((point) => {
+      return filter.doFilter(point);
+    }));
   };
   document.querySelector(FILTER_FORM_CLASS).appendChild(filter.render());
   arrayFilters.push(filter.element);
 }
 
-clearHTMLInside(TRIP_DAY_CLASS);
-const arrayPoints = generateArrayPoints(tripsDefaultCount);
-renderPoints(arrayPoints);
 

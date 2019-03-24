@@ -7,12 +7,17 @@ class Filter extends Component {
 
     this._isChecked = data.checked;
 
+    this._doFilter = data.doFilter;
     this._onFilter = null;
     this._onClickFilter = this._onClickFilter.bind(this);
   }
 
+  get doFilter() {
+    return this._doFilter;
+  }
+
   set onFilter(fn) {
-    this._onFilter = fn;
+    this._onFilter = fn.bind(this);
   }
 
   _onClickFilter() {

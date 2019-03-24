@@ -32,6 +32,7 @@ const _getMatchString = (text, pattern) => {
 class TripPointDetailed extends Component {
   constructor(data) {
     super();
+    this._date = data.date;
     this._type = data.type;
     this._city = data.city;
     this._price = data.price;
