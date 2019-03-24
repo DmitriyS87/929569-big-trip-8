@@ -1,3 +1,5 @@
+import Component from "./component";
+
 const renderFilter = ({textFilter, condition = ``}, onClick = () => {}) => {
   const template = document.createElement(`template`);
   template.innerHTML = `<input type="radio" id="filter-${textFilter.toLowerCase()}" name="filter" value="${textFilter.toLowerCase()}" ${condition}>
@@ -9,6 +11,14 @@ const renderFilter = ({textFilter, condition = ``}, onClick = () => {}) => {
   return filter;
 };
 
+class Filter extends Component {
+  constructor() {
+    super();
+  }
+
+
+}
+
 export default (filtersData, onClick) => {
   const fragment = document.createDocumentFragment();
   const arrayFilters = filtersData.map((filterData) => {
@@ -19,3 +29,5 @@ export default (filtersData, onClick) => {
   });
   return fragment;
 };
+
+export {Filter};
