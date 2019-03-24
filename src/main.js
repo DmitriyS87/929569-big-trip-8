@@ -1,12 +1,11 @@
-import makeFilters from './filter';
-import {renderHTML} from './utils';
+import {Filter} from './filter';
 import {clearHTMLInside} from './utils';
-import {renderObject as renderComponent} from './utils';
 import data from './data.js';
 import TripPoint from './trip-point';
 import TripPointDetailed from './trip-point-detailed';
 
 const moment = require(`moment`);
+
 const FILTER_FORM_CLASS = `.trip-filter`;
 const TRIP_DAY_CLASS = `.trip-day__items`;
 
@@ -73,14 +72,16 @@ const tripsDefaultCount = 7;
 
 clearHTMLInside(FILTER_FORM_CLASS);
 
-const onClickFilter = () => {
-  clearHTMLInside(TRIP_DAY_CLASS);
-  const filterCount = Math.floor(Math.random() * arrayPoints.length);
-  const filtredPoints = arrayPoints.slice(0, filterCount);
-  renderHTML(filtredPoints.join(` `), TRIP_DAY_CLASS);
-};
+const arrayFilters = [];
 
-renderComponent(makeFilters(FILTERS_DATA, onClickFilter), FILTER_FORM_CLASS);
+for (let filterData of FILTERS_DATA) {
+  let filter = new Filter(filterData);
+  filter.onFilter = () => {
+    console.log(`filter`);
+  };
+  document.querySelector(FILTER_FORM_CLASS).appendChild(filter.render());
+  arrayFilters.push(filter.element);
+}
 
 clearHTMLInside(TRIP_DAY_CLASS);
 const arrayPoints = generateArrayPoints(tripsDefaultCount);
