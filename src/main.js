@@ -30,7 +30,7 @@ const generateArrayPoints = (count) => {
   return arrayPoints;
 };
 
-const getArrayPoints = (count) => {
+const renderPoints = (count) => {
   let arrayPoints = [];
   for (let index = 0; index < count; index++) {
     let dataElement = data();
@@ -82,5 +82,5 @@ const onClickFilter = () => {
 renderComponent(makeFilters(FILTERS_DATA, onClickFilter), FILTER_FORM_CLASS);
 
 clearHTMLInside(TRIP_DAY_CLASS);
-const arrayPoints = getArrayPoints(tripsDefaultCount);
+const arrayPoints = renderPoints(tripsDefaultCount);
 
