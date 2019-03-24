@@ -30,27 +30,25 @@ const generateArrayPoints = (count) => {
   return arrayPoints;
 };
 
-const renderPoints = (count) => {
-  let arrayPoints = [];
-  for (let index = 0; index < count; index++) {
-    let dataElement = data();
-    let tripPoint = new TripPoint(dataElement);
-    let tripPointDetailed = new TripPointDetailed(dataElement);
+const renderPoints = (arrayPoints) => {
+  for (let index = 0; index < arrayPoints.length; index++) {
+    let tripPoint = new TripPoint(arrayPoints[index]);
+    let tripPointDetailed = new TripPointDetailed(arrayPoints[index]);
     tripPoint.onClickPoint = () => {
       tripPointDetailed.render();
       document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPointDetailed.element, tripPoint.element);
       tripPoint.unrender();
     };
     tripPointDetailed.onSaveClick = (newData) => {
-      dataElement.city = newData.city;
-      dataElement.type = newData.type;
-      dataElement.price = newData.price;
-      dataElement.offers = newData.offers;
-      dataElement.timeTable = newData.timeTable;
+      arrayPoints[index].city = newData.city;
+      arrayPoints[index].type = newData.type;
+      arrayPoints[index].price = newData.price;
+      arrayPoints[index].offers = newData.offers;
+      arrayPoints[index].timeTable = newData.timeTable;
       const duration = moment.duration(moment(newData.timeTable.endTime, `HH:mm`) - moment(newData.timeTable.startTime, `HH:mm`));
-      dataElement.duration = `${duration.get(`H`)}H ${duration.get(`M`)}M`;
+      arrayPoints[index].duration = `${duration.get(`H`)}H ${duration.get(`M`)}M`;
 
-      tripPoint.update(dataElement);
+      tripPoint.update(arrayPoints[index]);
       tripPoint.render();
       document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
       tripPointDetailed.unrender();
@@ -82,5 +80,6 @@ const onClickFilter = () => {
 renderComponent(makeFilters(FILTERS_DATA, onClickFilter), FILTER_FORM_CLASS);
 
 clearHTMLInside(TRIP_DAY_CLASS);
-const arrayPoints = renderPoints(tripsDefaultCount);
+const arrayPoints = generateArrayPoints(tripsDefaultCount);
+renderPoints(arrayPoints);
 
