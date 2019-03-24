@@ -44,7 +44,7 @@ class TripPointDetailed extends Component {
 
     this._onSaveButtonClick = this._onSaveButtonClick.bind(this);
 
-    this._onDeleteClick = this._onDeleteClick.bind(this);
+    this._onDeleteClick = null;
   }
 
   _replaceSpace(text) {
@@ -160,7 +160,7 @@ class TripPointDetailed extends Component {
   }
 
   set onDelete(fn) {
-    this._onDeleteClick = fn;
+    this._onDeleteClick = fn.bind(this);
   }
 
   get template() {
