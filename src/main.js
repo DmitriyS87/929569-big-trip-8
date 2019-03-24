@@ -13,13 +13,15 @@ const TRIP_DAY_CLASS = `.trip-day__items`;
 
 const FILTERS_DATA = [{
   textFilter: `Everything`,
-  condition: `checked`
+  checked: true
 },
 {
-  textFilter: `Future`
+  textFilter: `Future`,
+  checked: false
 },
 {
-  textFilter: `Past`
+  textFilter: `Past`,
+  checked: false
 }];
 
 const generateArrayPoints = (count) => {
