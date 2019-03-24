@@ -32,35 +32,36 @@ const generateArrayPoints = (count) => {
 
 const renderPoints = (arrayPoints) => {
   for (let index = 0; index < arrayPoints.length; index++) {
-    let tripPoint = new TripPoint(arrayPoints[index]);
-    let tripPointDetailed = new TripPointDetailed(arrayPoints[index]);
-    tripPoint.onClickPoint = () => {
-      tripPointDetailed.render();
-      document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPointDetailed.element, tripPoint.element);
-      tripPoint.unrender();
-    };
-    tripPointDetailed.onSaveClick = (newData) => {
-      arrayPoints[index].city = newData.city;
-      arrayPoints[index].type = newData.type;
-      arrayPoints[index].price = newData.price;
-      arrayPoints[index].offers = newData.offers;
-      arrayPoints[index].timeTable = newData.timeTable;
-      const duration = moment.duration(moment(newData.timeTable.endTime, `HH:mm`) - moment(newData.timeTable.startTime, `HH:mm`));
-      arrayPoints[index].duration = `${duration.get(`H`)}H ${duration.get(`M`)}M`;
+    if (arrayPoints[index] !== null) {
+      let tripPoint = new TripPoint(arrayPoints[index]);
+      let tripPointDetailed = new TripPointDetailed(arrayPoints[index]);
+      tripPoint.onClickPoint = () => {
+        tripPointDetailed.render();
+        document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPointDetailed.element, tripPoint.element);
+        tripPoint.unrender();
+      };
+      tripPointDetailed.onSaveClick = (newData) => {
+        arrayPoints[index].city = newData.city;
+        arrayPoints[index].type = newData.type;
+        arrayPoints[index].price = newData.price;
+        arrayPoints[index].offers = newData.offers;
+        arrayPoints[index].timeTable = newData.timeTable;
+        const duration = moment.duration(moment(newData.timeTable.endTime, `HH:mm`) - moment(newData.timeTable.startTime, `HH:mm`));
+        arrayPoints[index].duration = `${duration.get(`H`)}H ${duration.get(`M`)}M`;
 
-      tripPoint.update(arrayPoints[index]);
-      tripPoint.render();
-      document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
-      tripPointDetailed.unrender();
-    };
-    tripPointDetailed.onDelete = () => {
-      console.log(`delete`);
-      // tripPoint.render();
-      // document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
-      // tripPointDetailed.unrender();
-    };
+        tripPoint.update(arrayPoints[index]);
+        tripPoint.render();
+        document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
+        tripPointDetailed.unrender();
+      };
+      tripPointDetailed.onDelete = () => {
+        arrayPoints[index] = null;
+        tripPointDetailed.element.remove();
+        tripPointDetailed.unrender();
+      };
 
-    document.querySelector(TRIP_DAY_CLASS).appendChild(tripPoint.render());
+      document.querySelector(TRIP_DAY_CLASS).appendChild(tripPoint.render());
+    }
   }
   return arrayPoints;
 };
