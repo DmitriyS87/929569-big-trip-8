@@ -127,4 +127,19 @@ for (let filterData of FILTERS_DATA) {
   arrayFilters.push(filter.element);
 }
 
+const onStatsClick = (evt) => {
+  evt.preventDefault();
+  const activeElement = document.querySelector(`.view-switch__item--active`);
+  if (evt.target !== activeElement) {
+    activeElement.classList.remove(`view-switch__item--active`);
+    evt.target.classList.add(`view-switch__item--active`);
+    const pointsContainer = document.querySelector(`.main`);
+    const statsContainer = document.querySelector(`.statistic`);
+    pointsContainer.classList.toggle(`visually-hidden`);
+    statsContainer.classList.toggle(`visually-hidden`);
+  }
+};
 
+Array.from(document.querySelectorAll(`.view-switch__item`)).forEach((switchLink) => {
+  switchLink.addEventListener(`click`, onStatsClick);
+});
