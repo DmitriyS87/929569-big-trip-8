@@ -134,8 +134,28 @@ const countStats = (points) => {
 
 };
 
-const updateStats = () => {
+const updateStats = (points) => {
+  if (moneyCtx && transportCtx && timeSpendCtx) {
+    deleteChart(moneyCtx);
+    deleteChart(transportCtx);
+    deleteChart(timeSpendCtx);
+  }
 
+  let newTransportLabels = [];
+  let newTransportData = [];
+  let newMoneyLabels = [];
+  let newMoneyData = [];
+  let newTimeSpendLabels = [];
+  let newTimeSpendData = [];
+
+  points.forEach(() => {
+
+  });
+
+
+  renderNewChart(transportCtx, newTransportLabels, newTransportData, `TRANSPORT`, formatTransport);
+  renderNewChart(moneyCtx, newMoneyLabels, newMoneyData, `MONEY`, formatMoney);
+  renderNewChart(timeSpendCtx, newTimeSpendLabels, newTimeSpendData, `TIME SPENT`, formatTimeSpend);
 };
 
 const onStatsClick = (evt) => {
@@ -150,7 +170,7 @@ const onStatsClick = (evt) => {
     statsContainer.classList.toggle(`visually-hidden`);
 
     if (statsContainer.classList.contains(`view-switch__item--active`)) {
-      updateStats(countStats(arrayPoints));
+      // updateStats(countStats(arrayPoints));
     }
   }
 };
