@@ -3,9 +3,11 @@ import {clearHTMLInside} from './utils';
 import data from './data.js';
 import TripPoint from './trip-point';
 import TripPointDetailed from './trip-point-detailed';
-import {moneyChart, transportChart} from './statistic';
+import {renderNewChart, deleteChart} from './statistic';
 
 const moment = require(`moment`);
+
+const BAR_HEIGHT = 100;
 
 const FILTER_FORM_CLASS = `.trip-filter`;
 const TRIP_DAY_CLASS = `.trip-day__items`;
@@ -128,6 +130,14 @@ for (let filterData of FILTERS_DATA) {
   arrayFilters.push(filter.element);
 }
 
+const countStats = (points) => {
+
+};
+
+const updateStats = () => {
+
+};
+
 const onStatsClick = (evt) => {
   evt.preventDefault();
   const activeElement = document.querySelector(`.view-switch__item--active`);
@@ -138,9 +148,43 @@ const onStatsClick = (evt) => {
     const statsContainer = document.querySelector(`.statistic`);
     pointsContainer.classList.toggle(`visually-hidden`);
     statsContainer.classList.toggle(`visually-hidden`);
+
+    if (statsContainer.classList.contains(`view-switch__item--active`)) {
+      updateStats(countStats(arrayPoints));
+    }
   }
 };
 
 Array.from(document.querySelectorAll(`.view-switch__item`)).forEach((switchLink) => {
   switchLink.addEventListener(`click`, onStatsClick);
 });
+
+const moneyCtx = document.querySelector(`.statistic__money`);
+const transportCtx = document.querySelector(`.statistic__transport`);
+const timeSpendCtx = document.querySelector(`.statistic__time-spend`);
+
+const moneyLabels = [`🚕 Taxi`, `🚌 Bus`, `🚂 Train`, `✈️ Flight`, `🛳️ Ship`, `🚊 Transport`, `🚗 Drive`, `🏨 Check-in`, `🏛 Sightseeing`, `🍴 Restaurant`];
+const moneyData = [400, 100, 200, 300, 40, 50, 70, 20, 16, 0];
+const formatMoney = (val) => {
+  return `€ ${val}`;
+};
+
+const transportLabels = [`🚕 Taxi`, `🚌 Bus`, `🚂 Train`, `✈️ Flight`, `🛳️ Ship`, `🚊 Transport`, `🚗 Drive`, `🏨 Check-in`, `🏛 Sightseeing`, `🍴 Restaurant`];
+const transportData = [0, 1, 2, 3, 4, 0, 0, 0, 0, 0];
+const formatTransport = (val) => {
+  return `${val}x`;
+};
+
+const timeSpendLabels = [`🚕 Taxi`, `🚌 Bus`, `🚂 Train`, `✈️ Flight`, `🛳️ Ship`, `🚊 Transport`, `🚗 Drive`, `🏨 Check-in`, `🏛 Sightseeing`, `🍴 Restaurant`];
+const timeSpendData = [0, 1, 2, 3, 4, 0, 0, 0, 0, 0];
+const formatTimeSpend = (val) => {
+  return `${val}H`;
+};
+
+moneyCtx.height = BAR_HEIGHT * ((transportLabels.length > 5) ? 6 : 3);
+transportCtx.height = BAR_HEIGHT * ((transportLabels.length > 5) ? 6 : 3);
+timeSpendCtx.height = BAR_HEIGHT * ((transportLabels.length > 5) ? 6 : 3);
+
+renderNewChart(transportCtx, transportLabels, transportData, `TRANSPORT`, formatTransport);
+renderNewChart(moneyCtx, moneyLabels, moneyData, `MONEY`, formatMoney);
+renderNewChart(timeSpendCtx, timeSpendLabels, timeSpendData, `TIME SPENT`, formatTimeSpend);
