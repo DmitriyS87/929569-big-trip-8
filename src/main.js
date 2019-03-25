@@ -3,6 +3,7 @@ import {clearHTMLInside} from './utils';
 import data from './data.js';
 import TripPoint from './trip-point';
 import TripPointDetailed from './trip-point-detailed';
+import {moneyChart, transportChart} from './statistic';
 
 const moment = require(`moment`);
 
