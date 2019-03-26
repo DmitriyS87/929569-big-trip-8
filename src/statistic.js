@@ -1,7 +1,7 @@
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-const renderNewChart = (ctx, arrayLabels, arrayCounts, nameChart = `Chart`, setFormat = (val) => `€ ${val}`) => {
+const getNewChart = (ctx, arrayLabels, arrayCounts, nameChart = `Chart`, setFormat = (val) => `€ ${val}`) => {
   const options = {
     plugins: [ChartDataLabels],
     type: `horizontalBar`,
@@ -72,7 +72,7 @@ const renderNewChart = (ctx, arrayLabels, arrayCounts, nameChart = `Chart`, setF
 };
 
 const deleteChart = (chart) => {
-  return chart.destroy();
+  chart.destroy();
 };
 
-export {renderNewChart, deleteChart};
+export {getNewChart, deleteChart};

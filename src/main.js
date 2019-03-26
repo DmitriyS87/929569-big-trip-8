@@ -3,15 +3,15 @@ import {clearHTMLInside} from './utils';
 import data from './data.js';
 import TripPoint from './trip-point';
 import TripPointDetailed from './trip-point-detailed';
-import {renderNewChart, deleteChart} from './statistic';
+import {getNewChart, deleteChart} from './statistic';
 
+const arrayLodash = require(`lodash`);
 const moment = require(`moment`);
 
 const BAR_HEIGHT = 100;
 
 const FILTER_FORM_CLASS = `.trip-filter`;
 const TRIP_DAY_CLASS = `.trip-day__items`;
-
 
 const FILTERS_DATA = [{
   textFilter: `Everything`,
@@ -130,32 +130,146 @@ for (let filterData of FILTERS_DATA) {
   arrayFilters.push(filter.element);
 }
 
-const countStats = (points) => {
+const moneyCtx = document.querySelector(`.statistic__money`);
+const transportCtx = document.querySelector(`.statistic__transport`);
+const timeSpendCtx = document.querySelector(`.statistic__time-spend`);
 
-};
+const updateStats = (currentPoints) => {
+  const points = arrayLodash.compact(currentPoints);
 
-const updateStats = (points) => {
-  if (moneyCtx && transportCtx && timeSpendCtx) {
-    deleteChart(moneyCtx);
-    deleteChart(transportCtx);
-    deleteChart(timeSpendCtx);
+  if (transportStat && moneyStat && timeSpendStat) {
+    deleteChart(moneyStat);
+    deleteChart(transportStat);
+    deleteChart(timeSpendStat);
   }
 
-  let newTransportLabels = [];
-  let newTransportData = [];
-  let newMoneyLabels = [];
-  let newMoneyData = [];
-  let newTimeSpendLabels = [];
-  let newTimeSpendData = [];
+  const getTransportStats = () => {
+    const transform = (array) => {
+      return array[0];
+    };
+    const arrayResult = arrayLodash.uniqBy(points.map((point, index, array) => {
+      return [`${point.type.icon} ${point.type.type}`, array.filter((item) => {
+        return item.type === point.type;
+      }).length];
+    }), transform).sort((a, b) => {
+      if (a[1] < b[1]) {
+        return 1;
+      }
+      return -1;
+    });
 
-  points.forEach(() => {
+    const result = {
+      type: [],
+      count: []
+    };
 
-  });
+    arrayResult.forEach((item) => {
+      result.type.push(item[0]);
+      result.count.push(item[1]);
+    });
 
+    return result;
+  };
 
-  renderNewChart(transportCtx, newTransportLabels, newTransportData, `TRANSPORT`, formatTransport);
-  renderNewChart(moneyCtx, newMoneyLabels, newMoneyData, `MONEY`, formatMoney);
-  renderNewChart(timeSpendCtx, newTimeSpendLabels, newTimeSpendData, `TIME SPENT`, formatTimeSpend);
+  const getMoneyStats = () => {
+    const transform = (array) => {
+      return array[0];
+    };
+    const arrayResult = arrayLodash.uniqBy(points.map((point, index, array) => {
+      if (point !== null) {
+        return [`${point.type.icon} ${point.type.type}`, array.filter((item) => {
+          return item.type === point.type;
+        }).reduce((a, b) => {
+          return a + b.price.count;
+        }, 0)];
+      }
+      return null;
+    }), transform).sort((a, b) => {
+      if (a[1] < b[1]) {
+        return 1;
+      }
+      return -1;
+    });
+
+    const result = {
+      type: [],
+      count: []
+    };
+
+    arrayResult.forEach((item) => {
+      result.type.push(item[0]);
+      result.count.push(item[1]);
+    });
+
+    return result;
+  };
+
+  const getTimeSpendStats = () => {
+    const getAdditionedSamesArray = (array) => {
+      for (let i = 1; i < array.length; i++) {
+        if (array[i][0] === array[i - 1][0]) {
+          array[i][1] += array[i - 1][1];
+          array.splice(i - 1, 1);
+        }
+      }
+      return array;
+    };
+    const mapedArrayPoints = points.map((point) => {
+      const parseTimeMinets = (text) => {
+        if (text !== 0 && text !== undefined) {
+          return text.replace(/[HM]/ig, ``).trim().match(/\d(\d)*/ig, ` `).reduce((d, e) => {
+            return d * 60 + +e;
+          }, 0);
+        }
+        return 0;
+      };
+      const duration = parseTimeMinets(point.duration);
+      return [`${point.type.icon} ${point.type.type}`, duration];
+    }).sort();
+    const arrayResult = getAdditionedSamesArray(mapedArrayPoints).sort((a, b) => {
+      if (a[1] < b[1]) {
+        return 1;
+      }
+      return -1;
+    }).map((it) => {
+      it[1] = Math.round(it[1] / 60);
+      return it;
+    });
+
+    const result = {
+      type: [],
+      count: []
+    };
+
+    arrayResult.forEach((item) => {
+      result.type.push(item[0]);
+      result.count.push(item[1]);
+    });
+
+    return result;
+  };
+
+  const transportData = getTransportStats();
+  const MoneyData = getMoneyStats();
+  const newTimeSpendStats = getTimeSpendStats();
+
+  moneyCtx.height = BAR_HEIGHT * ((MoneyData.type.length > 5) ? 6 : 3);
+  transportCtx.height = BAR_HEIGHT * ((transportData.type.length > 5) ? 6 : 3);
+  timeSpendCtx.height = BAR_HEIGHT * ((newTimeSpendStats.type.length > 5) ? 6 : 3);
+
+  const formatMoney = (val) => {
+    return `€ ${val}`;
+  };
+  const formatTransport = (val) => {
+    return `${val}x`;
+  };
+  const formatTimeSpend = (val) => {
+    return `${val}H`;
+  };
+
+  transportStat = getNewChart(transportCtx, transportData.type, transportData.count, `TRANSPORT`, formatTransport);
+  moneyStat = getNewChart(moneyCtx, MoneyData.type, MoneyData.count, `MONEY`, formatMoney);
+  timeSpendStat = getNewChart(timeSpendCtx, newTimeSpendStats.type, newTimeSpendStats.count, `TIME SPENT`, formatTimeSpend);
 };
 
 const onStatsClick = (evt) => {
@@ -166,45 +280,20 @@ const onStatsClick = (evt) => {
     evt.target.classList.add(`view-switch__item--active`);
     const pointsContainer = document.querySelector(`.main`);
     const statsContainer = document.querySelector(`.statistic`);
+
     pointsContainer.classList.toggle(`visually-hidden`);
     statsContainer.classList.toggle(`visually-hidden`);
 
-    if (statsContainer.classList.contains(`view-switch__item--active`)) {
-      // updateStats(countStats(arrayPoints));
+    if (!statsContainer.classList.contains(`visually-hidden`)) {
+      updateStats(pointsData);
     }
   }
 };
 
+let transportStat;
+let moneyStat;
+let timeSpendStat;
+
 Array.from(document.querySelectorAll(`.view-switch__item`)).forEach((switchLink) => {
   switchLink.addEventListener(`click`, onStatsClick);
 });
-
-const moneyCtx = document.querySelector(`.statistic__money`);
-const transportCtx = document.querySelector(`.statistic__transport`);
-const timeSpendCtx = document.querySelector(`.statistic__time-spend`);
-
-const moneyLabels = [`🚕 Taxi`, `🚌 Bus`, `🚂 Train`, `✈️ Flight`, `🛳️ Ship`, `🚊 Transport`, `🚗 Drive`, `🏨 Check-in`, `🏛 Sightseeing`, `🍴 Restaurant`];
-const moneyData = [400, 100, 200, 300, 40, 50, 70, 20, 16, 0];
-const formatMoney = (val) => {
-  return `€ ${val}`;
-};
-
-const transportLabels = [`🚕 Taxi`, `🚌 Bus`, `🚂 Train`, `✈️ Flight`, `🛳️ Ship`, `🚊 Transport`, `🚗 Drive`, `🏨 Check-in`, `🏛 Sightseeing`, `🍴 Restaurant`];
-const transportData = [0, 1, 2, 3, 4, 0, 0, 0, 0, 0];
-const formatTransport = (val) => {
-  return `${val}x`;
-};
-
-const timeSpendLabels = [`🚕 Taxi`, `🚌 Bus`, `🚂 Train`, `✈️ Flight`, `🛳️ Ship`, `🚊 Transport`, `🚗 Drive`, `🏨 Check-in`, `🏛 Sightseeing`, `🍴 Restaurant`];
-const timeSpendData = [0, 1, 2, 3, 4, 0, 0, 0, 0, 0];
-const formatTimeSpend = (val) => {
-  return `${val}H`;
-};
-
-moneyCtx.height = BAR_HEIGHT * ((transportLabels.length > 5) ? 6 : 3);
-transportCtx.height = BAR_HEIGHT * ((transportLabels.length > 5) ? 6 : 3);
-timeSpendCtx.height = BAR_HEIGHT * ((transportLabels.length > 5) ? 6 : 3);
-
-renderNewChart(transportCtx, transportLabels, transportData, `TRANSPORT`, formatTransport);
-renderNewChart(moneyCtx, moneyLabels, moneyData, `MONEY`, formatMoney);
-renderNewChart(timeSpendCtx, timeSpendLabels, timeSpendData, `TIME SPENT`, formatTimeSpend);

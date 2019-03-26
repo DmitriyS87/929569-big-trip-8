@@ -69,15 +69,23 @@ const getRandomOffers = (arrayOffers) => {
   return exportOffers;
 };
 
+let stringDuration;
+
 const getRandomTimeTable = () => {
   const timeStart = moment().add(makeRandomCount(13) - makeRandomCount(13), `h`).add(makeRandomCount(61), `m`);
   const timeFinish = moment(timeStart).add(makeRandomCount(10), `h`).add(makeRandomCount(31), `m`);
   const start = moment(timeStart).format(`HH:mm`);
   const end = moment(timeFinish).format(`HH:mm`);
+  const duration = moment.duration(moment(timeFinish) - moment(timeStart));
+  stringDuration = `${duration.get(`H`)}H ${duration.get(`M`)}M`;
   return {
     startTime: start,
     endTime: end
   };
+};
+
+const getDuration = () => {
+  return stringDuration;
 };
 
 const getRandomDate = () => {
@@ -91,7 +99,7 @@ export default () => {
     city: CITIES[makeRandomCount(CITIES.length)],
     description: getRandomSentences(TEXT_DESCRIPTION),
     timeTable: getRandomTimeTable(),
-    duration: `${makeRandomCount(5)}h ${makeRandomCount(61)}m`,
+    duration: getDuration(),
     price: {
       currency: DEFAULT_CURRENCY,
       count: makeRandomCount(51)
