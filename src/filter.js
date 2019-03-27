@@ -5,8 +5,6 @@ class Filter extends Component {
     super();
     this._name = data.textFilter;
 
-    this._isChecked = data.checked;
-
     this._doFilter = data.doFilter;
     this._onFilter = null;
     this._onClickFilter = this._onClickFilter.bind(this);
@@ -25,16 +23,17 @@ class Filter extends Component {
   }
 
   get template() {
-    return `<div style="display:inline;"><input type="radio" id="filter-${this._name.toLowerCase()}" name="filter" value="${this._name.toLowerCase()}" ${this._isChecked ? `checked` : ``}>
-      <label class="trip-filter__item" for="filter-${this._name.toLowerCase()}">${this._name}</label></div>`;
+    return `<div style="display:inline;">
+    <input type="radio" id="filter-${this._name.toLowerCase()}" name="filter" value="${this._name.toLowerCase()}"}>
+    <label class="trip-filter__item" for="filter-${this._name.toLowerCase()}">${this._name}
+    </label></div>`;
   }
 
   createListeners() {
-    this._element.firstChild.addEventListener(`click`, this._onClickFilter);
+    this._element.querySelector(`input`).addEventListener(`click`, this._onClickFilter);
   }
-
   removeListeners() {
-    this._element.firstChild.removeEventListener(`click`, this._onClickFilter);
+    this._element.querySelector(`input`).removeEventListener(`click`, this._onClickFilter);
   }
 }
 

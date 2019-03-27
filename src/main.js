@@ -15,7 +15,6 @@ const TRIP_DAY_CLASS = `.trip-day__items`;
 
 const FILTERS_DATA = [{
   textFilter: `Everything`,
-  checked: true,
   doFilter(point) {
     if (point !== null) {
       point.display = true;
@@ -25,7 +24,6 @@ const FILTERS_DATA = [{
 },
 {
   textFilter: `Future`,
-  checked: false,
   doFilter(point) {
     if (point !== null) {
       if (moment().isBefore(moment(point.date, `DD MMM`))) {
@@ -40,7 +38,6 @@ const FILTERS_DATA = [{
 },
 {
   textFilter: `Past`,
-  checked: false,
   doFilter(point) {
     if (point !== null) {
       if (moment(point.date, `DD MMM`).isBefore(moment())) {
@@ -65,38 +62,38 @@ const generateArrayPointsData = (count) => {
 
 const renderPoints = (arrayPointsData) => {
   const arrayPoints = [];
-  for (let index = 0; index < arrayPointsData.length; index++) {
-    if (arrayPointsData[index] !== null) {
-      let tripPoint = new TripPoint(arrayPointsData[index]);
-      let tripPointDetailed = new TripPointDetailed(arrayPointsData[index]);
+  for (let pointData of arrayPointsData) {
+    if (pointData !== null) {
+      const tripPoint = new TripPoint(pointData);
+      const tripPointDetailed = new TripPointDetailed(pointData);
       tripPoint.onClickPoint = () => {
         tripPointDetailed.render();
         document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPointDetailed.element, tripPoint.element);
         tripPoint.unrender();
       };
       tripPointDetailed.onSaveClick = (newData) => {
-        arrayPointsData[index].city = newData.city;
-        arrayPointsData[index].type = newData.type;
-        arrayPointsData[index].price = newData.price;
-        arrayPointsData[index].offers = newData.offers;
-        arrayPointsData[index].timeRange = newData.timeRange;
-
-        tripPoint.update(arrayPointsData[index]);
+        pointData.city = newData.city;
+        pointData.type = newData.type;
+        pointData.price = newData.price;
+        pointData.offers = newData.offers;
+        pointData.timeRange = newData.timeRange;
+        // pointData = Object.assign(newData);
+        tripPoint.update(pointData);
         tripPoint.render();
         document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
         tripPointDetailed.unrender();
       };
       tripPointDetailed.onDelete = () => {
-        arrayPointsData[index] = null;
+        pointData = null;
         tripPointDetailed.element.remove();
         tripPointDetailed.unrender();
-
       };
 
       document.querySelector(TRIP_DAY_CLASS).appendChild(tripPoint.render());
       arrayPoints.push(tripPoint);
     }
   }
+
   return arrayPoints;
 };
 
