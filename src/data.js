@@ -70,10 +70,10 @@ const getRandomOffers = (arrayOffers) => {
 };
 
 const getRandomTimeTable = () => {
-  const timeStart = moment().add(makeRandomCount(13) - makeRandomCount(13), `h`).add(makeRandomCount(61), `m`);
-  const timeFinish = moment(timeStart).add(makeRandomCount(10), `h`).add(makeRandomCount(31), `m`);
-  const start = moment(timeStart).format(`HH:mm`);
-  const end = moment(timeFinish).format(`HH:mm`);
+  const timeStart = moment().startOf(`day`).add(makeRandomCount(13) - makeRandomCount(13), `h`).add(makeRandomCount(61), `m`);
+  const timeFinish = moment(timeStart).startOf(`day`).add(makeRandomCount(10), `h`).add(makeRandomCount(31), `m`);
+  const start = moment.min(timeStart, timeFinish).format(`HH:mm`); //  moment(timeStart).format(`HH:mm`)
+  const end = moment.max(timeStart, timeFinish).format(`HH:mm`); // moment.max(timeStart, timeFinish) moment(timeFinish).format(`HH:mm`)
   return {
     startTime: start,
     endTime: end
