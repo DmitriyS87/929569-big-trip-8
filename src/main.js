@@ -80,8 +80,6 @@ const renderPoints = (arrayPointsData) => {
         arrayPointsData[index].price = newData.price;
         arrayPointsData[index].offers = newData.offers;
         arrayPointsData[index].timeTable = newData.timeTable;
-        const duration = moment.duration(moment(newData.timeTable.endTime, `HH:mm`) - moment(newData.timeTable.startTime, `HH:mm`));
-        arrayPointsData[index].duration = `${duration.get(`H`)}H ${duration.get(`M`)}M`;
 
         tripPoint.update(arrayPointsData[index]);
         tripPoint.render();
