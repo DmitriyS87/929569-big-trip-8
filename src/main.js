@@ -79,7 +79,7 @@ const renderPoints = (arrayPointsData) => {
         arrayPointsData[index].type = newData.type;
         arrayPointsData[index].price = newData.price;
         arrayPointsData[index].offers = newData.offers;
-        arrayPointsData[index].timeTable = newData.timeTable;
+        arrayPointsData[index].timeRange = newData.timeRange;
 
         tripPoint.update(arrayPointsData[index]);
         tripPoint.render();

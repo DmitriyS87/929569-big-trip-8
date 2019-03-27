@@ -37,7 +37,7 @@ class TripPointDetailed extends Component {
     this._city = data.city;
     this._price = data.price;
     this._description = data.description;
-    this._timeTable = data.timeTable;
+    this._timeRange = data.timeRange;
     this._duration = data.duration;
     this._offers = data.offers;
     this._picture = data.picture;
@@ -77,7 +77,7 @@ class TripPointDetailed extends Component {
         icon: ``
       },
       city: ``,
-      timeTable: {
+      timeRange: {
         startTime: `00:00`,
         endTime: `00:00`
       },
@@ -114,9 +114,9 @@ class TripPointDetailed extends Component {
         return target.city;
       }],
       [`time`, (value) => {
-        target.timeTable.startTime = _getMatchString(value, /\d\d\:\d\d\s/ig);
-        target.timeTable.endTime = _getMatchString(value, /\s\d\d\:\d\d/ig);
-        return target.timeTable;
+        target.timeRange.startTime = _getMatchString(value, /\d\d\:\d\d\s/ig);
+        target.timeRange.endTime = _getMatchString(value, /\s\d\d\:\d\d/ig);
+        return target.timeRange;
       }],
       [`price`, (value) => {
         target.price.count = value;
@@ -210,7 +210,7 @@ class TripPointDetailed extends Component {
 
         <label class="point__time">
           choose time
-          <input class="point__input" type="text" value="${this._timeTable.startTime}&nbsp;&mdash; ${this._timeTable.endTime}" name="time" placeholder="00:00 — 00:00">
+          <input class="point__input" type="text" value="${this._timeRange.startTime}&nbsp;&mdash; ${this._timeRange.endTime}" name="time" placeholder="00:00 — 00:00">
         </label>
 
         <label class="point__price">
@@ -261,7 +261,7 @@ class TripPointDetailed extends Component {
     this._city = newData.city;
     this._type = newData.type;
     this._price = newData.price;
-    this.timeTable = newData.timeTable;
+    this.timeRange = newData.timeRange;
     this._duration = newData.duration;
   }
 

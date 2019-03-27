@@ -8,7 +8,7 @@ class TripPoint extends Component {
     this._city = data.city;
     this._price = data.price;
     this._description = data.description;
-    this._timeTable = data.timeTable;
+    this._timeRange = data.timeRange;
     this._duration = data.duration;
     this._offers = data.offers;
     this._picture = data.picture;
@@ -36,7 +36,7 @@ class TripPoint extends Component {
     <i class="trip-icon">${this._type.icon}</i>
     <h3 class="trip-point__title">${this._type.type} to ${this._city}</h3>
     <p class="trip-point__schedule">
-      <span class="trip-point__timetable">${this._timeTable.startTime}&nbsp;&mdash; ${this._timeTable.endTime}</span>
+      <span class="trip-point__timetable">${this._timeRange.startTime}&nbsp;&mdash; ${this._timeRange.endTime}</span>
       <span class="trip-point__duration">${this._duration}</span>
     </p>
     <p class="trip-point__price">${this._price.currency}&nbsp;${this._price.count}</p>
@@ -58,7 +58,7 @@ class TripPoint extends Component {
     this._city = newData.city;
     this._type = newData.type;
     this._price = newData.price;
-    this._timeTable = newData.timeTable;
+    this._timeRange = newData.timeRange;
     this._duration = newData.duration;
   }
 

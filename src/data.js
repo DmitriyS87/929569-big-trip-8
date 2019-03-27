@@ -69,7 +69,7 @@ const getRandomOffers = (arrayOffers) => {
   return exportOffers;
 };
 
-const getRandomTimeTable = () => {
+const getRandomTimeRange = () => {
   const timeStart = moment().startOf(`day`).add(makeRandomCount(13) - makeRandomCount(13), `h`).add(makeRandomCount(61), `m`);
   const timeFinish = moment(timeStart).startOf(`day`).add(makeRandomCount(10), `h`).add(makeRandomCount(31), `m`);
   const start = moment.min(timeStart, timeFinish).format(`HH:mm`); //  moment(timeStart).format(`HH:mm`)
@@ -95,9 +95,9 @@ export default () => {
     type: ARRAY_POINT_TYPES[makeRandomCount(ARRAY_POINT_TYPES.length)],
     city: CITIES[makeRandomCount(CITIES.length)],
     description: getRandomSentences(TEXT_DESCRIPTION),
-    timeTable: getRandomTimeTable(),
+    timeRange: getRandomTimeRange(),
     get duration() {
-      return getDuration(this.timeTable);
+      return getDuration(this.timeRange);
     },
     price: {
       currency: DEFAULT_CURRENCY,
