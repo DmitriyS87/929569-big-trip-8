@@ -84,7 +84,7 @@ const renderPoints = (arrayPointsData) => {
         tripPointDetailed.unrender();
       };
       tripPointDetailed.onDelete = () => {
-        pointData = null;
+        arrayPointsData[arrayPointsData.indexOf(pointData)] = null;
         tripPointDetailed.element.remove();
         tripPointDetailed.unrender();
       };
