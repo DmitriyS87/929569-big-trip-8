@@ -5,8 +5,8 @@ import TripPoint from './trip-point';
 import TripPointDetailed from './trip-point-detailed';
 import {getNewChart, deleteChart} from './statistic';
 
-const arrayLodash = require(`lodash`);
-const moment = require(`moment`);
+import arrayLodash from 'lodash/array';
+import moment from 'moment';
 
 const BAR_HEIGHT = 100;
 
