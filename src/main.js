@@ -15,39 +15,26 @@ const TRIP_DAY_CLASS = `.trip-day__items`;
 
 const FILTERS_DATA = [{
   textFilter: `Everything`,
-  doFilter(point) {
-    if (point !== null) {
-      point.display = true;
-    }
-    return point;
+  doFilter() {
+    return true;
   }
 },
 {
   textFilter: `Future`,
   doFilter(point) {
-    if (point !== null) {
-      if (moment().isBefore(moment(point.date, `DD MMM`))) {
-        point.display = true;
-        return point;
-      }
-      point.display = false;
-      return point;
+    if (moment().isBefore(moment(point.date, `DD MMM`))) {
+      return true;
     }
-    return null;
+    return false;
   }
 },
 {
   textFilter: `Past`,
   doFilter(point) {
-    if (point !== null) {
-      if (moment(point.date, `DD MMM`).isBefore(moment())) {
-        point.display = true;
-        return point;
-      }
-      point.display = false;
-      return point;
+    if (moment(point.date, `DD MMM`).isBefore(moment())) {
+      return true;
     }
-    return null;
+    return false;
   }
 }];
 
@@ -60,43 +47,6 @@ const generateArrayPointsData = (count) => {
   return arrayData;
 };
 
-const renderPoints = (arrayPointsData) => {
-  const arrayPoints = [];
-  for (let pointData of arrayPointsData) {
-    if (pointData !== null) {
-      const tripPoint = new TripPoint(pointData);
-      const tripPointDetailed = new TripPointDetailed(pointData);
-      tripPoint.onClickPoint = () => {
-        tripPointDetailed.render();
-        document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPointDetailed.element, tripPoint.element);
-        tripPoint.unrender();
-      };
-      tripPointDetailed.onSaveClick = (newData) => {
-        pointData.city = newData.city;
-        pointData.type = newData.type;
-        pointData.price = newData.price;
-        pointData.offers = newData.offers;
-        pointData.timeRange = newData.timeRange;
-        // pointData = Object.assign(newData);
-        tripPoint.update(pointData);
-        tripPoint.render();
-        document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
-        tripPointDetailed.unrender();
-      };
-      tripPointDetailed.onDelete = () => {
-        arrayPointsData[arrayPointsData.indexOf(pointData)] = null;
-        tripPointDetailed.element.remove();
-        tripPointDetailed.unrender();
-      };
-
-      document.querySelector(TRIP_DAY_CLASS).appendChild(tripPoint.render());
-      arrayPoints.push(tripPoint);
-    }
-  }
-
-  return arrayPoints;
-};
-
 const tripsDefaultCount = 7;
 
 
@@ -106,20 +56,64 @@ const arrayFilters = [];
 
 clearHTMLInside(TRIP_DAY_CLASS);
 const pointsData = generateArrayPointsData(tripsDefaultCount);
-const arrayPoints = renderPoints(pointsData);
+const arrayPoints = pointsData.map((pointData) => {
+  if (pointData !== null) {
+    const tripPoint = new TripPoint(pointData);
+    const tripPointDetailed = new TripPointDetailed(pointData);
+    tripPoint.onClickPoint = () => {
+      tripPointDetailed.render();
+      document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPointDetailed.element, tripPoint.element);
+      tripPoint.unrender();
+    };
+    tripPointDetailed.onSaveClick = (newData) => {
+      pointData.city = newData.city;
+      pointData.type = newData.type;
+      pointData.price = newData.price;
+      pointData.offers = newData.offers;
+      pointData.timeRange = newData.timeRange;
+      // data = Object.assign(newData);
+      tripPoint.update(pointData);
+      tripPoint.render();
+      document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPoint.element, tripPointDetailed.element);
+      tripPointDetailed.unrender();
+    };
+    tripPointDetailed.onDelete = () => {
+      const index = pointsData.indexOf(pointData);
+      arrayPoints[index] = null;
+      pointsData[index] = null;
+      tripPointDetailed.element.remove();
+      tripPointDetailed.unrender();
+    };
+    return tripPoint;
+  }
+  return null;
+});
+const renderPoints = (array) => {
+  array.forEach((point) => {
+    document.querySelector(TRIP_DAY_CLASS).appendChild(point.render());
+  });
+
+};
+
+renderPoints(arrayPoints);
 
 
 for (let filterData of FILTERS_DATA) {
   let filter = new Filter(filterData);
   filter.onFilter = () => {
     clearHTMLInside(TRIP_DAY_CLASS);
-    arrayPoints.forEach((point) => {
+    arrayPoints.filter((point) => {
+      return point !== null;
+    }).forEach((point) => {
       if (point.element !== null) {
         point.unrender();
-        filter.doFilter(point);
-        document.querySelector(TRIP_DAY_CLASS).appendChild(point.render());
       }
     });
+    renderPoints(arrayPoints.filter((point) => {
+      return point !== null;
+    }).filter((point) => {
+      return filter.doFilter(point);
+    }));
   };
   document.querySelector(FILTER_FORM_CLASS).appendChild(filter.render());
   arrayFilters.push(filter.element);
