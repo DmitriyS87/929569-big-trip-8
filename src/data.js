@@ -1,4 +1,4 @@
-const moment = require(`moment`);
+import moment from 'moment';
 
 const ARRAY_POINT_TYPES = [
   {type: `Taxi`,

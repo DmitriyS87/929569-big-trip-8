@@ -1,6 +1,6 @@
 import Component from './component';
 
-const flatpickr = require(`flatpickr`);
+import flatpickr from 'flatpickr';
 
 const DRIVE_TYPE_MAP = new Map([
   [`Taxi`, `🚕`],
