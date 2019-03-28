@@ -52,8 +52,6 @@ const tripsDefaultCount = 7;
 
 clearHTMLInside(FILTER_FORM_CLASS);
 
-const arrayFilters = [];
-
 clearHTMLInside(TRIP_DAY_CLASS);
 const pointsData = generateArrayPointsData(tripsDefaultCount);
 const arrayPoints = pointsData.map((pointData) => {
@@ -97,7 +95,6 @@ const renderPoints = (array) => {
 
 renderPoints(arrayPoints);
 
-
 for (let filterData of FILTERS_DATA) {
   let filter = new Filter(filterData);
   filter.onFilter = () => {
@@ -112,11 +109,12 @@ for (let filterData of FILTERS_DATA) {
     renderPoints(arrayPoints.filter((point) => {
       return point !== null;
     }).filter((point) => {
-      return filter.doFilter(point);
+      return FILTERS_DATA.find((it) => {
+        return it === filterData;
+      }).doFilter(point);
     }));
   };
   document.querySelector(FILTER_FORM_CLASS).appendChild(filter.render());
-  arrayFilters.push(filter.element);
 }
 
 const moneyCtx = document.querySelector(`.statistic__money`);

@@ -5,13 +5,8 @@ class Filter extends Component {
     super();
     this._name = data.textFilter;
 
-    this._doFilter = data.doFilter;
     this._onFilter = null;
     this._onClickFilter = this._onClickFilter.bind(this);
-  }
-
-  get doFilter() {
-    return this._doFilter;
   }
 
   set onFilter(fn) {
