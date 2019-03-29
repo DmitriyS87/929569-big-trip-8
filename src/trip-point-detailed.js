@@ -21,14 +21,6 @@ const STAY_TYPE_MAP = new Map([
 const _replaceDash = (text) => {
   return text.replace(/\b-/ig, ` `);
 };
-
-const _getMatchString = (text, pattern) => {
-  if (text !== null) {
-    const arrayText = text.match(pattern);
-    return arrayText[0].trim();
-  }
-  return `00:00`;
-};
 class TripPointDetailed extends Component {
   constructor(data) {
     super();
@@ -43,8 +35,6 @@ class TripPointDetailed extends Component {
     this._picture = data.picture;
 
     this._onClickTravelWay = this._onClickTravelWay.bind(this);
-
-    this._onClickTimeInput = this._onClickTimeInput.bind(this);
 
     this._onSaveButtonClick = this._onSaveButtonClick.bind(this);
 
@@ -63,12 +53,9 @@ class TripPointDetailed extends Component {
       if (typeof this._onSaveClick === `function`) {
         this._onSaveClick(newData);
       }
-
       this.update(newData);
     }
-
   }
-
 
   _processForm(formData) {
     const clipboard = {
@@ -98,10 +85,6 @@ class TripPointDetailed extends Component {
     return clipboard;
   }
 
-  _partialUpdate() {
-
-  }
-
   static createMaper(target) {
     return new Map([
       [`travel-way`, (value) => {
@@ -113,9 +96,12 @@ class TripPointDetailed extends Component {
         target.city = value;
         return target.city;
       }],
-      [`time`, (value) => {
-        target.timeRange.startTime = _getMatchString(value, /\d\d\:\d\d\s/ig);
-        target.timeRange.endTime = _getMatchString(value, /\s\d\d\:\d\d/ig);
+      [`date-start`, (value) => {
+        target.timeRange.startTime = value;
+        return target.timeRange;
+      }],
+      [`date-end`, (value) => {
+        target.timeRange.endTime = value;
         return target.timeRange;
       }],
       [`price`, (value) => {
@@ -142,21 +128,6 @@ class TripPointDetailed extends Component {
       this._element.querySelector(`.travel-way__label`).innerText = this._type.icon;
       this._element.querySelector(`.point__destination-label`).innerText = `${evt.target.value} ${STAY_TYPE_MAP.has(evt.target.value) ? ` in` : ` to`}`;
     }
-  }
-
-  _onClickTimeInput(evt) {
-    const newTime = flatpickr(this._element.querySelector(`.point__time .point__input`), {
-      enableTime: true,
-      dateFormat: `H:i`,
-      mode: `range`,
-      clickOpens: false,
-      locale: {
-        rangeSeparator: ` — `
-      },
-      defaultDate: [_getMatchString(evt.target.value, /\d\d\:\d\d\s/ig), _getMatchString(evt.target.value, /\s\d\d\:\d\d/ig)]
-
-    });
-    newTime.open();
   }
 
   set onSaveClick(fn) {
@@ -210,7 +181,8 @@ class TripPointDetailed extends Component {
 
         <label class="point__time">
           choose time
-          <input class="point__input" type="text" value="${this._timeRange.startTime}&nbsp;&mdash; ${this._timeRange.endTime}" name="time" placeholder="00:00 — 00:00">
+          <input class="point__input" type="text" value="${this._timeRange.startTime}" name="date-start" placeholder="19:00">
+          <input class="point__input" type="text" value="${this._timeRange.endTime}" name="date-end" placeholder="21:00">
         </label>
 
         <label class="point__price">
@@ -270,7 +242,16 @@ class TripPointDetailed extends Component {
     this._element.querySelector(`.point__buttons .point__button:last-child`).addEventListener(`click`, this._onDeleteClick);
     this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onChangeDestination);
     this._element.querySelector(`.travel-way__select`).addEventListener(`click`, this._onClickTravelWay);
-    this._element.querySelector(`.point__time .point__input`).addEventListener(`click`, this._onClickTimeInput);
+    flatpickr(this._element.querySelector(`.point__time .point__input:first-child`), {
+      enableTime: true,
+      dateFormat: `H:i`,
+      noCalendar: true
+    });
+    flatpickr(this._element.querySelector(`.point__time .point__input:last-child`), {
+      enableTime: true,
+      dateFormat: `H:i`,
+      noCalendar: true
+    });
   }
 
   removeListeners() {
@@ -278,7 +259,8 @@ class TripPointDetailed extends Component {
     this._element.querySelector(`.point__buttons .point__button:last-child`).removeEventListener(`click`, this._onDeleteClick);
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onChangeDestination);
     this._element.querySelector(`.travel-way__select`).removeEventListener(`click`, this._onClickTravelWay);
-    this._element.querySelector(`.point__time .point__input`).removeEventListener(`click`, this._onClickTimeInput);
+    this._element.querySelector(`.point__time .point__input:first-child`)._flatpickr.destroy();
+    this._element.querySelector(`.point__time .point__input:last-child`)._flatpickr.destroy();
   }
 
 }
