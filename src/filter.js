@@ -1,21 +1,35 @@
-const renderFilter = ({textFilter, condition = ``}, onClick = () => {}) => {
-  const template = document.createElement(`template`);
-  template.innerHTML = `<input type="radio" id="filter-${textFilter.toLowerCase()}" name="filter" value="${textFilter.toLowerCase()}" ${condition}>
-  <label class="trip-filter__item" for="filter-${textFilter.toLowerCase()}">${textFilter}</label>`;
-  const filter = template.content;
-  filter.firstChild.addEventListener(`click`, () => {
-    onClick();
-  });
-  return filter;
-};
+import Component from "./component";
 
-export default (filtersData, onClick) => {
-  const fragment = document.createDocumentFragment();
-  const arrayFilters = filtersData.map((filterData) => {
-    return renderFilter(filterData, onClick);
-  });
-  arrayFilters.forEach((filter) => {
-    fragment.appendChild(filter);
-  });
-  return fragment;
-};
+class Filter extends Component {
+  constructor(data) {
+    super();
+    this._name = data.textFilter;
+
+    this._onFilter = null;
+    this._onClickFilter = this._onClickFilter.bind(this);
+  }
+
+  set onFilter(fn) {
+    this._onFilter = fn.bind(this);
+  }
+
+  _onClickFilter() {
+    this._onFilter();
+  }
+
+  get template() {
+    return `<div style="display:inline;">
+    <input type="radio" id="filter-${this._name.toLowerCase()}" name="filter" value="${this._name.toLowerCase()}"}>
+    <label class="trip-filter__item" for="filter-${this._name.toLowerCase()}">${this._name}
+    </label></div>`;
+  }
+
+  createListeners() {
+    this._element.querySelector(`input`).addEventListener(`click`, this._onClickFilter);
+  }
+  removeListeners() {
+    this._element.querySelector(`input`).removeEventListener(`click`, this._onClickFilter);
+  }
+}
+
+export {Filter};

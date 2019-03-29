@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 const ARRAY_POINT_TYPES = [
   {type: `Taxi`,
     icon: `🚕`},
@@ -67,30 +69,36 @@ const getRandomOffers = (arrayOffers) => {
   return exportOffers;
 };
 
-const timeOptions = {
-  hour: `numeric`,
-  minute: `numeric`,
-  hour12: false
-};
-
-const getRandomTimeTable = () => {
-  const dateStart = Date.now() + makeRandomCount(25) * 60 * 60 * 1000;
-  const dateFinish = dateStart + makeRandomCount(7) * 60 * 60 * 1000;
-  const start = new Intl.DateTimeFormat(`en-US`, timeOptions).format(dateStart);
-  const end = new Intl.DateTimeFormat(`en-US`, timeOptions).format(dateFinish);
+const getRandomTimeRange = () => {
+  const timeStart = moment().add(makeRandomCount(13) - makeRandomCount(13), `h`).add(makeRandomCount(61), `m`);
+  const timeFinish = moment(timeStart).startOf(`h`).add(makeRandomCount(24), `h`).add(makeRandomCount(61), `m`);
+  const start = moment.min(timeStart, timeFinish).format(`HH:mm`); //  moment(timeStart).format(`HH:mm`)
+  const end = moment.max(timeStart, timeFinish).format(`HH:mm`); // moment.max(timeStart, timeFinish) moment(timeFinish).format(`HH:mm`)
   return {
     startTime: start,
     endTime: end
   };
 };
 
+const getDuration = (timeRange) => {
+  const duration = moment.duration(moment(timeRange.endTime, `HH:mm`) - moment(timeRange.startTime, `HH:mm`));
+  return `${duration.get(`H`)}H ${duration.get(`M`)}M`;
+};
+
+const getRandomDate = () => {
+  return moment().add(makeRandomCount(7) - makeRandomCount(7), `d`).format(`DD MMM`);
+};
+
 export default () => {
   return {
+    date: getRandomDate(),
     type: ARRAY_POINT_TYPES[makeRandomCount(ARRAY_POINT_TYPES.length)],
     city: CITIES[makeRandomCount(CITIES.length)],
     description: getRandomSentences(TEXT_DESCRIPTION),
-    timeTable: getRandomTimeTable(),
-    duration: `${makeRandomCount(5)}h ${makeRandomCount(61)}m`,
+    timeRange: getRandomTimeRange(),
+    get duration() {
+      return getDuration(this.timeRange);
+    },
     price: {
       currency: DEFAULT_CURRENCY,
       count: makeRandomCount(51)
