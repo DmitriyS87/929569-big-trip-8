@@ -42,7 +42,6 @@ const generateArrayPointsData = (count) => {
   const arrayData = [];
   for (let index = 0; index < count; index++) {
     arrayData.push(data());
-    arrayData[index].display = true;
   }
   return arrayData;
 };

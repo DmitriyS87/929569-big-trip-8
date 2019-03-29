@@ -13,8 +13,6 @@ class TripPoint extends Component {
     this._offers = data.offers;
     this._picture = data.picture;
 
-    this._display = data.display;
-
     this._onClickPoint = null;
     this._onClickListener = null;
   }
@@ -32,7 +30,7 @@ class TripPoint extends Component {
   }
 
   get template() {
-    return `<article class="trip-point" ${this._display ? `` : `style="display:none"`}>
+    return `<article class="trip-point"}>
     <i class="trip-icon">${this._type.icon}</i>
     <h3 class="trip-point__title">${this._type.type} to ${this._city}</h3>
     <p class="trip-point__schedule">
@@ -44,10 +42,6 @@ class TripPoint extends Component {
         ${this._renderOffersList(this._offers)}
       </ul>
   </article>`;
-  }
-
-  set display(display) {
-    this._display = display;
   }
 
   get date() {
@@ -63,9 +57,7 @@ class TripPoint extends Component {
   }
 
   createListeners() {
-    if (this._display) {
-      this._element.addEventListener(`click`, this._onClickPoint);
-    }
+    this._element.addEventListener(`click`, this._onClickPoint);
   }
 
   removeListeners() {
