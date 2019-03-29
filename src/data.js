@@ -82,7 +82,7 @@ const getRandomTimeRange = () => {
 
 const getDuration = (timeRange) => {
   const duration = moment.duration(moment(timeRange.endTime, `HH:mm`) - moment(timeRange.startTime, `HH:mm`));
-  return `${duration.get(`H`)}H ${duration.get(`M`)}M`;
+  return `${duration.get(`hours`)}H ${duration.get(`minutes`)}M`;
 };
 
 const getRandomDate = () => {
