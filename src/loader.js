@@ -15,8 +15,8 @@ class Loader {
     this._authorization = authorization;
   }
 
-  getPoints() {
-    return this._load({url: `points`})
+  getData(name) {
+    return this._load({url: name})
     .then(toJSON);
   }
 

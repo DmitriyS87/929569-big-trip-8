@@ -5,6 +5,7 @@ import TripPoint from './trip-point';
 import TripPointDetailed from './trip-point-detailed';
 import {getNewChart, deleteChart} from './statistic';
 import {Loader} from './loader';
+import {DataParser} from './data-parser';
 
 import arrayLodash from 'lodash/array';
 import moment from 'moment';
@@ -303,8 +304,18 @@ const getKey = () => {
   return `Basic ${getRandomString(VAILD_SYMBOLS, makeRandomCountMinMax(8, 16))}`;
 };
 
-const getData = new Loader(ENTRY, getKey());
-getData.getPoints()
+const getPoints = new Loader(ENTRY, getKey());
+getPoints.getData(`points`)
 .then((points) => {
   console.log(points);
+  return DataParser.parsePoints(points);
+})
+.then((array) => {
+  console.log(array);
+});
+
+const getDestinations = new Loader(ENTRY, getKey());
+getDestinations.getData(`destinations`)
+.then((array) => {
+  console.log(array);
 });
