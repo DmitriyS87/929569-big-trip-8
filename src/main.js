@@ -4,9 +4,14 @@ import data from './data.js';
 import TripPoint from './trip-point';
 import TripPointDetailed from './trip-point-detailed';
 import {getNewChart, deleteChart} from './statistic';
+import {Loader} from './loader';
 
 import arrayLodash from 'lodash/array';
 import moment from 'moment';
+
+const ENTRY = `https://es8-demo-srv.appspot.com/big-trip/`;
+const VAILD_SYMBOLS = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`;
+
 
 const BAR_HEIGHT = 100;
 
@@ -282,4 +287,24 @@ let timeSpendStat;
 
 Array.from(document.querySelectorAll(`.view-switch__item`)).forEach((switchLink) => {
   switchLink.addEventListener(`click`, onStatsClick);
+});
+
+const makeRandomCountMinMax = (min, max) => {
+  return min + Math.floor(Math.random() * (max - min));
+};
+
+const getRandomString = (validSymbols, length) => {
+  return Array(length).join().split(`,`).map(() => {
+    return validSymbols[Math.floor(Math.random() * validSymbols.length)];
+  }).join(``);
+};
+
+const getKey = () => {
+  return `Basic ${getRandomString(VAILD_SYMBOLS, makeRandomCountMinMax(8, 16))}`;
+};
+
+const getData = new Loader(ENTRY, getKey());
+getData.getPoints()
+.then((points) => {
+  console.log(points);
 });
