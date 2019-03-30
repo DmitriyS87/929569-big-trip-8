@@ -4,12 +4,13 @@ class DataParser {
   constructor(data) {
     this._id = data.id;
     this._type = data[`type`];
+    this._timeRange = {};
     this._timeRange.startTime = moment(data[`date_from`]).format(`HH:mm`);
     this._timeRange.endTime = moment(data[`date_to`]).format(`HH:mm`);
 
     this._description = data.destination.description;
     this._city = data.destination.name;
-    this._picture = data.pictures;
+    this._picture = data.destination.pictures;
     this._isFavorite = Boolean(data[`is_favorite`]);
     this._offers = data.offers; // ????
     this._date = moment(data[`date_from`]).format(`DD MMM`);
