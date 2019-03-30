@@ -24,12 +24,12 @@ class DataParser {
   }
 
   static parsePoint(data) {
-    return new Parser(data);
+    return new DataParser(data);
   }
 
   static parsePoints(array) {
     return array.map((it) => {
-      return Parser.parsePoint(it);
+      return DataParser.parsePoint(it);
     });
   }
 }
