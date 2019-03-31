@@ -3,6 +3,7 @@ import Component from './component';
 class TripPoint extends Component {
   constructor(data) {
     super();
+    this._id = data.id;
     this._date = data.date;
     this._type = data.type;
     this._city = data.city;
