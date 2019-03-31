@@ -18,10 +18,6 @@ class TripPoint extends Component {
 
     this._onClickPoint = null;
     this._onClickListener = null;
-
-    /* model.on(`pointsLoaded`, () => {
-      console.log(`have the model event - pointsLoaded`);
-    });*/
   }
 
   _renderOffersList(offers) {

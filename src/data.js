@@ -72,8 +72,8 @@ const getRandomOffers = (arrayOffers) => {
 const getRandomTimeRange = () => {
   const timeStart = moment().add(makeRandomCount(13) - makeRandomCount(13), `h`).add(makeRandomCount(61), `m`);
   const timeFinish = moment(timeStart).startOf(`h`).add(makeRandomCount(24), `h`).add(makeRandomCount(61), `m`);
-  const start = moment.min(timeStart, timeFinish); //  moment(timeStart).format(`HH:mm`)
-  const end = moment.max(timeStart, timeFinish); // moment.max(timeStart, timeFinish) moment(timeFinish).format(`HH:mm`)
+  const start = moment.min(timeStart, timeFinish);
+  const end = moment.max(timeStart, timeFinish);
   return {
     startTime: start,
     endTime: end

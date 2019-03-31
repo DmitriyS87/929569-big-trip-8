@@ -314,10 +314,6 @@ class TripPointDetailed extends Component {
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onChangeDestination);
     // this._element.querySelector(`.point__destination-input`).removeEventListener(`input`, this._onInputDestination);
     this._element.querySelector(`.travel-way__select`).removeEventListener(`click`, this._onClickTravelWay);
-    // this._element.querySelector(`.point__time .point__input:first-child`)._flatpickr.destroy();
-    // this._element.querySelector(`.point__time .point__input:last-child`)._flatpickr.destroy();
-    // this._flatpickrStart.destroy();
-    // this._flatpickrEnd.destroy();
   }
 
 }

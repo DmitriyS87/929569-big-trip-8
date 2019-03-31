@@ -1,8 +1,6 @@
 import {EventEmitter} from "./event-emitter";
 import {updateStats} from './statistics';
 
-// import {EventEmitter} from 'events';
-
 class Controller extends EventEmitter {
   constructor(model, view) {
     super();

@@ -3,8 +3,6 @@ import {clearHTMLInside} from './utils';
 import data from './data.js';
 import {Loader} from './loader';
 import {DataParser} from './data-parser';
-
-
 import {Model} from './model';
 import {Controller} from './controller';
 import {View} from './view';
@@ -12,9 +10,7 @@ import {View} from './view';
 const ENTRY = `https://es8-demo-srv.appspot.com/big-trip/`;
 const VAILD_SYMBOLS = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`;
 
-
 const TRIP_DAY_CLASS = `.trip-day__items`;
-
 const FILTER_FORM_CLASS = `.trip-filter`;
 
 const generateArrayPointsData = (count) => {
@@ -24,7 +20,6 @@ const generateArrayPointsData = (count) => {
   }
   return arrayData;
 };
-
 const tripsDefaultCount = 7;
 
 

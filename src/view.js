@@ -85,7 +85,6 @@ class View extends EventEmitter {
         };
         tripPointDetailed.onSaveClick = (newData) => {
           this.emit(`onSave`, newData);
-          // this.disable();
         };
 
         tripPointDetailed.onDelete = (id) => {
@@ -140,7 +139,6 @@ class View extends EventEmitter {
 
         if (!statsContainer.classList.contains(`visually-hidden`)) {
           this.emit(`statsOn`);
-          // updateStats(pointsData);
         } else {
           this.emit(`statsOff`);
         }
