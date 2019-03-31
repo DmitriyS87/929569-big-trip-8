@@ -1,4 +1,5 @@
 import Component from './component';
+import moment from 'moment';
 
 class TripPoint extends Component {
   constructor(data, model) {
@@ -40,7 +41,7 @@ class TripPoint extends Component {
     <i class="trip-icon">${this._type.icon}</i>
     <h3 class="trip-point__title">${this._type.type} to ${this._city}</h3>
     <p class="trip-point__schedule">
-      <span class="trip-point__timetable">${this._timeRange.startTime}&nbsp;&mdash; ${this._timeRange.endTime}</span>
+      <span class="trip-point__timetable">${moment(this._timeRange.startTime).format(`HH:mm`)}&nbsp;&mdash; ${moment(this._timeRange.endTime).format(`HH:mm`)}</span>
       <span class="trip-point__duration">${this._duration}</span>
     </p>
     <p class="trip-point__price">${this._price.currency}&nbsp;${this._price.count}</p>

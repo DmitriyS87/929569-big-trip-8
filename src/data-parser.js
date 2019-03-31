@@ -5,8 +5,8 @@ class DataParser {
     this._id = data.id;
     this._type = data[`type`];
     this._timeRange = {};
-    this._timeRange.startTime = moment(data[`date_from`]).format(`HH:mm`);
-    this._timeRange.endTime = moment(data[`date_to`]).format(`HH:mm`);
+    this._timeRange.startTime = moment(data[`date_from`]);
+    this._timeRange.endTime = moment(data[`date_to`]);
 
     this._description = data.destination.description;
     this._city = data.destination.name;

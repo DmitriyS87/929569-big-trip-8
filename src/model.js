@@ -1,11 +1,14 @@
 import {EventEmitter} from './event-emitter';
-
+import moment from 'moment';
 class Model extends EventEmitter {
   constructor() {
     super();
   }
   set points(array) {
-    this._points = array;
+    this._points = array.map((it) => {
+      it = this._addDuration(it);
+      return it;
+    });
     this.emit(`pointsLoaded`);
   }
   get points() {
@@ -16,10 +19,18 @@ class Model extends EventEmitter {
   }
 
   savePoint(newData) {
+    newData = this._addDuration(newData);
     this._points.splice(this._points.indexOf(this._points.find((it) => {
       return it.id === newData.id;
     })), 1, newData);
+
     this.emit(`pointSaved`, newData);
+  }
+
+  _addDuration(point) {
+    const duration = moment.duration(moment(point.timeRange.endTime) - moment(point.timeRange.startTime));
+    point.duration = `${duration.get(`hours`)}H ${duration.get(`minutes`)}M`;
+    return point;
   }
 
   deletePoint(id) {

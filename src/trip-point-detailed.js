@@ -52,6 +52,7 @@ class TripPointDetailed extends Component {
 
     view.on(`deleted`, (id) => {
       if (id === this._id) {
+
         this._element.remove();
         this.unrender();
       }
@@ -90,8 +91,8 @@ class TripPointDetailed extends Component {
       },
       city: ``,
       timeRange: {
-        startTime: `00:00`,
-        endTime: `00:00`
+        startTime: ``,
+        endTime: ``
       },
       price: {
         currency: `&euro;`,
@@ -297,13 +298,13 @@ class TripPointDetailed extends Component {
 
     flatpickr(this._element.querySelector(`.point__time .point__input:first-child`), {
       enableTime: true,
-      dateFormat: `H:i`,
-      noCalendar: true
+      altInput: true,
+      altFormat: `H:i`
     });
     flatpickr(this._element.querySelector(`.point__time .point__input:last-child`), {
       enableTime: true,
-      dateFormat: `H:i`,
-      noCalendar: true
+      altInput: true,
+      altFormat: `H:i`
     });
   }
 
@@ -313,8 +314,10 @@ class TripPointDetailed extends Component {
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onChangeDestination);
     // this._element.querySelector(`.point__destination-input`).removeEventListener(`input`, this._onInputDestination);
     this._element.querySelector(`.travel-way__select`).removeEventListener(`click`, this._onClickTravelWay);
-    this._element.querySelector(`.point__time .point__input:first-child`)._flatpickr.destroy();
-    this._element.querySelector(`.point__time .point__input:last-child`)._flatpickr.destroy();
+    // this._element.querySelector(`.point__time .point__input:first-child`)._flatpickr.destroy();
+    // this._element.querySelector(`.point__time .point__input:last-child`)._flatpickr.destroy();
+    // this._flatpickrStart.destroy();
+    // this._flatpickrEnd.destroy();
   }
 
 }
