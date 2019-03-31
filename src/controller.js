@@ -1,4 +1,5 @@
 import {EventEmitter} from "./event-emitter";
+import {updateStats} from './statistics';
 
 // import {EventEmitter} from 'events';
 
@@ -13,6 +14,11 @@ class Controller extends EventEmitter {
     });
     view.on(`onDelite`, (id) => {
       this.deletePoint(id);
+    });
+    view.on(`statsOn`, () => {
+      updateStats(this._model.points);
+    });
+    view.on(`statsOff`, () => {
     });
   }
 

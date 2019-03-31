@@ -2,6 +2,7 @@ import {EventEmitter} from "./event-emitter";
 import {Filter} from './filter';
 import TripPoint from './trip-point';
 import TripPointDetailed from './trip-point-detailed';
+
 import moment from 'moment';
 
 const FILTERS_DATA = [{
@@ -49,6 +50,7 @@ class View extends EventEmitter {
     this._generateViews(this._model.points);
     this._renderPoints(this._arrayPoints);
     this._addFilters();
+    this._addStats();
   }
   _deletePoint(id) {
     this.emit(`deleted`, id);
@@ -123,6 +125,32 @@ class View extends EventEmitter {
     }
   }
 
+  _addStats() {
+    const onStatsClick = (evt) => {
+      evt.preventDefault();
+      const activeElement = document.querySelector(`.view-switch__item--active`);
+      if (evt.target !== activeElement) {
+        activeElement.classList.remove(`view-switch__item--active`);
+        evt.target.classList.add(`view-switch__item--active`);
+        const pointsContainer = document.querySelector(`.main`);
+        const statsContainer = document.querySelector(`.statistic`);
+
+        pointsContainer.classList.toggle(`visually-hidden`);
+        statsContainer.classList.toggle(`visually-hidden`);
+
+        if (!statsContainer.classList.contains(`visually-hidden`)) {
+          this.emit(`statsOn`);
+          // updateStats(pointsData);
+        } else {
+          this.emit(`statsOff`);
+        }
+      }
+    };
+
+    Array.from(document.querySelectorAll(`.view-switch__item`)).forEach((switchLink) => {
+      switchLink.addEventListener(`click`, onStatsClick);
+    });
+  }
 
 }
 
