@@ -22,31 +22,6 @@ const TRIP_DAY_CLASS = `.trip-day__items`;
 
 const FILTER_FORM_CLASS = `.trip-filter`;
 
-const FILTERS_DATA = [{
-  textFilter: `Everything`,
-  doFilter() {
-    return true;
-  }
-},
-{
-  textFilter: `Future`,
-  doFilter(point) {
-    if (moment().isBefore(moment(point.date, `DD MMM`))) {
-      return true;
-    }
-    return false;
-  }
-},
-{
-  textFilter: `Past`,
-  doFilter(point) {
-    if (moment(point.date, `DD MMM`).isBefore(moment())) {
-      return true;
-    }
-    return false;
-  }
-}];
-
 const generateArrayPointsData = (count) => {
   const arrayData = [];
   for (let index = 0; index < count; index++) {
@@ -60,10 +35,11 @@ const tripsDefaultCount = 7;
 
 clearHTMLInside(FILTER_FORM_CLASS);
 const tripDayelement = document.querySelector(TRIP_DAY_CLASS);
+const filterContainer = document.querySelector(FILTER_FORM_CLASS);
 const pointsData = generateArrayPointsData(tripsDefaultCount);
 const model = new Model();
 // model.points = pointsData;
-const view = new View(model, tripDayelement);
+const view = new View(model, tripDayelement, filterContainer);
 const controller = new Controller(model, view);
 controller.init(pointsData);
 
@@ -109,30 +85,6 @@ const renderPoints = (array) => {
 };
 
 renderPoints(arrayPoints);
-*/
-
-/*
-for (let filterData of FILTERS_DATA) {
-  let filter = new Filter(filterData);
-  filter.onFilter = () => {
-    clearHTMLInside(TRIP_DAY_CLASS);
-    arrayPoints.filter((point) => {
-      return point !== null;
-    }).forEach((point) => {
-      if (point.element !== null) {
-        point.unrender();
-      }
-    });
-    renderPoints(arrayPoints.filter((point) => {
-      return point !== null;
-    }).filter((point) => {
-      return FILTERS_DATA.find((it) => {
-        return it === filterData;
-      }).doFilter(point);
-    }));
-  };
-  document.querySelector(FILTER_FORM_CLASS).appendChild(filter.render());
-}
 */
 
 /*
