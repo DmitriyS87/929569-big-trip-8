@@ -89,8 +89,16 @@ const getRandomDate = () => {
   return moment().add(makeRandomCount(7) - makeRandomCount(7), `d`).format(`DD MMM`);
 };
 
+let id = -1;
+
+const setId = () => {
+  id++;
+  return id;
+};
+
 export default () => {
   return {
+    id: setId(),
     date: getRandomDate(),
     type: ARRAY_POINT_TYPES[makeRandomCount(ARRAY_POINT_TYPES.length)],
     city: CITIES[makeRandomCount(CITIES.length)],
