@@ -6,7 +6,7 @@ class Model extends EventEmitter {
   }
   set points(array) {
     this._points = array;
-    this.emit(`pointsLoaded`, array);
+    this.emit(`pointsLoaded`);
   }
   get points() {
     if (this._points instanceof Array) {
@@ -15,11 +15,23 @@ class Model extends EventEmitter {
     return [];
   }
 
-  deletePoint() {
+  savePoint(newData) {
+    this._points.splice(this._points.indexOf(this._points.find((it) => {
+      return it.id === newData.id;
+    })), 1, newData);
+    this.emit(`pointSaved`, newData);
+  }
+
+  deletePoint(id) {
+    this._points.splice(this._points.indexOf(this._points.find((it) => {
+      return it.id === id;
+    })), 1);
+    this.emit(`pointDeleted`, id);
   }
 
   set destinations(array) {
     this._destinations = array;
+    this.emit(`destinationsLoaded`);
   }
 
   get destinationsNames() {
@@ -31,6 +43,7 @@ class Model extends EventEmitter {
 
   set currentDestination(name) {
     this._currentDestination = name;
+    this.emit(`destinationSelected`, name);
   }
 
 
@@ -45,10 +58,12 @@ class Model extends EventEmitter {
 
   set offers(array) {
     this._offers = array;
+    this.emit(`offersLoaded`);
   }
 
   set currentType(type) {
     this._currentType = type;
+    this.emit(`typeChacked`);
   }
 
   get currentTypeOffers() {
