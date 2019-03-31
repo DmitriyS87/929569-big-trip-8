@@ -22,8 +22,10 @@ const _replaceDash = (text) => {
   return text.replace(/\b-/ig, ` `);
 };
 class TripPointDetailed extends Component {
-  constructor(data) {
+  constructor(data, model, view) {
     super();
+    this._model = model;
+    this._view = view;
     this._id = data.id;
     this._date = data.date;
     this._type = data.type;
@@ -38,8 +40,23 @@ class TripPointDetailed extends Component {
     this._onClickTravelWay = this._onClickTravelWay.bind(this);
     this.includeDestinations = this.includeDestinations.bind(this);
     this._onSaveButtonClick = this._onSaveButtonClick.bind(this);
+    this._onDeliteButtonClick = this._onDeliteButtonClick.bind(this);
     this._onChangeDestination = null;
     this._onDeleteClick = null;
+
+    view.on(`updated`, (id) => {
+      if (id === this._id) {
+        this._onClose();
+      }
+    });
+
+    view.on(`deleted`, (id) => {
+      if (id === this._id) {
+        this._element.remove();
+        this.unrender();
+      }
+    });
+
   }
 
   _replaceSpace(text) {
@@ -51,11 +68,18 @@ class TripPointDetailed extends Component {
     if (this._element.querySelector(`.point__price .point__input`).checkValidity()) {
       const formData = new FormData(this._element.childNodes[1]);
       const newData = this._processForm(formData);
+      newData.id = this._id;
+      this.update(newData);
+      // this.disable();
       if (typeof this._onSaveClick === `function`) {
         this._onSaveClick(newData);
       }
-      this.update(newData);
     }
+  }
+
+  _onDeliteButtonClick(evt) {
+    evt.preventDefault();
+    this._onDeleteClick(this._id);
   }
 
   _processForm(formData) {
@@ -149,6 +173,10 @@ class TripPointDetailed extends Component {
 
   set onSaveClick(fn) {
     this._onSaveClick = fn;
+  }
+
+  set onClose(fn) {
+    this._onClose = fn.bind(this);
   }
 
   set onDelete(fn) {
@@ -246,7 +274,13 @@ class TripPointDetailed extends Component {
   </article>`;
   }
 
+  _delite() {
+    this.element.remove();
+    this.unrender();
+  }
+
   update(newData) {
+    this._id = newData.id;
     this._city = newData.city;
     this._type = newData.type;
     this._price = newData.price;
@@ -256,7 +290,7 @@ class TripPointDetailed extends Component {
 
   createListeners() {
     this._element.querySelector(`.point__buttons .point__button:first-child`).addEventListener(`click`, this._onSaveButtonClick);
-    this._element.querySelector(`.point__buttons .point__button:last-child`).addEventListener(`click`, this._onDeleteClick);
+    this._element.querySelector(`.point__buttons .point__button:last-child`).addEventListener(`click`, this._onDeliteButtonClick);
     this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onChangeDestination);
     // this._element.querySelector(`.point__destination-input`).addEventListener(`input`, this._onInputDestination);
     this._element.querySelector(`.travel-way__select`).addEventListener(`click`, this._onClickTravelWay);
@@ -275,7 +309,7 @@ class TripPointDetailed extends Component {
 
   removeListeners() {
     this._element.querySelector(`.point__buttons .point__button:first-child`).removeEventListener(`click`, this._onSaveClick);
-    this._element.querySelector(`.point__buttons .point__button:last-child`).removeEventListener(`click`, this._onDeleteClick);
+    this._element.querySelector(`.point__buttons .point__button:last-child`).removeEventListener(`click`, this._onDeliteButtonClick);
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onChangeDestination);
     // this._element.querySelector(`.point__destination-input`).removeEventListener(`input`, this._onInputDestination);
     this._element.querySelector(`.travel-way__select`).removeEventListener(`click`, this._onClickTravelWay);

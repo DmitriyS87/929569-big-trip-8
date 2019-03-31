@@ -10,15 +10,17 @@ import {DataParser} from './data-parser';
 import arrayLodash from 'lodash/array';
 import moment from 'moment';
 import {Model} from './model';
+import {Controller} from './controller';
+import {View} from './view';
 
 const ENTRY = `https://es8-demo-srv.appspot.com/big-trip/`;
 const VAILD_SYMBOLS = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`;
 
 
 const BAR_HEIGHT = 100;
+const TRIP_DAY_CLASS = `.trip-day__items`;
 
 const FILTER_FORM_CLASS = `.trip-filter`;
-const TRIP_DAY_CLASS = `.trip-day__items`;
 
 const FILTERS_DATA = [{
   textFilter: `Everything`,
@@ -57,12 +59,16 @@ const tripsDefaultCount = 7;
 
 
 clearHTMLInside(FILTER_FORM_CLASS);
-
+const tripDayelement = document.querySelector(TRIP_DAY_CLASS);
 const pointsData = generateArrayPointsData(tripsDefaultCount);
 const model = new Model();
+// model.points = pointsData;
+const view = new View(model, tripDayelement);
+const controller = new Controller(model, view);
+controller.init(pointsData);
 
-
-clearHTMLInside(TRIP_DAY_CLASS);
+// clearHTMLInside(TRIP_DAY_CLASS);
+/*
 const arrayPoints = pointsData.map((pointData) => {
   if (pointData !== null) {
     const tripPoint = new TripPoint(pointData, model);
@@ -103,9 +109,9 @@ const renderPoints = (array) => {
 };
 
 renderPoints(arrayPoints);
+*/
 
-model.points = pointsData;
-
+/*
 for (let filterData of FILTERS_DATA) {
   let filter = new Filter(filterData);
   filter.onFilter = () => {
@@ -127,7 +133,9 @@ for (let filterData of FILTERS_DATA) {
   };
   document.querySelector(FILTER_FORM_CLASS).appendChild(filter.render());
 }
+*/
 
+/*
 const moneyCtx = document.querySelector(`.statistic__money`);
 const transportCtx = document.querySelector(`.statistic__transport`);
 const timeSpendCtx = document.querySelector(`.statistic__time-spend`);
@@ -214,9 +222,9 @@ const updateStats = (currentPoints) => {
     };
     const mapedArrayPoints = points.map((point) => {
       const parseTimeMinets = (text) => {
-        if (text !== 0 && text !== undefined) {
-          return text.replace(/[HM]/ig, ``).trim().match(/\d(\d)*/ig, ` `).reduce((d, e) => {
-            return d * 60 + +e;
+        if (text !== 0 && text !== undefined) {*/
+//    return text.replace(/[HM]/ig, ``).trim().match(/\d(\d)*/ig, ` `).reduce((d, e) => {
+/*        return d * 60 + +e;
           }, 0);
         }
         return 0;
@@ -295,7 +303,7 @@ let timeSpendStat;
 Array.from(document.querySelectorAll(`.view-switch__item`)).forEach((switchLink) => {
   switchLink.addEventListener(`click`, onStatsClick);
 });
-
+*/
 const makeRandomCountMinMax = (min, max) => {
   return min + Math.floor(Math.random() * (max - min));
 };
@@ -309,7 +317,7 @@ const getRandomString = (validSymbols, length) => {
 const getKey = () => {
   return `Basic ${getRandomString(VAILD_SYMBOLS, makeRandomCountMinMax(8, 16))}`;
 };
-
+/*
 const getPoints = new Loader(ENTRY, getKey());
 getPoints.getData(`points`)
 .then((points) => {
@@ -325,3 +333,4 @@ getDestinations.getData(`destinations`)
 .then((array) => {
   console.log(array);
 });
+*/
