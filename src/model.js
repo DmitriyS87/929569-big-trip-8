@@ -1,13 +1,15 @@
 class Model {
   set points(array) {
     this._points = array;
-    console.log(this._points);
   }
   get points() {
     if (this._points instanceof Array) {
       return this._points;
     }
     return [];
+  }
+
+  deletePoint() {
   }
 
   set destinations(array) {
