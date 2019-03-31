@@ -1,6 +1,12 @@
-class Model {
+import {EventEmitter} from './event-emitter';
+
+class Model extends EventEmitter {
+  constructor() {
+    super();
+  }
   set points(array) {
     this._points = array;
+    this.emit(`pointsLoaded`, array);
   }
   get points() {
     if (this._points instanceof Array) {
