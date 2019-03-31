@@ -9,6 +9,7 @@ import {DataParser} from './data-parser';
 
 import arrayLodash from 'lodash/array';
 import moment from 'moment';
+import {Model} from './model';
 
 const ENTRY = `https://es8-demo-srv.appspot.com/big-trip/`;
 const VAILD_SYMBOLS = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`;
@@ -57,12 +58,15 @@ const tripsDefaultCount = 7;
 
 clearHTMLInside(FILTER_FORM_CLASS);
 
-clearHTMLInside(TRIP_DAY_CLASS);
 const pointsData = generateArrayPointsData(tripsDefaultCount);
+const model = new Model();
+
+
+clearHTMLInside(TRIP_DAY_CLASS);
 const arrayPoints = pointsData.map((pointData) => {
   if (pointData !== null) {
-    const tripPoint = new TripPoint(pointData);
-    const tripPointDetailed = new TripPointDetailed(pointData);
+    const tripPoint = new TripPoint(pointData, model);
+    const tripPointDetailed = new TripPointDetailed(pointData, model);
     tripPoint.onClickPoint = () => {
       tripPointDetailed.render();
       document.querySelector(TRIP_DAY_CLASS).replaceChild(tripPointDetailed.element, tripPoint.element);
@@ -99,6 +103,8 @@ const renderPoints = (array) => {
 };
 
 renderPoints(arrayPoints);
+
+model.points = pointsData;
 
 for (let filterData of FILTERS_DATA) {
   let filter = new Filter(filterData);

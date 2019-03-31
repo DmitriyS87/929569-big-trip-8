@@ -1,8 +1,9 @@
 import Component from './component';
 
 class TripPoint extends Component {
-  constructor(data) {
+  constructor(data, model) {
     super();
+    this._model = model;
     this._id = data.id;
     this._date = data.date;
     this._type = data.type;
@@ -16,6 +17,10 @@ class TripPoint extends Component {
 
     this._onClickPoint = null;
     this._onClickListener = null;
+
+    model.on(`pointsLoaded`, () => {
+      console.log(`have the model event - pointsLoaded`);
+    });
   }
 
   _renderOffersList(offers) {
