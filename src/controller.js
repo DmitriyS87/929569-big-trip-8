@@ -20,8 +20,8 @@ class Controller extends EventEmitter {
     });
   }
 
-  init(data) {
-    this._model.points = data;
+  init() {
+    this._model.loadPoints();
   }
 
   updatePoint(newData) {

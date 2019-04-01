@@ -1,21 +1,53 @@
 import {EventEmitter} from './event-emitter';
+import {Loader} from './loader';
+import {DataParser} from './data-parser';
 import moment from 'moment';
+
+const ENTRY = `https://es8-demo-srv.appspot.com/big-trip/`;
+const VAILD_SYMBOLS = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`;
+
+
+const makeRandomCountMinMax = (min, max) => {
+  return min + Math.floor(Math.random() * (max - min));
+};
+
+const getRandomString = (validSymbols, length) => {
+  return Array(length).join().split(`,`).map(() => {
+    return validSymbols[Math.floor(Math.random() * validSymbols.length)];
+  }).join(``);
+};
+
+const getKey = () => {
+  return `Basic ${getRandomString(VAILD_SYMBOLS, makeRandomCountMinMax(8, 16))}`;
+};
+
 class Model extends EventEmitter {
   constructor() {
     super();
   }
   set points(array) {
     this._points = array.map((it) => {
-      it = this._addDuration(it);
+      it.duration = this._addDuration(it);
       return it;
     });
-    this.emit(`pointsLoaded`);
   }
   get points() {
     if (this._points instanceof Array) {
       return this._points;
     }
     return [];
+  }
+
+  loadPoints() {
+    const getPoints = new Loader(ENTRY, getKey());
+    getPoints.getData(`points`)
+      .then((data) => {
+        return DataParser.parsePoints(data);
+      })
+      .then((array) => {
+        this.points = array;
+        this.emit(`pointsLoaded`);
+      });
   }
 
   savePoint(newData) {
@@ -29,8 +61,7 @@ class Model extends EventEmitter {
 
   _addDuration(point) {
     const duration = moment.duration(moment(point.timeRange.endTime) - moment(point.timeRange.startTime));
-    point.duration = `${duration.get(`hours`)}H ${duration.get(`minutes`)}M`;
-    return point;
+    return `${duration.get(`hours`)}H ${duration.get(`minutes`)}M`;
   }
 
   deletePoint(id) {

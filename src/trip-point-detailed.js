@@ -95,7 +95,6 @@ class TripPointDetailed extends Component {
         endTime: ``
       },
       price: {
-        currency: `&euro;`,
         count: ``
       },
       offers: [],
@@ -156,7 +155,6 @@ class TripPointDetailed extends Component {
           price: `${Array.from(document.querySelectorAll(`.point__offers-label`)).find((item) => {
             return item.children[0].innerText === _replaceDash(value);
           }).children[1].innerText}`,
-          currency: `&euro;`
         });
         return target.offers;
       }]
@@ -233,7 +231,7 @@ class TripPointDetailed extends Component {
 
         <label class="point__price">
           write price
-          <span class="point__price-currency">${this._price.currency}</span>
+          <span class="point__price-currency">&euro;</span>
           <input class="point__input" type="number" style="-webkit-appearance: none; margin: 0; -moz-appearance:textfield;" value="${this._price.count}" name="price">
         </label>
 
@@ -256,7 +254,7 @@ class TripPointDetailed extends Component {
             ${this._offers.map((offer) => {
     return `<input class="point__offers-input visually-hidden" type="checkbox" id="${this._replaceSpace(offer.title)}" name="offer" value="${this._replaceSpace(offer.title)}">
               <label for="${this._replaceSpace(offer.title)}" class="point__offers-label">
-                <span class="point__offer-service">${offer.title}</span> + ${offer.currency}<span class="point__offer-price">${offer.price}</span>
+                <span class="point__offer-service">${offer.title}</span> + &euro;<span class="point__offer-price">${offer.price}</span>
               </label>`;
   })}
           </div>
@@ -266,7 +264,9 @@ class TripPointDetailed extends Component {
           <h3 class="point__details-title">Destination</h3>
           <p class="point__destination-text">${this._description}</p>
           <div class="point__destination-images">
-            <img src="${this._picture}" alt="picture from place" class="point__destination-image">
+            ${this._picture.map((picture) => {
+    return `<img src="${picture.src}" alt="${picture.description}" class="point__destination-image">`;
+  })}
           </div>
         </section>
         <input type="hidden" class="point__total-price" name="total-price" value="">
