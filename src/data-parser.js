@@ -33,8 +33,8 @@ class DataParser {
     }
 
     this.city = data.destination.name;
-    this.picture = {};
-    this.picture = data.destination.pictures;
+    this.pictures = {};
+    this.pictures = data.destination.pictures;
     this.isFavorite = Boolean(data[`is_favorite`]);
 
     if (data.offers && data.offers.length !== 0) {

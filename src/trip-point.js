@@ -25,7 +25,7 @@ class TripPoint extends Component {
     this._timeRange = data.timeRange;
     this._duration = data.duration;
     this._offers = data.offers;
-    this._picture = data.picture;
+    this._pictures = data.pictures; // for what?
 
     this._onClickPoint = null;
     this._onClickListener = null;

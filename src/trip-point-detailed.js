@@ -26,6 +26,7 @@ class TripPointDetailed extends Component {
     super();
     this._model = model;
     this._view = view;
+
     this._id = data.id;
     this._date = data.date;
     this._type = data.type;
@@ -35,7 +36,7 @@ class TripPointDetailed extends Component {
     this._timeRange = data.timeRange;
     this._duration = data.duration;
     this._offers = data.offers;
-    this._picture = data.picture;
+    this._pictures = data.pictures;
 
     this._onClickTravelWay = this._onClickTravelWay.bind(this);
     this.includeDestinations = this.includeDestinations.bind(this);
@@ -264,7 +265,7 @@ class TripPointDetailed extends Component {
           <h3 class="point__details-title">Destination</h3>
           <p class="point__destination-text">${this._description}</p>
           <div class="point__destination-images">
-            ${this._picture.map((picture) => {
+            ${this._pictures.map((picture) => {
     return `<img src="${picture.src}" alt="${picture.description}" class="point__destination-image">`;
   })}
           </div>
