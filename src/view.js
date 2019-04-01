@@ -53,6 +53,10 @@ class View extends EventEmitter {
     this._addStats();
   }
   _deletePoint(id) {
+    const deletedElement = this._arrayPoints.find((it) => {
+      return it.id === id;
+    });
+    this._arrayPoints.splice(this._arrayPoints.indexOf(deletedElement), 1);
     this.emit(`deleted`, id);
   }
 
