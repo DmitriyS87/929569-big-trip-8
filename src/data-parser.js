@@ -38,6 +38,8 @@ class DataParser {
           price: it.price,
           checked: it.accepted};
       });
+    } else {
+      this.offers = [];
     }
     this.date = moment(data[`date_from`]).format(`DD MMM`);
     this.price = {};
