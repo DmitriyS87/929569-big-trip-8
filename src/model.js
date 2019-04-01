@@ -28,6 +28,7 @@ class Model extends EventEmitter {
   set points(array) {
     this._points = array.map((it) => {
       it.duration = this._addDuration(it);
+      it.price.count = this._countPrice(it);
       return it;
     });
   }
@@ -51,17 +52,27 @@ class Model extends EventEmitter {
   }
 
   savePoint(newData) {
-    newData = this._addDuration(newData);
+    newData.duration = this._addDuration(newData);
     this._points.splice(this._points.indexOf(this._points.find((it) => {
       return it.id === newData.id;
     })), 1, newData);
-
     this.emit(`pointSaved`, newData);
   }
 
   _addDuration(point) {
     const duration = moment.duration(moment(point.timeRange.endTime) - moment(point.timeRange.startTime));
     return `${duration.get(`hours`)}H ${duration.get(`minutes`)}M`;
+  }
+
+  _countPrice(point) {
+    if (point.offers.length > 0) {
+      return point.basePrice + point.offers.filter((offer) => {
+        return offer.checked;
+      }).reduce((a, b) => {
+        return a + b.price;
+      }, 0);
+    }
+    return point.basePrice;
   }
 
   deletePoint(id) {
