@@ -61,6 +61,7 @@ class View extends EventEmitter {
   }
 
   _updatePoint(newData) {
+    console.log(newData);
     this._arrayPoints.find((it) => {
       return it._id === newData.id;
     }).update(newData);

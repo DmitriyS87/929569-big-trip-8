@@ -95,7 +95,7 @@ class TripPointDetailed extends Component {
         endTime: ``
       },
       price: {
-        count: ``
+        count: 0
       },
       offers: [],
     };
@@ -146,15 +146,15 @@ class TripPointDetailed extends Component {
         return target.timeRange;
       }],
       [`price`, (value) => {
-        target.price.count = value;
+        target.price.count = Number(value);
         return target.price;
       }],
       [`offer`, (value) => {
         target.offers.push({
           title: value,
-          price: `${Array.from(document.querySelectorAll(`.point__offers-label`)).find((item) => {
+          price: Number(`${Array.from(document.querySelectorAll(`.point__offers-label`)).find((item) => {
             return item.children[0].innerText === _replaceDash(value);
-          }).children[1].innerText}`,
+          }).children[1].innerText}`),
         });
         return target.offers;
       }]
