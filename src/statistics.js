@@ -8,7 +8,6 @@ const transportCtx = document.querySelector(`.statistic__transport`);
 const timeSpendCtx = document.querySelector(`.statistic__time-spend`);
 
 const updateStats = (currentPoints) => {
-  const points = arrayLodash.compact(currentPoints);
 
   if (transportStat && moneyStat && timeSpendStat) {
     deleteChart(moneyStat);
@@ -16,13 +15,13 @@ const updateStats = (currentPoints) => {
     deleteChart(timeSpendStat);
   }
 
-  const getTransportStats = () => {
+  const getTransportStats = (points) => {
     const transform = (array) => {
       return array[0];
     };
     const arrayResult = arrayLodash.uniqBy(points.map((point, index, array) => {
       return [`${point.type.icon} ${point.type.type}`, array.filter((item) => {
-        return item.type === point.type;
+        return item.type.type === point.type.type;
       }).length];
     }), transform).sort((a, b) => {
       if (a[1] < b[1]) {
@@ -35,7 +34,6 @@ const updateStats = (currentPoints) => {
       type: [],
       count: []
     };
-
     arrayResult.forEach((item) => {
       result.type.push(item[0]);
       result.count.push(item[1]);
@@ -44,14 +42,14 @@ const updateStats = (currentPoints) => {
     return result;
   };
 
-  const getMoneyStats = () => {
+  const getMoneyStats = (points) => {
     const transform = (array) => {
       return array[0];
     };
     const arrayResult = arrayLodash.uniqBy(points.map((point, index, array) => {
       if (point !== null) {
         return [`${point.type.icon} ${point.type.type}`, array.filter((item) => {
-          return item.type === point.type;
+          return item.type.type === point.type.type;
         }).reduce((a, b) => {
           return a + b.price.count;
         }, 0)];
@@ -77,15 +75,15 @@ const updateStats = (currentPoints) => {
     return result;
   };
 
-  const getTimeSpendStats = () => {
-    const getAdditionedSamesArray = (array) => {
+  const getTimeSpendStats = (points) => {
+    const getReducedUniquePoints = (array) => {
       for (let i = 1; i < array.length; i++) {
         if (array[i][0] === array[i - 1][0]) {
           array[i][1] += array[i - 1][1];
-          array.splice(i - 1, 1);
+          array.splice(i - 1, 1, null);
         }
       }
-      return array;
+      return arrayLodash.compact(array);
     };
     const mapedArrayPoints = points.map((point) => {
       const parseTimeMinets = (text) => {
@@ -99,7 +97,7 @@ const updateStats = (currentPoints) => {
       const duration = parseTimeMinets(point.duration);
       return [`${point.type.icon} ${point.type.type}`, duration];
     }).sort();
-    const arrayResult = getAdditionedSamesArray(mapedArrayPoints).sort((a, b) => {
+    const arrayResult = getReducedUniquePoints(mapedArrayPoints).sort((a, b) => {
       if (a[1] < b[1]) {
         return 1;
       }
@@ -122,9 +120,9 @@ const updateStats = (currentPoints) => {
     return result;
   };
 
-  const transportData = getTransportStats();
-  const MoneyData = getMoneyStats();
-  const newTimeSpendStats = getTimeSpendStats();
+  const transportData = getTransportStats(currentPoints);
+  const MoneyData = getMoneyStats(currentPoints);
+  const newTimeSpendStats = getTimeSpendStats(currentPoints);
 
   moneyCtx.height = BAR_HEIGHT * ((MoneyData.type.length > 5) ? 6 : 3);
   transportCtx.height = BAR_HEIGHT * ((transportData.type.length > 5) ? 6 : 3);
