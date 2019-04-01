@@ -22,6 +22,7 @@ class Controller extends EventEmitter {
 
   init() {
     this._model.loadPoints();
+    this._model.loadDestinations();
   }
 
   updatePoint(newData) {

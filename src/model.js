@@ -51,6 +51,26 @@ class Model extends EventEmitter {
       });
   }
 
+  set destinationsList(array) {
+    this._destinationsList = array;
+  }
+
+  get destinationsList() {
+    return this._destinationsList;
+  }
+
+  loadDestinations() {
+    const getDestinations = new Loader(ENTRY, getKey());
+    getDestinations.getData(`destinations`)
+    .then((array) => {
+      this.destinationsList = array.map((it) => {
+        return it.name;
+      });
+      console.log(array);
+      this.emit(`DestinationsLoaded`);
+    });
+  }
+
   savePoint(newData) {
     newData.duration = this._addDuration(newData);
     this._points.splice(this._points.indexOf(this._points.find((it) => {

@@ -58,7 +58,6 @@ class TripPointDetailed extends Component {
         this.unrender();
       }
     });
-
   }
 
   _replaceSpace(text) {
@@ -111,20 +110,21 @@ class TripPointDetailed extends Component {
     return clipboard;
   }
 
-  includeDestinations(data) {
-    const dataList = this.element.querySelector(`.point__destination-wrap datalist`);
-    Array.from(dataList.options).forEach((it) => {
-      it.remove();
-    });
-    data.forEach((it) => {
-      const option = document.createElement(`option`);
-      option.value = it.name;
-      dataList.appendChild(option);
-    });
+  set destinations(list) {
+    if (list !== undefined) {
+      this._destinations = this.includeDestinations(list);
+    }
   }
 
-  set onChangeDestination(fn) {
-    this._onChangeDestination = fn.bind(this);
+  includeDestinations(list) {
+    const destinations = list.map((it) => {
+      return `<option value="${it}"></option>`;
+    }).join(``);
+    return destinations;
+  }
+
+  onChangeDestination() {
+    console.log(`Change!`);
   }
 
   static createMaper(target) {
@@ -217,10 +217,7 @@ class TripPointDetailed extends Component {
           <label class="point__destination-label" for="destination">${this._type.type} to</label>
           <input class="point__destination-input" list="destination-select" id="destination" value="${this._city}" name="destination">
           <datalist id="destination-select">
-            <option value="airport"></option>
-            <option value="Geneva"></option>
-            <option value="Chamonix"></option>
-            <option value="hotel"></option>
+          ${this._destinations ? this._destinations : ``}
           </datalist>
         </div>
 
@@ -293,7 +290,7 @@ class TripPointDetailed extends Component {
   createListeners() {
     this._element.querySelector(`.point__buttons .point__button:first-child`).addEventListener(`click`, this._onSaveButtonClick);
     this._element.querySelector(`.point__buttons .point__button:last-child`).addEventListener(`click`, this._onDeliteButtonClick);
-    this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onChangeDestination);
+    this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this.onChangeDestination);
     // this._element.querySelector(`.point__destination-input`).addEventListener(`input`, this._onInputDestination);
     this._element.querySelector(`.travel-way__select`).addEventListener(`click`, this._onClickTravelWay);
 
@@ -311,7 +308,7 @@ class TripPointDetailed extends Component {
 
   removeListeners() {
     this._element.querySelector(`.point__buttons .point__button:first-child`).removeEventListener(`click`, this._onSaveClick);
-    this._element.querySelector(`.point__buttons .point__button:last-child`).removeEventListener(`click`, this._onDeliteButtonClick);
+    this._element.querySelector(`.point__buttons .point__button:last-child`).removeEventListener(`click`, this.onDeliteButtonClick);
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onChangeDestination);
     // this._element.querySelector(`.point__destination-input`).removeEventListener(`input`, this._onInputDestination);
     this._element.querySelector(`.travel-way__select`).removeEventListener(`click`, this._onClickTravelWay);

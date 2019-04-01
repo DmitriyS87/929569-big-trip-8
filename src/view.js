@@ -44,6 +44,9 @@ class View extends EventEmitter {
     model.on(`pointDeleted`, (id) => {
       return this._deletePoint(id);
     });
+    model.on(`DestinationsLoaded`, () => {
+      return this._saveDestinationsList();
+    });
   }
 
   show() {
@@ -60,8 +63,19 @@ class View extends EventEmitter {
     this.emit(`deleted`, id);
   }
 
+  _saveDestinationsList() {
+    this.destinationList = this._model.destinationsList;
+  }
+
+  set destinationList(list) {
+    this._destinationsList = list;
+  }
+
+  get destinationList() {
+    return this._destinationsList;
+  }
+
   _updatePoint(newData) {
-    console.log(newData);
     this._arrayPoints.find((it) => {
       return it._id === newData.id;
     }).update(newData);
@@ -78,6 +92,7 @@ class View extends EventEmitter {
       if (pointData !== null) {
         const tripPoint = new TripPoint(pointData, this._model);
         const tripPointDetailed = new TripPointDetailed(pointData, this._model, this);
+        tripPointDetailed.destinations = this.destinationList;
         tripPoint.onClickPoint = () => {
           tripPointDetailed.render();
           this._pointsContainer.replaceChild(tripPointDetailed.element, tripPoint.element);
