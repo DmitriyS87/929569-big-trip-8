@@ -124,7 +124,7 @@ class TripPointDetailed extends Component {
   }
 
   onChangeDestination() {
-    console.log(`Change!`);
+    // console.log(`Change!`);
   }
 
   static createMaper(target) {

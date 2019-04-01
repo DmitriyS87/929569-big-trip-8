@@ -66,7 +66,7 @@ class Model extends EventEmitter {
       this.destinationsList = array.map((it) => {
         return it.name;
       });
-      console.log(array);
+      // console.log(array);
       this.emit(`DestinationsLoaded`);
     });
   }
