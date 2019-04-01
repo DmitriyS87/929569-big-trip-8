@@ -1,14 +1,11 @@
-import {EventEmitter} from './event-emitter';
-
 const createElement = (template) => {
   const container = document.createElement(`div`);
   container.innerHTML = template;
   return container.firstChild;
 };
 
-class Component extends EventEmitter {
+class Component {
   constructor() {
-    super();
     if (new.target === Component) {
       throw new Error(`Can't instantiate Component, only concrete one.`);
     }
