@@ -34,21 +34,21 @@ const CITIES = [`Moscow`, `Stambul`, `Berlin`, `New-York`, `Prague`, `Amsterdam`
 const OFFERS = [{
   title: `Add luggage`,
   price: makeRandomCount(MAX_PRICE + 1),
-  currency: DEFAULT_CURRENCY
+  checked: true
 }, {
   title: `Switch to comfort class`,
   price: makeRandomCount(MAX_PRICE + 1),
-  currency: DEFAULT_CURRENCY
+  checked: true
 },
 {
   title: `Add meal`,
   price: makeRandomCount(MAX_PRICE + 1),
-  currency: DEFAULT_CURRENCY
+  checked: true
 },
 {
   title: `Choose seats`,
   price: makeRandomCount(MAX_PRICE + 1),
-  currency: DEFAULT_CURRENCY
+  checked: true
 }];
 
 const TEXT_DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
@@ -72,33 +72,33 @@ const getRandomOffers = (arrayOffers) => {
 const getRandomTimeRange = () => {
   const timeStart = moment().add(makeRandomCount(13) - makeRandomCount(13), `h`).add(makeRandomCount(61), `m`);
   const timeFinish = moment(timeStart).startOf(`h`).add(makeRandomCount(24), `h`).add(makeRandomCount(61), `m`);
-  const start = moment.min(timeStart, timeFinish).format(`HH:mm`); //  moment(timeStart).format(`HH:mm`)
-  const end = moment.max(timeStart, timeFinish).format(`HH:mm`); // moment.max(timeStart, timeFinish) moment(timeFinish).format(`HH:mm`)
+  const start = moment.min(timeStart, timeFinish);
+  const end = moment.max(timeStart, timeFinish);
   return {
     startTime: start,
     endTime: end
   };
 };
 
-const getDuration = (timeRange) => {
-  const duration = moment.duration(moment(timeRange.endTime, `HH:mm`) - moment(timeRange.startTime, `HH:mm`));
-  return `${duration.get(`H`)}H ${duration.get(`M`)}M`;
-};
-
 const getRandomDate = () => {
   return moment().add(makeRandomCount(7) - makeRandomCount(7), `d`).format(`DD MMM`);
 };
 
+let id = -1;
+
+const setId = () => {
+  id++;
+  return id;
+};
+
 export default () => {
   return {
+    id: setId(),
     date: getRandomDate(),
     type: ARRAY_POINT_TYPES[makeRandomCount(ARRAY_POINT_TYPES.length)],
     city: CITIES[makeRandomCount(CITIES.length)],
     description: getRandomSentences(TEXT_DESCRIPTION),
     timeRange: getRandomTimeRange(),
-    get duration() {
-      return getDuration(this.timeRange);
-    },
     price: {
       currency: DEFAULT_CURRENCY,
       count: makeRandomCount(51)
