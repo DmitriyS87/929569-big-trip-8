@@ -63,11 +63,26 @@ class Model extends EventEmitter {
     const getDestinations = new Loader(ENTRY, getKey());
     getDestinations.getData(`destinations`)
     .then((array) => {
+      this.allDestinations = array;
       this.destinationsList = array.map((it) => {
         return it.name;
       });
-      // console.log(array);
+      console.log(array);
       this.emit(`DestinationsLoaded`);
+    });
+  }
+
+  set allDestinations(array) {
+    this._allDestinations = array;
+  }
+
+  get _destinationData() {
+    return this._currentDestinationData;
+  }
+
+  set _destinationData(name) {
+    this._currentDestinationData = this._allDestinations.find((it) => {
+      return it.name === name;
     });
   }
 

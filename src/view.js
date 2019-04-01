@@ -63,15 +63,23 @@ class View extends EventEmitter {
     this.emit(`deleted`, id);
   }
 
-  _saveDestinationsList() {
-    this.destinationList = this._model.destinationsList;
+  set _currentDestinationName(name) {
+    this._model._destinationData = name;
   }
 
-  set destinationList(list) {
+  get _destinationData() {
+    return this._model._destinationData;
+  }
+
+  _saveDestinationsList() {
+    this.destinationsList = this._model.destinationsList;
+  }
+
+  set destinationsList(list) {
     this._destinationsList = list;
   }
 
-  get destinationList() {
+  get destinationsList() {
     return this._destinationsList;
   }
 

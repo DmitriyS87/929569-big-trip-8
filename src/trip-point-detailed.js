@@ -39,10 +39,10 @@ class TripPointDetailed extends Component {
     this._pictures = data.pictures;
 
     this._onClickTravelWay = this._onClickTravelWay.bind(this);
-    this.includeDestinations = this.includeDestinations.bind(this);
+    this._includeDestinations = this._includeDestinations.bind(this);
     this._onSaveButtonClick = this._onSaveButtonClick.bind(this);
     this._onDeliteButtonClick = this._onDeliteButtonClick.bind(this);
-    this._onChangeDestination = null;
+    this._onChangeDestination = this._onChangeDestination.bind(this);
     this._onDeleteClick = null;
 
     view.on(`updated`, (id) => {
@@ -112,19 +112,34 @@ class TripPointDetailed extends Component {
 
   set destinations(list) {
     if (list !== undefined) {
-      this._destinations = this.includeDestinations(list);
+      this._destinationNames = this._includeDestinations(list);
     }
   }
 
-  includeDestinations(list) {
+  _includeDestinations(list) {
     const destinations = list.map((it) => {
       return `<option value="${it}"></option>`;
     }).join(``);
     return destinations;
   }
 
-  onChangeDestination() {
-    // console.log(`Change!`);
+  _onChangeDestination(evt) {
+
+    this._view._currentDestinationName = evt.target.value;
+    const destinationData = this._view._destinationData;
+    if (destinationData) {
+      this._partialUpdate(this._element.querySelector(`.point__destination`), this._getDestinationTemplate(destinationData.description, destinationData.pictures));
+    }
+  }
+
+  _getDestinationTemplate(description, pictures) {
+    return `<h3 class="point__details-title">Destination</h3>
+    <p class="point__destination-text">${description}</p>
+    <div class="point__destination-images">
+      ${pictures.map((picture) => {
+    return `<img src="${picture.src}" alt="${picture.description}" class="point__destination-image">`;
+  })}
+    </div>`;
   }
 
   static createMaper(target) {
@@ -217,7 +232,7 @@ class TripPointDetailed extends Component {
           <label class="point__destination-label" for="destination">${this._type.type} to</label>
           <input class="point__destination-input" list="destination-select" id="destination" value="${this._city}" name="destination">
           <datalist id="destination-select">
-          ${this._destinations ? this._destinations : ``}
+          ${this._destinationNames ? this._destinationNames : ``}
           </datalist>
         </div>
 
@@ -259,13 +274,7 @@ class TripPointDetailed extends Component {
 
         </section>
         <section class="point__destination">
-          <h3 class="point__details-title">Destination</h3>
-          <p class="point__destination-text">${this._description}</p>
-          <div class="point__destination-images">
-            ${this._pictures.map((picture) => {
-    return `<img src="${picture.src}" alt="${picture.description}" class="point__destination-image">`;
-  })}
-          </div>
+          ${this._getDestinationTemplate(this._description, this._pictures)}
         </section>
         <input type="hidden" class="point__total-price" name="total-price" value="">
       </section>
@@ -276,6 +285,10 @@ class TripPointDetailed extends Component {
   _delite() {
     this.element.remove();
     this.unrender();
+  }
+
+  _partialUpdate(element, html) {
+    element.innerHTML = html;
   }
 
   update(newData) {
@@ -290,7 +303,7 @@ class TripPointDetailed extends Component {
   createListeners() {
     this._element.querySelector(`.point__buttons .point__button:first-child`).addEventListener(`click`, this._onSaveButtonClick);
     this._element.querySelector(`.point__buttons .point__button:last-child`).addEventListener(`click`, this._onDeliteButtonClick);
-    this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this.onChangeDestination);
+    this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onChangeDestination);
     // this._element.querySelector(`.point__destination-input`).addEventListener(`input`, this._onInputDestination);
     this._element.querySelector(`.travel-way__select`).addEventListener(`click`, this._onClickTravelWay);
 
