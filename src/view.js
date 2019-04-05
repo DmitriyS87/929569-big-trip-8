@@ -38,6 +38,7 @@ class View extends EventEmitter {
     this._destinationsList = undefined;
 
     model.on(`pointsLoaded`, () => {
+      model.off(`pointsLoaded`);
       return this.show();
     });
     model.on(`pointSaved`, (newData) => {
@@ -47,9 +48,11 @@ class View extends EventEmitter {
       return this._deletePoint(id);
     });
     model.on(`DestinationsLoaded`, () => {
+      model.off(`DestinationsLoaded`);
       return this._saveDestinationsList();
     });
     model.on(`offersLoaded`, () => {
+      model.off(`offersLoaded`);
       return this._saveBaseOffersTypes();
     });
   }
