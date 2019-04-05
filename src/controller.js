@@ -1,6 +1,6 @@
 import {EventEmitter} from "./event-emitter";
 import {updateStats} from './statistics';
-import {Loader} from './loader';
+import API from './loader';
 import {DataParser} from './data-parser';
 
 const ENTRY = `https://es8-demo-srv.appspot.com/big-trip/`;
@@ -51,8 +51,8 @@ class Controller extends EventEmitter {
   }
 
   _loadPoints() {
-    const loader = new Loader(ENTRY, sessionKey);
-    loader.getData(`points`)
+    const api = new API(ENTRY, sessionKey);
+    api.getData(`points`)
     .then((points) => {
       return DataParser.parsePoints(points);
     })
@@ -65,16 +65,16 @@ class Controller extends EventEmitter {
   }
 
   _loadDestinations() {
-    const loader = new Loader(ENTRY, sessionKey);
-    loader.getData(`destinations`)
+    const api = new API(ENTRY, sessionKey);
+    api.getData(`destinations`)
     .then((destinations) => {
       this._model.allDestinations = destinations;
     });
   }
 
   _loadOffers() {
-    const loader = new Loader(ENTRY, getKey());
-    loader.getData(`offers`)
+    const api = new API(ENTRY, getKey());
+    api.getData(`offers`)
     .then((offers) => {
       this._model.offers = offers.map((it) => {
         it.type = it.type[0].toUpperCase() + it.type.substring(1);
@@ -85,8 +85,8 @@ class Controller extends EventEmitter {
   }
 
   updatePoint(newData) {
-    const loader = new Loader(ENTRY, sessionKey);
-    loader.updatePoint({id: newData.id, data: DataParser.toServerFormat(newData)})
+    const api = new API(ENTRY, sessionKey);
+    api.updatePoint({id: newData.id, data: DataParser.toServerFormat(newData)})
     .catch((it) => {
       this._view.enablePoint(newData.id);
       throw new Error(it);
@@ -99,8 +99,8 @@ class Controller extends EventEmitter {
   }
 
   deletePoint(id) {
-    const loader = new Loader(ENTRY, sessionKey);
-    loader.deletePoint(id)
+    const api = new API(ENTRY, sessionKey);
+    api.deletePoint(id)
     .catch((it) => {
       this._view.enablePoint(id);
       throw new Error(it);

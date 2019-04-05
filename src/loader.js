@@ -9,7 +9,7 @@ const toJSON = (response) => {
   return response.json();
 };
 
-class Loader {
+class API {
   constructor(endPoint, authorization) {
     this._endPoint = endPoint;
     this._authorization = authorization;
@@ -47,4 +47,4 @@ class Loader {
 
 }
 
-export {Loader};
+export default API;
