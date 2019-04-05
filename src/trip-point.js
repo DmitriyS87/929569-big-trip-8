@@ -20,12 +20,10 @@ class TripPoint extends Component {
     this._date = data.date;
     this._type = data.type;
     this._city = data.city;
-    this._price = data.price;
-    this._description = data.description;
     this._timeRange = data.timeRange;
     this._duration = data.duration;
     this._offers = data.offers;
-    this._pictures = data.pictures; // for what?
+    this._totalPrice = data.totalPrice;
 
     this._onClickPoint = null;
     this._onClickListener = null;
@@ -51,7 +49,7 @@ class TripPoint extends Component {
       <span class="trip-point__timetable">${moment(this._timeRange.startTime).format(`HH:mm`)}&nbsp;&mdash; ${moment(this._timeRange.endTime).format(`HH:mm`)}</span>
       <span class="trip-point__duration">${this._duration}</span>
     </p>
-    <p class="trip-point__price">&euro;&nbsp;${this._price.count}</p>
+    <p class="trip-point__price">&euro;&nbsp;${this._totalPrice}</p>
       <ul class="trip-point__offers">
         ${this._renderOffersList(this._offers)}
       </ul>
@@ -65,9 +63,10 @@ class TripPoint extends Component {
   update(newData) {
     this._city = newData.city;
     this._type = newData.type;
-    this._price = newData.price;
+    this._totalPrice = newData.totalPrice;
     this._timeRange = newData.timeRange;
     this._duration = newData.duration;
+    this._offers = newData.offers;
   }
 
   createListeners() {

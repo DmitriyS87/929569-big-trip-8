@@ -35,6 +35,8 @@ class View extends EventEmitter {
     this._model = model;
     this._pointsContainer = pointContainer;
     this._filterContainer = filterContainer;
+    this._destinationsList = undefined;
+
     model.on(`pointsLoaded`, () => {
       return this.show();
     });
@@ -47,6 +49,9 @@ class View extends EventEmitter {
     model.on(`DestinationsLoaded`, () => {
       return this._saveDestinationsList();
     });
+    model.on(`offersLoaded`, () => {
+      return this._saveBaseOffersTypes();
+    });
   }
 
   show() {
@@ -54,6 +59,14 @@ class View extends EventEmitter {
     this._renderPoints(this._arrayPoints);
     this._addFilters();
     this._addStats();
+  }
+
+  showStatus(text) {
+
+    const message = document.createElement(`div`);
+    message.innerHTML = `<p>${text}</p>`;
+    this._pointsContainer.innerHTML = ``;
+    this._pointsContainer.appendChild(message);
   }
   _deletePoint(id) {
     const deletedElement = this._arrayPoints.find((it) => {
@@ -67,8 +80,20 @@ class View extends EventEmitter {
     this._model._destinationData = name;
   }
 
+  set currentType(type) {
+    this._model.currentType = type;
+  }
+
+  get currentOffers() {
+    return this._model.currentTypeOffers;
+  }
+
   get _destinationData() {
     return this._model._destinationData;
+  }
+
+  _saveBaseOffersTypes() {
+    this.baseOffersTypesList = this._model.baseOffersTypes;
   }
 
   _saveDestinationsList() {
@@ -83,6 +108,10 @@ class View extends EventEmitter {
     return this._destinationsList;
   }
 
+  enablePoint(id) {
+    this.emit(`unblockError`, id);
+  }
+
   _updatePoint(newData) {
     this._arrayPoints.find((it) => {
       return it._id === newData.id;
@@ -91,6 +120,7 @@ class View extends EventEmitter {
   }
 
   _renderPoints(array) {
+    this._pointsContainer.innerHTML = ``;
     array.forEach((point) => {
       this._pointsContainer.appendChild(point.render());
     });
@@ -100,8 +130,8 @@ class View extends EventEmitter {
       if (pointData !== null) {
         const tripPoint = new TripPoint(pointData, this._model);
         const tripPointDetailed = new TripPointDetailed(pointData, this._model, this);
-        tripPointDetailed.destinations = this.destinationList;
         tripPoint.onClickPoint = () => {
+          tripPointDetailed.destinations = this.destinationsList;
           tripPointDetailed.render();
           this._pointsContainer.replaceChild(tripPointDetailed.element, tripPoint.element);
           tripPoint.unrender();

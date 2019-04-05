@@ -46,14 +46,31 @@ class DataParser {
     } else {
       this.offers = [];
     }
-
-    this.date = moment(data[`date_from`]).format(`DD MMM`);
     this.price = {};
-    this.basePrice = Number(data[`base_price`]);
+    this.price.count = Number(data[`base_price`]);
   }
 
-  toServerFormat() {
-
+  static toServerFormat(data) {
+    return {
+      [`id`]: String(data.id),
+      [`type`]: String(data.type.type),
+      [`date_from`]: moment(data.timeRange.startTime),
+      [`date_to`]: moment(data.timeRange.endTime),
+      [`destination`]: {
+        [`description`]: data.description,
+        [`name`]: data.city,
+        [`pictures`]: data.pictures
+      },
+      [`is_favorite`]: data.isFavorite,
+      [`offers`]: data.offers.length > 0 ? data.offers.map((it) => {
+        return {
+          [`title`]: it.title,
+          [`price`]: it.price,
+          [`accepted`]: it.checked,
+        };
+      }) : [],
+      [`base_price`]: data.price.count
+    };
   }
 
   static parsePoint(data) {
