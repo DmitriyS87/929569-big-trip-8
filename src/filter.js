@@ -32,4 +32,4 @@ class Filter extends Component {
   }
 }
 
-export {Filter};
+export default Filter;

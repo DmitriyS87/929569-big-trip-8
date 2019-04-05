@@ -142,4 +142,4 @@ class Model extends EventEmitter {
   }
 }
 
-export {Model};
+export default Model;

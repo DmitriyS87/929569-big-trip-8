@@ -84,4 +84,4 @@ class DataParser {
   }
 }
 
-export {DataParser};
+export default DataParser;

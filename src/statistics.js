@@ -148,4 +148,4 @@ let transportStat;
 let moneyStat;
 let timeSpendStat;
 
-export {updateStats};
+export default updateStats;

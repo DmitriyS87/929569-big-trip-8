@@ -1,7 +1,7 @@
 import {EventEmitter} from "./event-emitter";
-import {updateStats} from './statistics';
+import updateStats from './statistics';
 import API from './loader';
-import {DataParser} from './data-parser';
+import DataParser from './data-parser';
 
 const ENTRY = `https://es8-demo-srv.appspot.com/big-trip/`;
 const VAILD_SYMBOLS = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`;
@@ -111,4 +111,4 @@ class Controller extends EventEmitter {
   }
 }
 
-export {Controller};
+export default Controller;

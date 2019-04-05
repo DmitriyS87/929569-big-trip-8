@@ -1,5 +1,5 @@
 import {EventEmitter} from "./event-emitter";
-import {Filter} from './filter';
+import Filter from './filter';
 import TripPoint from './trip-point';
 import TripPointDetailed from './trip-point-detailed';
 
@@ -211,4 +211,4 @@ class View extends EventEmitter {
 }
 
 
-export {View};
+export default View;
