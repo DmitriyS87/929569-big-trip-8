@@ -51,13 +51,13 @@ class Controller extends EventEmitter {
   }
 
   _loadPoints() {
-    const getPoints = new Loader(ENTRY, sessionKey);
-    getPoints.getData(`points`)
-    .then((data) => {
-      return DataParser.parsePoints(data);
+    const loader = new Loader(ENTRY, sessionKey);
+    loader.getData(`points`)
+    .then((points) => {
+      return DataParser.parsePoints(points);
     })
-    .then((array) => {
-      this._model.points = array;
+    .then((points) => {
+      this._model.points = points;
     })
     .catch(() => {
       this._view.showStatus(`Something went wrong while loading your route info. Check your connection or try again later`);
@@ -65,42 +65,42 @@ class Controller extends EventEmitter {
   }
 
   _loadDestinations() {
-    const getDestinations = new Loader(ENTRY, sessionKey);
-    getDestinations.getData(`destinations`)
-    .then((array) => {
-      this._model.allDestinations = array;
+    const loader = new Loader(ENTRY, sessionKey);
+    loader.getData(`destinations`)
+    .then((destinations) => {
+      this._model.allDestinations = destinations;
     });
   }
 
   _loadOffers() {
-    const offers = new Loader(ENTRY, getKey());
-    offers.getData(`offers`)
-    .then((array) => {
-      this._model.offers = array.map((it) => {
+    const loader = new Loader(ENTRY, getKey());
+    loader.getData(`offers`)
+    .then((offers) => {
+      this._model.offers = offers.map((it) => {
         it.type = it.type[0].toUpperCase() + it.type.substring(1);
         return it;
       });
-      this._model.baseOffersTypes = array;
+      this._model.baseOffersTypes = offers;
     });
   }
 
   updatePoint(newData) {
-    const point = new Loader(ENTRY, sessionKey);
-    point.updatePoint({id: newData.id, data: DataParser.toServerFormat(newData)})
+    const loader = new Loader(ENTRY, sessionKey);
+    loader.updatePoint({id: newData.id, data: DataParser.toServerFormat(newData)})
     .catch((it) => {
       this._view.enablePoint(newData.id);
       throw new Error(it);
     })
-.then((data) => {
-  if (data) {
-    this._model.savePoint(DataParser.parsePoint(data));
+.then((point) => {
+  if (point) {
+    this._model.savePoint(DataParser.parsePoint(point));
   }
 });
   }
 
   deletePoint(id) {
-    const point = new Loader(ENTRY, sessionKey);
-    point.deletePoint(id)
+    const loader = new Loader(ENTRY, sessionKey);
+    loader.deletePoint(id)
     .catch((it) => {
       this._view.enablePoint(id);
       throw new Error(it);
