@@ -1,25 +1,5 @@
 import {EventEmitter} from './event-emitter';
-import {Loader} from './loader';
-import {DataParser} from './data-parser';
 import moment from 'moment';
-
-const ENTRY = `https://es8-demo-srv.appspot.com/big-trip/`;
-const VAILD_SYMBOLS = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`;
-
-
-const makeRandomCountMinMax = (min, max) => {
-  return min + Math.floor(Math.random() * (max - min));
-};
-
-const getRandomString = (validSymbols, length) => {
-  return Array(length).join().split(`,`).map(() => {
-    return validSymbols[Math.floor(Math.random() * validSymbols.length)];
-  }).join(``);
-};
-
-const getKey = () => {
-  return `Basic ${getRandomString(VAILD_SYMBOLS, makeRandomCountMinMax(8, 16))}`;
-};
 
 class Model extends EventEmitter {
   constructor() {
@@ -27,10 +7,12 @@ class Model extends EventEmitter {
   }
   set points(array) {
     this._points = array.map((it) => {
+      it.date = moment(it.timeRange.startTime).format(`DD MMM`);
       it.duration = this._addDuration(it);
-      it.price.count = this._countPrice(it);
+      it.totalPrice = this._countPrice(it);
       return it;
     });
+    this.emit(`pointsLoaded`);
   }
   get points() {
     if (this._points instanceof Array) {
@@ -39,40 +21,37 @@ class Model extends EventEmitter {
     return [];
   }
 
-  loadPoints() {
-    const getPoints = new Loader(ENTRY, getKey());
-    getPoints.getData(`points`)
-      .then((data) => {
-        return DataParser.parsePoints(data);
-      })
-      .then((array) => {
-        this.points = array;
-        this.emit(`pointsLoaded`);
-      });
-  }
-
   set destinationsList(array) {
-    this._destinationsList = array;
+    this._destinationsList = array.map((it) => {
+      return it.name;
+    });
+    this.emit(`DestinationsLoaded`);
   }
 
   get destinationsList() {
     return this._destinationsList;
   }
 
-  loadDestinations() {
-    const getDestinations = new Loader(ENTRY, getKey());
-    getDestinations.getData(`destinations`)
-    .then((array) => {
-      this.destinationsList = array.map((it) => {
-        return it.name;
-      });
-      console.log(array);
-      this.emit(`DestinationsLoaded`);
+  set allDestinations(array) {
+    this._allDestinations = array;
+    this.destinationsList = this._allDestinations;
+  }
+
+  get _destinationData() {
+    return this._currentDestinationData;
+  }
+
+  set _destinationData(name) {
+    const destinationData = this._allDestinations.find((it) => {
+      return it.name === name;
     });
+    this._currentDestinationData = destinationData ? destinationData : {description: ``, pictures: []};
   }
 
   savePoint(newData) {
     newData.duration = this._addDuration(newData);
+    newData.totalPrice = this._countPrice(newData);
+    newData.date = moment(newData.timeRange.startTime).format(`DD MMM`);
     this._points.splice(this._points.indexOf(this._points.find((it) => {
       return it.id === newData.id;
     })), 1, newData);
@@ -81,18 +60,18 @@ class Model extends EventEmitter {
 
   _addDuration(point) {
     const duration = moment.duration(moment(point.timeRange.endTime) - moment(point.timeRange.startTime));
-    return `${duration.get(`hours`)}H ${duration.get(`minutes`)}M`;
+    return `${duration.get(`days`) * 24 + duration.get(`hours`)}H ${duration.get(`minutes`)}M`;
   }
 
   _countPrice(point) {
     if (point.offers.length > 0) {
-      return point.basePrice + point.offers.filter((offer) => {
+      return point.price.count + point.offers.filter((offer) => {
         return offer.checked;
       }).reduce((a, b) => {
         return a + b.price;
       }, 0);
     }
-    return point.basePrice;
+    return point.price.count;
   }
 
   deletePoint(id) {
@@ -134,19 +113,33 @@ class Model extends EventEmitter {
     this.emit(`offersLoaded`);
   }
 
+  set baseOffersTypes(array) {
+    this._baseOffersTypes = array.map((it) => {
+      return it.type;
+    });
+  }
+
   set currentType(type) {
     this._currentType = type;
-    this.emit(`typeChacked`);
   }
 
   get currentTypeOffers() {
     if (this._offers instanceof Array && this._currentType) {
-      return this._offers.filter((it) => {
+      const currentOffer = this._offers.filter((it) => {
         return it.type === this._currentType;
-      }).offers;
+      });
+      if (currentOffer.length > 0) {
+        const arrayOffer = currentOffer[0].offers.map((offer) => {
+          return {
+            title: offer.name,
+            price: offer.price
+          };
+        });
+        return arrayOffer;
+      }
     }
     return [];
   }
 }
 
-export {Model};
+export default Model;

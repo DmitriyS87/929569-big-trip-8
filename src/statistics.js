@@ -51,7 +51,7 @@ const updateStats = (currentPoints) => {
         return [`${point.type.icon} ${point.type.type}`, array.filter((item) => {
           return item.type.type === point.type.type;
         }).reduce((a, b) => {
-          return a + b.price.count;
+          return a + b.totalPrice;
         }, 0)];
       }
       return null;
@@ -148,4 +148,4 @@ let transportStat;
 let moneyStat;
 let timeSpendStat;
 
-export {updateStats};
+export default updateStats;

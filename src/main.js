@@ -1,8 +1,8 @@
 
 import {clearHTMLInside} from './utils';
-import {Model} from './model';
-import {Controller} from './controller';
-import {View} from './view';
+import Model from './model';
+import Controller from './controller';
+import View from './view';
 
 const TRIP_DAY_CLASS = `.trip-day__items`;
 const FILTER_FORM_CLASS = `.trip-filter`;

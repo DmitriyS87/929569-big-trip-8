@@ -9,7 +9,7 @@ const toJSON = (response) => {
   return response.json();
 };
 
-class Loader {
+class API {
   constructor(endPoint, authorization) {
     this._endPoint = endPoint;
     this._authorization = authorization;
@@ -20,16 +20,13 @@ class Loader {
     .then(toJSON);
   }
 
-  updatePoint() {
-
+  updatePoint({id, data}) {
+    return this._load({url: `points/${id}`, method: `PUT`, body: JSON.stringify(data), headers: new Headers({'Content-Type': `application/json`})})
+    .then(toJSON);
   }
 
-  deletePoint() {
-
-  }
-
-  newPoint() {
-
+  deletePoint(id) {
+    return this._load({url: `points/${id}`, method: `DELETE`});
   }
 
   _load({url, method = `GET`, body = null, headers = new Headers()}) {
@@ -38,7 +35,6 @@ class Loader {
     return fetch(`${this._endPoint}/${url}`, {method, body, headers})
     .then(checkStatus)
     .catch((err) => {
-      console.error(`error fetch: ${err}`);
       throw (err);
     });
   }
@@ -46,4 +42,4 @@ class Loader {
 
 }
 
-export {Loader};
+export default API;

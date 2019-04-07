@@ -9,6 +9,11 @@ class EventEmitter {
   emit(evt, arg) {
     (this._events[evt] || []).slice().forEach((lsn) => lsn(arg));
   }
+  off(evt) {
+    if (this._events[evt]) {
+      delete this._events[evt];
+    }
+  }
 }
 
 export {EventEmitter};

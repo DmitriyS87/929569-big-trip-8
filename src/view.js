@@ -1,5 +1,5 @@
 import {EventEmitter} from "./event-emitter";
-import {Filter} from './filter';
+import Filter from './filter';
 import TripPoint from './trip-point';
 import TripPointDetailed from './trip-point-detailed';
 
@@ -35,7 +35,10 @@ class View extends EventEmitter {
     this._model = model;
     this._pointsContainer = pointContainer;
     this._filterContainer = filterContainer;
+    this._destinationsList = undefined;
+
     model.on(`pointsLoaded`, () => {
+      model.off(`pointsLoaded`);
       return this.show();
     });
     model.on(`pointSaved`, (newData) => {
@@ -45,7 +48,12 @@ class View extends EventEmitter {
       return this._deletePoint(id);
     });
     model.on(`DestinationsLoaded`, () => {
+      model.off(`DestinationsLoaded`);
       return this._saveDestinationsList();
+    });
+    model.on(`offersLoaded`, () => {
+      model.off(`offersLoaded`);
+      return this._saveBaseOffersTypes();
     });
   }
 
@@ -55,6 +63,14 @@ class View extends EventEmitter {
     this._addFilters();
     this._addStats();
   }
+
+  showStatus(text) {
+
+    const message = document.createElement(`div`);
+    message.innerHTML = `<p>${text}</p>`;
+    this._pointsContainer.innerHTML = ``;
+    this._pointsContainer.appendChild(message);
+  }
   _deletePoint(id) {
     const deletedElement = this._arrayPoints.find((it) => {
       return it.id === id;
@@ -63,16 +79,40 @@ class View extends EventEmitter {
     this.emit(`deleted`, id);
   }
 
-  _saveDestinationsList() {
-    this.destinationList = this._model.destinationsList;
+  set _currentDestinationName(name) {
+    this._model._destinationData = name;
   }
 
-  set destinationList(list) {
+  set currentType(type) {
+    this._model.currentType = type;
+  }
+
+  get currentOffers() {
+    return this._model.currentTypeOffers;
+  }
+
+  get _destinationData() {
+    return this._model._destinationData;
+  }
+
+  _saveBaseOffersTypes() {
+    this.baseOffersTypesList = this._model.baseOffersTypes;
+  }
+
+  _saveDestinationsList() {
+    this.destinationsList = this._model.destinationsList;
+  }
+
+  set destinationsList(list) {
     this._destinationsList = list;
   }
 
-  get destinationList() {
+  get destinationsList() {
     return this._destinationsList;
+  }
+
+  enablePoint(id) {
+    this.emit(`unblockError`, id);
   }
 
   _updatePoint(newData) {
@@ -83,6 +123,7 @@ class View extends EventEmitter {
   }
 
   _renderPoints(array) {
+    this._pointsContainer.innerHTML = ``;
     array.forEach((point) => {
       this._pointsContainer.appendChild(point.render());
     });
@@ -92,8 +133,8 @@ class View extends EventEmitter {
       if (pointData !== null) {
         const tripPoint = new TripPoint(pointData, this._model);
         const tripPointDetailed = new TripPointDetailed(pointData, this._model, this);
-        tripPointDetailed.destinations = this.destinationList;
         tripPoint.onClickPoint = () => {
+          tripPointDetailed.destinations = this.destinationsList;
           tripPointDetailed.render();
           this._pointsContainer.replaceChild(tripPointDetailed.element, tripPoint.element);
           tripPoint.unrender();
@@ -173,4 +214,4 @@ class View extends EventEmitter {
 }
 
 
-export {View};
+export default View;
