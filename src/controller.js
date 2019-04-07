@@ -1,6 +1,6 @@
 import {EventEmitter} from "./event-emitter";
 import updateStats from './statistics';
-import API from './loader';
+import API from './api';
 import DataParser from './data-parser';
 
 const ENTRY = `https://es8-demo-srv.appspot.com/big-trip/`;
@@ -43,7 +43,7 @@ class Controller extends EventEmitter {
   }
 
   init() {
-    this._view.showStatus(`Loading route...`);
+    this._view.showStatus(`Loading route...`); // init() !
     this._loadPoints();
     this._loadDestinations();
     this._loadOffers();
