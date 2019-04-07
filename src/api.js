@@ -29,10 +29,6 @@ class API {
     return this._load({url: `points/${id}`, method: `DELETE`});
   }
 
-  newPoint() {
-
-  }
-
   _load({url, method = `GET`, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._authorization);
 

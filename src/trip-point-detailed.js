@@ -2,7 +2,7 @@ import Component from './component';
 import moment from 'moment';
 import flatpickr from 'flatpickr';
 
-const DRIVE_TYPE_MAP = new Map([ // выпилить, сделать функцию
+const DRIVE_TYPE_MAP = new Map([
   [`Taxi`, `🚕`],
   [`Bus`, `🚌`],
   [`Train`, `🚂`],
@@ -12,7 +12,7 @@ const DRIVE_TYPE_MAP = new Map([ // выпилить, сделать функц�
   [`Drive`, `🚗`]
 ]);
 
-const STAY_TYPE_MAP = new Map([ // выпилить, сделать функцию
+const STAY_TYPE_MAP = new Map([
   [`Taxi`, `🚕`],
   [`Check-in`, `🏨`],
   [`Sightseeing`, `🏛`],
@@ -81,7 +81,6 @@ class TripPointDetailed extends Component {
     if (this._stateError) {
       this._resetErrorView();
     }
-    //  if (this._element.querySelector(`.point__price .point__input`).checkValidity()) { // валидация если нужна то на все, вроде можно выпилить
     const formData = new FormData(this._element.childNodes[1]);
     const newData = this._processForm(formData);
     newData.id = this._id;
@@ -91,7 +90,6 @@ class TripPointDetailed extends Component {
     if (typeof this._onSaveClick === `function`) {
       this._onSaveClick(newData);
     }
-    //   }
   }
 
   _disable() {
@@ -388,8 +386,6 @@ class TripPointDetailed extends Component {
     this._duration = newData.duration;
     this._offers = newData.offers;
     this._isFavorite = newData.isFavorite;
-    // this._pictures = newData.pictures;
-    // this._duration = newData.duration;
   }
 
   createListeners() {
