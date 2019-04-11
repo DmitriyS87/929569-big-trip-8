@@ -1,4 +1,4 @@
-import Component from './component';
+import Component from '../component';
 import moment from 'moment';
 import flatpickr from 'flatpickr';
 
@@ -23,10 +23,9 @@ const _replaceDash = (text) => {
   return text.replace(/\b-/ig, ` `);
 };
 class TripPointDetailed extends Component {
-  constructor(data, model, view) {
+  constructor(data, pointsTable) {
     super();
-    this._model = model;
-    this._view = view;
+    this._pointsTable = pointsTable;
 
     this._id = data.id;
     this._date = data.date;
@@ -37,11 +36,10 @@ class TripPointDetailed extends Component {
     this._timeRange = data.timeRange;
     this._duration = data.duration;
     this._offers = data.offers;
-    this._description = data.description;
-    this._pictures = data.pictures;
+
     this._isFavorite = data.isFavorite;
 
-
+    this._onSelectTravelWay = this._onSelectTravelWay.bind(this);
     this._onClickTravelWay = this._onClickTravelWay.bind(this);
     this._includeDestinations = this._includeDestinations.bind(this);
     this._onSaveButtonClick = this._onSaveButtonClick.bind(this);
@@ -49,27 +47,34 @@ class TripPointDetailed extends Component {
     this._onChangeDestination = this._onChangeDestination.bind(this);
     this._onDeleteClick = null;
 
-    view.on(`updated`, (id) => {
+    this._onUpdateHandler = (id) => {
       if (id === this._id) {
         this._onClose();
       }
-    });
+    };
+    pointsTable.on(`updated`, this._onUpdateHandler);
 
-    view.on(`unblockError`, (id) => {
+    this._onErrorHandler = (id) => {
       if (id === this._id) {
         this._enable();
         this.element.querySelector(`.point__button:first-child`).innerText = `Save`;
         this.element.querySelector(`.point__button:last-child`).innerText = `Delete`;
         this._errorView();
       }
-    });
+    };
+    pointsTable.on(`unblockError`, this._onErrorHandler);
 
-    view.on(`deleted`, (id) => {
+    this._onDeleteHandler = (id) => {
       if (id === this._id) {
-        this._element.remove();
-        this.unrender();
+        this._delete();
+        pointsTable.emit(`normalMode`);
       }
-    });
+    };
+    pointsTable.on(`deleted`, this._onDeleteHandler);
+  }
+
+  get id() {
+    return this._id;
   }
 
   _replaceSpace(text) {
@@ -191,21 +196,33 @@ class TripPointDetailed extends Component {
     return destinations;
   }
 
+  _onSelectTravelWay() {
+    this._element.querySelector(`.travel-way__toggle`).checked = false;
+  }
+
   _onChangeDestination(evt) {
-    this._view._currentDestinationName = evt.target.value;
-    const destinationData = this._view._destinationData;
-    if (destinationData) {
-      this._description = destinationData.description;
-      this._pictures = destinationData.pictures;
+    if (this._setDestinationData(evt.target.value)) {
       this._partialUpdate(this._element.querySelector(`.point__destination`), this._getDestinationTemplate(this._description, this._pictures));
     }
   }
 
-  _getDestinationTemplate(description, pictures) {
+  _setDestinationData(destination) {
+    this._pointsTable._currentDestinationName = destination;
+    const destinationData = this._pointsTable._destinationData;
+    if (destinationData) {
+      this._description = destinationData.description;
+      this._pictures = destinationData.pictures;
+      return true;
+      // this._partialUpdate(this._element.querySelector(`.point__destination`), this._getDestinationTemplate(this._description, this._pictures));
+    }
+    return false;
+  }
+
+  _getDestinationTemplate() {
     return `<h3 class="point__details-title">Destination</h3>
-    <p class="point__destination-text">${description}</p>
+    <p class="point__destination-text">${this._description}</p>
     <div class="point__destination-images">
-      ${pictures.map((picture) => {
+      ${this._pictures.map((picture) => {
     return `<img src="${picture.src}" alt="${picture.description}" class="point__destination-image">`;
   })}
     </div>`;
@@ -263,8 +280,8 @@ class TripPointDetailed extends Component {
   }
 
   _updateOffers(type) {
-    this._view.currentType = type;
-    this._offers = this._view.currentOffers;
+    this._pointsTable.currentType = type;
+    this._offers = this._pointsTable.currentOffers;
   }
 
   _getOffersTemplate(offers) {
@@ -298,7 +315,7 @@ class TripPointDetailed extends Component {
   }).join(` `)}
     </div>`;
     };
-
+    this._setDestinationData(this._city);
     return `<article class="point">
     <form action="" method="get">
       <header class="point__header">
@@ -359,7 +376,7 @@ class TripPointDetailed extends Component {
 
         </section>
         <section class="point__destination">
-          ${this._getDestinationTemplate(this._description, this._pictures)}
+          ${this._getDestinationTemplate()}
         </section>
         <input type="hidden" class="point__total-price" name="total-price" value="${this._totalPrice}">
       </section>
@@ -367,7 +384,8 @@ class TripPointDetailed extends Component {
   </article>`;
   }
 
-  _delite() {
+  _delete() {
+    this.removeObjectListeners();
     this.element.remove();
     this.unrender();
   }
@@ -393,7 +411,9 @@ class TripPointDetailed extends Component {
     this._element.querySelector(`.point__buttons .point__button:last-child`).addEventListener(`click`, this._onDeliteButtonClick);
     this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onChangeDestination);
     this._element.querySelector(`.travel-way__select`).addEventListener(`click`, this._onClickTravelWay);
-
+    Array.from(this._element.querySelectorAll(`.travel-way__select-group`)).forEach((it) => {
+      it.addEventListener(`click`, this._onSelectTravelWay);
+    });
     flatpickr(this._element.querySelector(`.point__time .point__input:first-child`), {
       enableTime: true,
       altInput: true,
@@ -408,12 +428,20 @@ class TripPointDetailed extends Component {
     });
   }
 
+  removeObjectListeners() {
+    this._pointsTable.delete(`updated`, this._onUpdateHandler);
+    this._pointsTable.delete(`unblockError`, this._onErrorHandler);
+    this._pointsTable.delete(`deleted`, this._onDeleteHandler);
+  }
+
   removeListeners() {
     this._element.querySelector(`.point__buttons .point__button:first-child`).removeEventListener(`click`, this._onSaveButtonClick);
     this._element.querySelector(`.point__buttons .point__button:last-child`).removeEventListener(`click`, this.onDeliteButtonClick);
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onChangeDestination);
     this._element.querySelector(`.travel-way__select`).removeEventListener(`click`, this._onClickTravelWay);
+    Array.from(this._element.querySelectorAll(`.travel-way__select-group`)).forEach((it) => {
+      it.removeEventListener(`click`, this._onSelectTravelWay);
+    });
   }
-
 }
 export default TripPointDetailed;

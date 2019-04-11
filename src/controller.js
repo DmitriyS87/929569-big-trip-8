@@ -1,11 +1,15 @@
 import {EventEmitter} from "./event-emitter";
-import updateStats from './statistics';
-import API from './api';
+import API from './network/api';
 import DataParser from './data-parser';
+import StatsController from "./stats/stats-controller";
+import FiltersController from "./filters/filters-controller";
+import Store from "./network/store";
+import Provider from "./network/provider";
+
 
 const ENTRY = `https://es8-demo-srv.appspot.com/big-trip/`;
 const VAILD_SYMBOLS = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`;
-
+const STORAGE_KEY = `big_trip_storage`;
 
 const makeRandomCountMinMax = (min, max) => {
   return min + Math.floor(Math.random() * (max - min));
@@ -24,57 +28,93 @@ const getKey = () => {
 const sessionKey = getKey();
 
 class Controller extends EventEmitter {
-  constructor(model, view) {
+  constructor(model, pointsTable) {
     super();
     this._model = model;
-    this._view = view;
+    this._pointsTable = pointsTable;
+    this._api = new API(ENTRY, sessionKey);
+    this._store = new Store(STORAGE_KEY, window.localStorage);
+    this._provider = new Provider(this._api, this._store);
 
-    view.on(`onSave`, (newData) => {
+    pointsTable.on(`onSave`, (newData) => {
       this.updatePoint(newData);
     });
-    view.on(`onDelite`, (id) => {
+    pointsTable.on(`onDelite`, (id) => {
       this.deletePoint(id);
     });
-    view.on(`statsOn`, () => {
-      updateStats(this._model.points);
+    pointsTable.on(`editMode`, () => {
+      this.setEditMode();
     });
-    view.on(`statsOff`, () => {
+    pointsTable.on(`normalMode`, () => {
+      this.setNormalMode();
     });
   }
 
   init() {
-    this._view.showStatus(`Loading route...`); // init() !
+    this._pointsTable.showStatus(`Loading route...`);
     this._loadPoints();
     this._loadDestinations();
     this._loadOffers();
+    this._initStats();
+    this._initFilters();
+    this._syncDataInit();
+  }
 
+  setEditMode() {
+    this._statsController.removeListeners();
+    this._filtersController.disable();
+  }
+
+  setNormalMode() {
+    this._statsController.createListeners();
+    this._filtersController.enable();
+  }
+
+  _initFilters() {
+    this._filtersController = new FiltersController(this._model);
+    this._filtersController.init();
+  }
+  _initStats() {
+    this._statsController = new StatsController(this._model);
+    this._statsController.init();
+  }
+
+  _syncDataInit() {
+    window.addEventListener(`offline`, () => {
+      document.title = `${document.title}[OFFLINE]`;
+      this._model.online = false;
+    });
+    window.addEventListener(`online`, () => {
+      document.title = document.title.split(`[OFFLINE]`)[0];
+      this._model.online = true;
+      this._provider.syncData();
+    });
+  }
+
+  _removeStats() {
+    this._statsController.removeCharts();
+    this._statsController = null;
   }
 
   _loadPoints() {
-    const api = new API(ENTRY, sessionKey);
-    api.getData(`points`)
-    .then((points) => {
-      return DataParser.parsePoints(points);
-    })
+    this._provider.getPoints()
     .then((points) => {
       this._model.points = points;
     })
     .catch(() => {
-      this._view.showStatus(`Something went wrong while loading your route info. Check your connection or try again later`);
+      this._pointsTable.showStatus(`Something went wrong while loading your route info. Check your connection or try again later`);
     });
   }
 
   _loadDestinations() {
-    const api = new API(ENTRY, sessionKey);
-    api.getData(`destinations`)
+    this._api.getDestinations()
     .then((destinations) => {
       this._model.allDestinations = destinations;
     });
   }
 
   _loadOffers() {
-    const api = new API(ENTRY, getKey());
-    api.getData(`offers`)
+    this._api.getOffers()
     .then((offers) => {
       this._model.offers = offers.map((it) => {
         it.type = it.type[0].toUpperCase() + it.type.substring(1);
@@ -85,30 +125,30 @@ class Controller extends EventEmitter {
   }
 
   updatePoint(newData) {
-    const api = new API(ENTRY, sessionKey);
-    api.updatePoint({id: newData.id, data: DataParser.toServerFormat(newData)})
+    this._provider.updatePoint({id: newData.id, data: DataParser.toServerFormat(newData)})
     .catch((it) => {
-      this._view.enablePoint(newData.id);
+      this._pointsTable.enablePoint(newData.id);
       throw new Error(it);
     })
 .then((point) => {
   if (point) {
-    this._model.savePoint(DataParser.parsePoint(point));
+    this._model.savePoint(point);
   }
 });
   }
 
   deletePoint(id) {
-    const api = new API(ENTRY, sessionKey);
-    api.deletePoint(id)
+    this._provider.deletePoint(id)
     .catch((it) => {
-      this._view.enablePoint(id);
+      this._pointsTable.enablePoint(id);
       throw new Error(it);
     })
 .then(() => {
   this._model.deletePoint(id);
 });
   }
+
+
 }
 
 export default Controller;

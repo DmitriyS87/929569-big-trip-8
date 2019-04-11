@@ -4,7 +4,12 @@ import moment from 'moment';
 class Model extends EventEmitter {
   constructor() {
     super();
+    this._online = true;
   }
+  set online(value) {
+    this._online = value;
+  }
+
   set points(array) {
     this._points = array.map((it) => {
       it.date = moment(it.timeRange.startTime).format(`DD MMM`);
@@ -12,11 +17,24 @@ class Model extends EventEmitter {
       it.totalPrice = this._countPrice(it);
       return it;
     });
+    this._exportPoints = this._points;
     this.emit(`pointsLoaded`);
   }
   get points() {
     if (this._points instanceof Array) {
       return this._points;
+    }
+    return [];
+  }
+
+  set exportPoints(points) {
+    this._exportPoints = points;
+    this.emit(`pointsChanged`);
+  }
+
+  get exportPoints() {
+    if (this._exportPoints instanceof Array) {
+      return this._exportPoints;
     }
     return [];
   }
@@ -46,6 +64,9 @@ class Model extends EventEmitter {
       return it.name === name;
     });
     this._currentDestinationData = destinationData ? destinationData : {description: ``, pictures: []};
+    if (!this._online) {
+      this._currentDestinationData.pictures = [];
+    }
   }
 
   savePoint(newData) {
@@ -55,12 +76,12 @@ class Model extends EventEmitter {
     this._points.splice(this._points.indexOf(this._points.find((it) => {
       return it.id === newData.id;
     })), 1, newData);
+    this._exportPoints = this._points;
     this.emit(`pointSaved`, newData);
   }
 
   _addDuration(point) {
-    const duration = moment.duration(moment(point.timeRange.endTime) - moment(point.timeRange.startTime));
-    return `${duration.get(`days`) * 24 + duration.get(`hours`)}H ${duration.get(`minutes`)}M`;
+    return moment.duration(moment(point.timeRange.endTime) - moment(point.timeRange.startTime));
   }
 
   _countPrice(point) {
@@ -78,6 +99,7 @@ class Model extends EventEmitter {
     this._points.splice(this._points.indexOf(this._points.find((it) => {
       return it.id === id;
     })), 1);
+    this._exportPoints = this._points;
     this.emit(`pointDeleted`, id);
   }
 

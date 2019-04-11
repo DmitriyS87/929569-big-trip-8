@@ -1,3 +1,8 @@
+const keyPoints = `points`;
+const keyDestinations = `destinations`;
+const keyOffers = `offers`;
+
+
 const checkStatus = (response) => {
   if (response.status >= 200 && response.status <= 300) {
     return response;
@@ -15,7 +20,19 @@ class API {
     this._authorization = authorization;
   }
 
-  getData(name) {
+  getPoints() {
+    return this._getData(keyPoints);
+  }
+
+  getDestinations() {
+    return this._getData(keyDestinations);
+  }
+
+  getOffers() {
+    return this._getData(keyOffers);
+  }
+
+  _getData(name) {
     return this._load({url: name})
     .then(toJSON);
   }
@@ -27,6 +44,11 @@ class API {
 
   deletePoint(id) {
     return this._load({url: `points/${id}`, method: `DELETE`});
+  }
+
+  syncData(storageDataPoints) {
+    return this._load({url: `points/sync`, method: `POST`, body: JSON.stringify(storageDataPoints), headers: new Headers({'Content-Type': `application/json`})})
+    .then(toJSON);
   }
 
   _load({url, method = `GET`, body = null, headers = new Headers()}) {

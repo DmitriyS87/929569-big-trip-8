@@ -1,9 +1,9 @@
-import Component from "./component";
+import Component from "../component";
 
 class Filter extends Component {
-  constructor(data) {
+  constructor(name) {
     super();
-    this._name = data.textFilter;
+    this._name = name;
 
     this._onFilter = null;
     this._onClickFilter = this._onClickFilter.bind(this);
@@ -11,6 +11,10 @@ class Filter extends Component {
 
   set onFilter(fn) {
     this._onFilter = fn.bind(this);
+  }
+
+  get name() {
+    return this._name;
   }
 
   _onClickFilter() {
