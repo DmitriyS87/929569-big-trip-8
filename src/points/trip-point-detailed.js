@@ -23,9 +23,8 @@ const _replaceDash = (text) => {
   return text.replace(/\b-/ig, ` `);
 };
 class TripPointDetailed extends Component {
-  constructor(data, model, view) {
+  constructor(data, view) {
     super();
-    this._model = model;
     this._view = view;
 
     this._id = data.id;
@@ -69,6 +68,7 @@ class TripPointDetailed extends Component {
     this._onDeleteHandler = (id) => {
       if (id === this._id) {
         this._delete();
+        view.emit(`normalMode`);
       }
     };
     view.on(`deleted`, this._onDeleteHandler);

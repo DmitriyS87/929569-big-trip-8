@@ -36,6 +36,11 @@ class StatsController extends EventEmitter {
       switchLink.addEventListener(`click`, this._onStatsClick);
     });
   }
+  removeListeners() {
+    Array.from(document.querySelectorAll(`.view-switch__item`)).forEach((switchLink) => {
+      switchLink.removeEventListener(`click`, this._onStatsClick);
+    });
+  }
 }
 
 export default StatsController;

@@ -42,6 +42,12 @@ class Controller extends EventEmitter {
     view.on(`onDelite`, (id) => {
       this.deletePoint(id);
     });
+    view.on(`editMode`, () => {
+      this.setEditMode();
+    });
+    view.on(`normalMode`, () => {
+      this.setNormalMode();
+    });
   }
 
   init() {
@@ -54,9 +60,19 @@ class Controller extends EventEmitter {
     this._syncDataInit();
   }
 
+  setEditMode() {
+    this._statsController.removeListeners();
+    this._filtersController.disable();
+  }
+
+  setNormalMode() {
+    this._statsController.createListeners();
+    this._filtersController.enable();
+  }
+
   _initFilters() {
-    const filtersController = new FiltersController(this._model);
-    filtersController.init();
+    this._filtersController = new FiltersController(this._model);
+    this._filtersController.init();
   }
   _initStats() {
     this._statsController = new StatsController(this._model);

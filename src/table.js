@@ -87,6 +87,7 @@ class Table extends EventEmitter {
 
   _saveDestinationsList() {
     this.destinationsList = this._model.destinationsList;
+    // this.emit(`destinationsLoaded`, this.destinationsList);
   }
 
   set destinationsList(list) {
@@ -119,17 +120,19 @@ class Table extends EventEmitter {
     this._arrayPoints = data.map((pointData) => {
       if (pointData !== null) {
         const tripPoint = new TripPoint(pointData, this._model);
-        const tripPointDetailed = new TripPointDetailed(pointData, this._model, this);
+        const tripPointDetailed = new TripPointDetailed(pointData, this);
         tripPoint.onClickPoint = () => {
-          tripPointDetailed.destinations = this.destinationsList;
+          tripPointDetailed.destinations = this._model.destinationsList;
           tripPointDetailed.render();
           this._pointsContainer.replaceChild(tripPointDetailed.element, tripPoint.element);
           tripPoint.unrender();
+          this.emit(`editMode`);
         };
         tripPointDetailed.onClose = () => {
           tripPoint.render();
           this._pointsContainer.replaceChild(tripPoint.element, tripPointDetailed.element);
           tripPointDetailed.unrender();
+          this.emit(`normalMode`);
         };
         tripPointDetailed.onSaveClick = (newData) => {
           this.emit(`onSave`, newData);

@@ -11,8 +11,9 @@ class FiltersController extends EventEmitter {
     super();
     this._model = model;
     this._config = FILTERS_DATA;
+
     model.on(`pointsLoaded`, () => {
-      this._enable();
+      this.enable();
     });
   }
 
@@ -22,18 +23,18 @@ class FiltersController extends EventEmitter {
     this._filters.forEach((it) => {
       filterContainer.appendChild(it);
     });
-    this._disable();
+    this.disable();
   }
 
-  _disable() {
+  disable() {
     this._filters.forEach((element) => {
-      element.disabled = true;
+      element.firstElementChild.setAttribute(`disabled`, `disabled`);
     });
   }
 
-  _enable() {
+  enable() {
     this._filters.forEach((element) => {
-      element.disabled = false;
+      element.firstElementChild.removeAttribute(`disabled`, `disabled`);
     });
   }
 
