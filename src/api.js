@@ -46,6 +46,11 @@ class API {
     return this._load({url: `points/${id}`, method: `DELETE`});
   }
 
+  syncData(storageDataPoints) {
+    return this._load({url: `points/sync`, method: `POST`, body: JSON.stringify(storageDataPoints), headers: new Headers({'Content-Type': `application/json`})})
+    .then(toJSON);
+  }
+
   _load({url, method = `GET`, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._authorization);
 

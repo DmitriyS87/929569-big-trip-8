@@ -8,21 +8,20 @@ class Provider {
   constructor(api, store) {
     this._api = api;
     this._store = store;
-    // this._endPoint = endPoint;
-    // this._authorization = authorization;
     this._needSync = false;
   }
 
   getPoints() {
-    if (this._isOnline) {
-      return this._api.getPoints(name)
+    if (this._isOnline()) {
+      return this._api.getPoints()
       .then((points) => {
         points.map((point) => {
           this._store.setItem({key: point.id, item: point});
         });
+        return points;
       })
       .then((points) => {
-        DataParser.parsePoints(points);
+        return DataParser.parsePoints(points);
       });
     }
     const storePointsMap = this._store.getAll();
@@ -33,24 +32,22 @@ class Provider {
   }
 
   updatePoint({id, data}) {
-    if (this._isOnline) {
+    if (this._isOnline()) {
       return this._api.updatePoint({id, data})
       .then((point) => {
         this._store.setItem({key: point.id, item: point});
-      })
-      .then((point) => {
-        Promise.resolve(point);
+        return DataParser.parsePoint(point);
       });
       // .then(toJSON);
     }
     const point = data;
     this._needSync = true;
     this._store.setItem({key: point.id, item: point});
-    return Promise.resolve(DataParser.parsePoints(point));
+    return Promise.resolve(DataParser.parsePoint(point));
   }
 
   deletePoint(id) {
-    if (this._isOnline) {
+    if (this._isOnline()) {
       return this._api.deletePoint(id)
       .then(() => {
         this._store.removeItem({key: id});
@@ -63,7 +60,13 @@ class Provider {
   }
 
   syncData() {
-    return this._api.syncData({points: objectToArray(this._store.getAll())});
+    if (this._needSync) {
+      return this._api.syncData(objectToArray(this._store.getAll()))
+      .then(() => {
+        this._needSync = false;
+      });
+    }
+    return true;
   }
 
   _isOnline() {
