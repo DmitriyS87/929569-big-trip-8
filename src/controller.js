@@ -30,6 +30,7 @@ class Controller extends EventEmitter {
     super();
     this._model = model;
     this._view = view;
+    this._api = new API(ENTRY, sessionKey);
 
     view.on(`onSave`, (newData) => {
       this.updatePoint(newData);
@@ -63,8 +64,7 @@ class Controller extends EventEmitter {
   }
 
   _loadPoints() {
-    const api = new API(ENTRY, sessionKey);
-    api.getData(`points`)
+    this._api.getPoints()
     .then((points) => {
       return DataParser.parsePoints(points);
     })
@@ -78,16 +78,14 @@ class Controller extends EventEmitter {
   }
 
   _loadDestinations() {
-    const api = new API(ENTRY, sessionKey);
-    api.getData(`destinations`)
+    this._api.getDestinations()
     .then((destinations) => {
       this._model.allDestinations = destinations;
     });
   }
 
   _loadOffers() {
-    const api = new API(ENTRY, getKey());
-    api.getData(`offers`)
+    this._api.getOffers()
     .then((offers) => {
       this._model.offers = offers.map((it) => {
         it.type = it.type[0].toUpperCase() + it.type.substring(1);
@@ -98,8 +96,7 @@ class Controller extends EventEmitter {
   }
 
   updatePoint(newData) {
-    const api = new API(ENTRY, sessionKey);
-    api.updatePoint({id: newData.id, data: DataParser.toServerFormat(newData)})
+    this._api.updatePoint({id: newData.id, data: DataParser.toServerFormat(newData)})
     .catch((it) => {
       this._view.enablePoint(newData.id);
       throw new Error(it);
@@ -112,8 +109,7 @@ class Controller extends EventEmitter {
   }
 
   deletePoint(id) {
-    const api = new API(ENTRY, sessionKey);
-    api.deletePoint(id)
+    this._api.deletePoint(id)
     .catch((it) => {
       this._view.enablePoint(id);
       throw new Error(it);
