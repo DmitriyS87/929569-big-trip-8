@@ -3,7 +3,7 @@ import {EventEmitter} from "./event-emitter";
 import TripPoint from './points/trip-point';
 import TripPointDetailed from './points/trip-point-detailed';
 
-class View extends EventEmitter {
+class Table extends EventEmitter {
   constructor(model, pointContainer) {
     super();
     this._model = model;
@@ -15,7 +15,6 @@ class View extends EventEmitter {
       return this.init();
     });
     model.on(`pointsChanged`, () => {
-      // console.log(`viewRerender`);
       return this._rerender();
     });
     model.on(`pointSaved`, (newData) => {
@@ -154,4 +153,4 @@ class View extends EventEmitter {
 }
 
 
-export default View;
+export default Table;
