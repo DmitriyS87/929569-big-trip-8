@@ -1,10 +1,10 @@
 import {EventEmitter} from "./event-emitter";
-import API from './api';
+import API from './network/api';
 import DataParser from './data-parser';
 import StatsController from "./stats/stats-controller";
 import FiltersController from "./filters/filters-controller";
-import Store from "./store";
-import Provider from "./provider";
+import Store from "./network/store";
+import Provider from "./network/provider";
 
 
 const ENTRY = `https://es8-demo-srv.appspot.com/big-trip/`;

@@ -1,4 +1,4 @@
-import DataParser from "./data-parser";
+import DataParser from "../data-parser";
 
 const objectToArray = (object) => {
   return Object.keys(object).map((id) => object[id]);
