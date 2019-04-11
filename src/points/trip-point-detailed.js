@@ -36,11 +36,10 @@ class TripPointDetailed extends Component {
     this._timeRange = data.timeRange;
     this._duration = data.duration;
     this._offers = data.offers;
-    // this._description = data.description;
-    // this._pictures = data.pictures;
+
     this._isFavorite = data.isFavorite;
 
-
+    this._onSelectTravelWay = this._onSelectTravelWay.bind(this);
     this._onClickTravelWay = this._onClickTravelWay.bind(this);
     this._includeDestinations = this._includeDestinations.bind(this);
     this._onSaveButtonClick = this._onSaveButtonClick.bind(this);
@@ -197,17 +196,14 @@ class TripPointDetailed extends Component {
     return destinations;
   }
 
+  _onSelectTravelWay() {
+    this._element.querySelector(`.travel-way__toggle`).checked = false;
+  }
+
   _onChangeDestination(evt) {
-    // this._pointsTable._currentDestinationName = evt.target.value;
     if (this._setDestinationData(evt.target.value)) {
       this._partialUpdate(this._element.querySelector(`.point__destination`), this._getDestinationTemplate(this._description, this._pictures));
     }
-    // const destinationData = this._pointsTable._destinationData;
-    // if (destinationData) {
-    //   this._description = destinationData.description;
-    //   this._pictures = destinationData.pictures;
-    //   this._partialUpdate(this._element.querySelector(`.point__destination`), this._getDestinationTemplate(this._description, this._pictures));
-    // }
   }
 
   _setDestinationData(destination) {
@@ -415,6 +411,9 @@ class TripPointDetailed extends Component {
     this._element.querySelector(`.point__buttons .point__button:last-child`).addEventListener(`click`, this._onDeliteButtonClick);
     this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onChangeDestination);
     this._element.querySelector(`.travel-way__select`).addEventListener(`click`, this._onClickTravelWay);
+    Array.from(this._element.querySelectorAll(`.travel-way__select-group`)).forEach((it) => {
+      it.addEventListener(`click`, this._onSelectTravelWay);
+    });
     flatpickr(this._element.querySelector(`.point__time .point__input:first-child`), {
       enableTime: true,
       altInput: true,
@@ -440,6 +439,9 @@ class TripPointDetailed extends Component {
     this._element.querySelector(`.point__buttons .point__button:last-child`).removeEventListener(`click`, this.onDeliteButtonClick);
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onChangeDestination);
     this._element.querySelector(`.travel-way__select`).removeEventListener(`click`, this._onClickTravelWay);
+    Array.from(this._element.querySelectorAll(`.travel-way__select-group`)).forEach((it) => {
+      it.removeEventListener(`click`, this._onSelectTravelWay);
+    });
   }
 }
 export default TripPointDetailed;
