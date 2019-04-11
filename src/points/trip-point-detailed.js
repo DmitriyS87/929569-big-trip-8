@@ -23,9 +23,9 @@ const _replaceDash = (text) => {
   return text.replace(/\b-/ig, ` `);
 };
 class TripPointDetailed extends Component {
-  constructor(data, view) {
+  constructor(data, pointsTable) {
     super();
-    this._view = view;
+    this._pointsTable = pointsTable;
 
     this._id = data.id;
     this._date = data.date;
@@ -53,7 +53,7 @@ class TripPointDetailed extends Component {
         this._onClose();
       }
     };
-    view.on(`updated`, this._onUpdateHandler);
+    pointsTable.on(`updated`, this._onUpdateHandler);
 
     this._onErrorHandler = (id) => {
       if (id === this._id) {
@@ -63,15 +63,15 @@ class TripPointDetailed extends Component {
         this._errorView();
       }
     };
-    view.on(`unblockError`, this._onErrorHandler);
+    pointsTable.on(`unblockError`, this._onErrorHandler);
 
     this._onDeleteHandler = (id) => {
       if (id === this._id) {
         this._delete();
-        view.emit(`normalMode`);
+        pointsTable.emit(`normalMode`);
       }
     };
-    view.on(`deleted`, this._onDeleteHandler);
+    pointsTable.on(`deleted`, this._onDeleteHandler);
   }
 
   get id() {
@@ -198,11 +198,11 @@ class TripPointDetailed extends Component {
   }
 
   _onChangeDestination(evt) {
-    // this._view._currentDestinationName = evt.target.value;
+    // this._pointsTable._currentDestinationName = evt.target.value;
     if (this._setDestinationData(evt.target.value)) {
       this._partialUpdate(this._element.querySelector(`.point__destination`), this._getDestinationTemplate(this._description, this._pictures));
     }
-    // const destinationData = this._view._destinationData;
+    // const destinationData = this._pointsTable._destinationData;
     // if (destinationData) {
     //   this._description = destinationData.description;
     //   this._pictures = destinationData.pictures;
@@ -211,8 +211,8 @@ class TripPointDetailed extends Component {
   }
 
   _setDestinationData(destination) {
-    this._view._currentDestinationName = destination;
-    const destinationData = this._view._destinationData;
+    this._pointsTable._currentDestinationName = destination;
+    const destinationData = this._pointsTable._destinationData;
     if (destinationData) {
       this._description = destinationData.description;
       this._pictures = destinationData.pictures;
@@ -284,8 +284,8 @@ class TripPointDetailed extends Component {
   }
 
   _updateOffers(type) {
-    this._view.currentType = type;
-    this._offers = this._view.currentOffers;
+    this._pointsTable.currentType = type;
+    this._offers = this._pointsTable.currentOffers;
   }
 
   _getOffersTemplate(offers) {
@@ -430,9 +430,9 @@ class TripPointDetailed extends Component {
   }
 
   removeObjectListeners() {
-    this._view.delete(`updated`, this._onUpdateHandler);
-    this._view.delete(`unblockError`, this._onErrorHandler);
-    this._view.delete(`deleted`, this._onDeleteHandler);
+    this._pointsTable.delete(`updated`, this._onUpdateHandler);
+    this._pointsTable.delete(`unblockError`, this._onErrorHandler);
+    this._pointsTable.delete(`deleted`, this._onDeleteHandler);
   }
 
   removeListeners() {

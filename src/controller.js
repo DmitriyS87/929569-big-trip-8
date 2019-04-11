@@ -28,30 +28,30 @@ const getKey = () => {
 const sessionKey = getKey();
 
 class Controller extends EventEmitter {
-  constructor(model, view) {
+  constructor(model, pointsTable) {
     super();
     this._model = model;
-    this._view = view;
+    this._pointsTable = pointsTable;
     this._api = new API(ENTRY, sessionKey);
     this._store = new Store(STORAGE_KEY, window.localStorage);
     this._provider = new Provider(this._api, this._store);
 
-    view.on(`onSave`, (newData) => {
+    pointsTable.on(`onSave`, (newData) => {
       this.updatePoint(newData);
     });
-    view.on(`onDelite`, (id) => {
+    pointsTable.on(`onDelite`, (id) => {
       this.deletePoint(id);
     });
-    view.on(`editMode`, () => {
+    pointsTable.on(`editMode`, () => {
       this.setEditMode();
     });
-    view.on(`normalMode`, () => {
+    pointsTable.on(`normalMode`, () => {
       this.setNormalMode();
     });
   }
 
   init() {
-    this._view.showStatus(`Loading route...`);
+    this._pointsTable.showStatus(`Loading route...`);
     this._loadPoints();
     this._loadDestinations();
     this._loadOffers();
@@ -102,7 +102,7 @@ class Controller extends EventEmitter {
       this._model.points = points;
     })
     .catch(() => {
-      this._view.showStatus(`Something went wrong while loading your route info. Check your connection or try again later`);
+      this._pointsTable.showStatus(`Something went wrong while loading your route info. Check your connection or try again later`);
     });
   }
 
@@ -127,7 +127,7 @@ class Controller extends EventEmitter {
   updatePoint(newData) {
     this._provider.updatePoint({id: newData.id, data: DataParser.toServerFormat(newData)})
     .catch((it) => {
-      this._view.enablePoint(newData.id);
+      this._pointsTable.enablePoint(newData.id);
       throw new Error(it);
     })
 .then((point) => {
@@ -140,7 +140,7 @@ class Controller extends EventEmitter {
   deletePoint(id) {
     this._provider.deletePoint(id)
     .catch((it) => {
-      this._view.enablePoint(id);
+      this._pointsTable.enablePoint(id);
       throw new Error(it);
     })
 .then(() => {
