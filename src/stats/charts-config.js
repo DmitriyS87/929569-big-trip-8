@@ -5,7 +5,7 @@ const transportCtx = document.querySelector(`.statistic__transport`);
 const timeSpendCtx = document.querySelector(`.statistic__time-spend`);
 const BAR_HEIGHT = 100;
 
-const CHARTS_CONFIG = [{
+const chartsConfig = [{
   format: (val) => {
     return `${val}x`;
   },
@@ -49,4 +49,4 @@ const CHARTS_CONFIG = [{
   }
 }];
 
-export default CHARTS_CONFIG;
+export default chartsConfig;

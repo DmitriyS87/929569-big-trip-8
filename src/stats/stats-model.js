@@ -1,8 +1,8 @@
 import ChartView from './chart-view';
 import {EventEmitter} from '../event-emitter';
-import CHARTS_CONFIG from './charts-config';
+import chartsConfig from './charts-config';
 
-class ChartsModel extends EventEmitter {
+class StatsModel extends EventEmitter {
   constructor(model) {
     super();
     this._charts = [];
@@ -21,7 +21,7 @@ class ChartsModel extends EventEmitter {
     this.update();
   }
   _makeCharts() {
-    for (let config of CHARTS_CONFIG) {
+    for (let config of chartsConfig) {
       let chartView = new ChartView(this, config);
       this._charts.push({
         name: config.name,
@@ -34,7 +34,7 @@ class ChartsModel extends EventEmitter {
   }
 
   _countData(chartName) {
-    const chartData = this._countStats(this._points, CHARTS_CONFIG.find((it) => {
+    const chartData = this._countStats(this._points, chartsConfig.find((it) => {
       return it.name === chartName;
     }));
     return chartData;
@@ -86,4 +86,4 @@ class ChartsModel extends EventEmitter {
 
 }
 
-export default ChartsModel;
+export default StatsModel;
