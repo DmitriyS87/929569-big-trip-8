@@ -4,7 +4,12 @@ import moment from 'moment';
 class Model extends EventEmitter {
   constructor() {
     super();
+    this._online = true;
   }
+  set online(value) {
+    this._online = value;
+  }
+
   set points(array) {
     this._points = array.map((it) => {
       it.date = moment(it.timeRange.startTime).format(`DD MMM`);
@@ -59,6 +64,9 @@ class Model extends EventEmitter {
       return it.name === name;
     });
     this._currentDestinationData = destinationData ? destinationData : {description: ``, pictures: []};
+    if (!this._online) {
+      this._currentDestinationData.pictures = [];
+    }
   }
 
   savePoint(newData) {

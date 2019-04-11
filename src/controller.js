@@ -82,9 +82,11 @@ class Controller extends EventEmitter {
   _syncDataInit() {
     window.addEventListener(`offline`, () => {
       document.title = `${document.title}[OFFLINE]`;
+      this._model.online = false;
     });
     window.addEventListener(`online`, () => {
       document.title = document.title.split(`[OFFLINE]`)[0];
+      this._model.online = true;
       this._provider.syncData();
     });
   }

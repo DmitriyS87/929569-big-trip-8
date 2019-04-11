@@ -36,8 +36,8 @@ class TripPointDetailed extends Component {
     this._timeRange = data.timeRange;
     this._duration = data.duration;
     this._offers = data.offers;
-    this._description = data.description;
-    this._pictures = data.pictures;
+    // this._description = data.description;
+    // this._pictures = data.pictures;
     this._isFavorite = data.isFavorite;
 
 
@@ -198,20 +198,35 @@ class TripPointDetailed extends Component {
   }
 
   _onChangeDestination(evt) {
-    this._view._currentDestinationName = evt.target.value;
+    // this._view._currentDestinationName = evt.target.value;
+    if (this._setDestinationData(evt.target.value)) {
+      this._partialUpdate(this._element.querySelector(`.point__destination`), this._getDestinationTemplate(this._description, this._pictures));
+    }
+    // const destinationData = this._view._destinationData;
+    // if (destinationData) {
+    //   this._description = destinationData.description;
+    //   this._pictures = destinationData.pictures;
+    //   this._partialUpdate(this._element.querySelector(`.point__destination`), this._getDestinationTemplate(this._description, this._pictures));
+    // }
+  }
+
+  _setDestinationData(destination) {
+    this._view._currentDestinationName = destination;
     const destinationData = this._view._destinationData;
     if (destinationData) {
       this._description = destinationData.description;
       this._pictures = destinationData.pictures;
-      this._partialUpdate(this._element.querySelector(`.point__destination`), this._getDestinationTemplate(this._description, this._pictures));
+      return true;
+      // this._partialUpdate(this._element.querySelector(`.point__destination`), this._getDestinationTemplate(this._description, this._pictures));
     }
+    return false;
   }
 
-  _getDestinationTemplate(description, pictures) {
+  _getDestinationTemplate() {
     return `<h3 class="point__details-title">Destination</h3>
-    <p class="point__destination-text">${description}</p>
+    <p class="point__destination-text">${this._description}</p>
     <div class="point__destination-images">
-      ${pictures.map((picture) => {
+      ${this._pictures.map((picture) => {
     return `<img src="${picture.src}" alt="${picture.description}" class="point__destination-image">`;
   })}
     </div>`;
@@ -304,7 +319,7 @@ class TripPointDetailed extends Component {
   }).join(` `)}
     </div>`;
     };
-
+    this._setDestinationData(this._city);
     return `<article class="point">
     <form action="" method="get">
       <header class="point__header">
@@ -365,7 +380,7 @@ class TripPointDetailed extends Component {
 
         </section>
         <section class="point__destination">
-          ${this._getDestinationTemplate(this._description, this._pictures)}
+          ${this._getDestinationTemplate()}
         </section>
         <input type="hidden" class="point__total-price" name="total-price" value="${this._totalPrice}">
       </section>
