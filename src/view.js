@@ -37,7 +37,6 @@ class View extends EventEmitter {
   init() {
     this._generatePointsViews(this._model.exportPoints);
     this._renderPoints(this._arrayPoints);
-    this._addStats(); // есть подозрение что этот функционал нужно выпилить
   }
 
   _rerender() {
@@ -150,32 +149,6 @@ class View extends EventEmitter {
 
   _clearPointsContainer() {
     this._pointsContainer.innerHTML = ``;
-  }
-
-  _addStats() {
-    const onStatsClick = (evt) => {
-      evt.preventDefault();
-      const activeElement = document.querySelector(`.view-switch__item--active`);
-      if (evt.target !== activeElement) {
-        activeElement.classList.remove(`view-switch__item--active`);
-        evt.target.classList.add(`view-switch__item--active`);
-        const pointsContainer = document.querySelector(`.main`);
-        const statsContainer = document.querySelector(`.statistic`);
-
-        pointsContainer.classList.toggle(`visually-hidden`);
-        statsContainer.classList.toggle(`visually-hidden`);
-
-        /* if (!statsContainer.classList.contains(`visually-hidden`)) {
-          this.emit(`statsOn`);
-        } else {
-          this.emit(`statsOff`);
-        }*/ // возможно имеет мсысл реализовать подключение и отключение статистики + удаление обработчиков
-      }
-    };
-
-    Array.from(document.querySelectorAll(`.view-switch__item`)).forEach((switchLink) => {
-      switchLink.addEventListener(`click`, onStatsClick);
-    });
   }
 
 }

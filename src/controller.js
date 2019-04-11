@@ -2,6 +2,7 @@ import {EventEmitter} from "./event-emitter";
 import API from './api';
 import DataParser from './data-parser';
 import ChartsModel from "./stats/stats-model";
+import StatsController from "./stats/stats-controller";
 
 
 const ENTRY = `https://es8-demo-srv.appspot.com/big-trip/`;
@@ -53,7 +54,8 @@ class Controller extends EventEmitter {
     this._initStats();
   }
   _initStats() {
-    this._statsController = new ChartsModel(this._model);
+    this._statsController = new StatsController(this._model);
+    this._statsController.init();
   }
 
   _removeStats() {

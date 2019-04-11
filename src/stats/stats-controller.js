@@ -1,16 +1,20 @@
+import {EventEmitter} from "events";
+import StatsModel from "./stats-model";
+
 class StatsController extends EventEmitter {
   constructor(model) {
     super();
     this._model = model;
 
     model.on(`pointsLoaded`, () => {
-      this._enable();
+      // this._enable();
     });
   }
 
   init() {
     this.createListeners();
     this._disable();
+    this._statsModel = new StatsModel(this._model);
   }
 
   _onStatsClick(evt) {
@@ -25,11 +29,11 @@ class StatsController extends EventEmitter {
       pointsContainer.classList.toggle(`visually-hidden`);
       statsContainer.classList.toggle(`visually-hidden`);
 
-      if (!statsContainer.classList.contains(`visually-hidden`)) {
+      /* if (!statsContainer.classList.contains(`visually-hidden`)) {
         this.emit(`statsOn`);
       } else {
         this.emit(`statsOff`);
-      } // возможно имеет мсысл реализовать подключение и отключение статистики + удаление обработчиков
+      }*/ // возможно имеет мсысл реализовать подключение и отключение статистики + удаление обработчиков
     }
   }
 
