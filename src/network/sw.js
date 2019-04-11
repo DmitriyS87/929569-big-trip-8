@@ -29,6 +29,13 @@ self.addEventListener(`fetch`, (evt) => {
         console.log(`Find in cache`, {response});
         return response ? response : fetch(evt.request);
       })
+      .then(function (response) {
+        caches.open(CACHE_NAME)
+        .then((cache) => {
+          cache.put(evt.request, response.clone());
+        });
+        return response.clone();
+      })
       .catch((err) => {
         console.error({err});
         throw err;
