@@ -1,7 +1,7 @@
 import {EventEmitter} from "./event-emitter";
 import API from './api';
 import DataParser from './data-parser';
-import ChartsModel from "./charts/charts-model";
+import ChartsModel from "./stats/charts-model";
 
 
 const ENTRY = `https://es8-demo-srv.appspot.com/big-trip/`;

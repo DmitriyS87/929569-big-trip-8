@@ -15,6 +15,7 @@ const filterContainer = document.querySelector(FILTER_FORM_CLASS);
 const model = new Model();
 const view = new View(model, tripDayelement);
 const controller = new Controller(model, view);
+
 const filtersController = new FiltersController(model);
 controller.init();
 filtersController.init();
