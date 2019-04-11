@@ -41,6 +41,7 @@ class Component extends EventEmitter {
 
   unrender() {
     this.removeListeners();
+    this._element.remove();
     this._element = null;
     return this._element;
   }

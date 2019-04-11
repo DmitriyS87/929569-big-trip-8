@@ -1,7 +1,8 @@
 import {EventEmitter} from "./event-emitter";
-import updateStats from './statistics';
 import API from './api';
 import DataParser from './data-parser';
+import ChartsModel from "./charts/charts-model";
+
 
 const ENTRY = `https://es8-demo-srv.appspot.com/big-trip/`;
 const VAILD_SYMBOLS = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`;
@@ -35,19 +36,29 @@ class Controller extends EventEmitter {
     view.on(`onDelite`, (id) => {
       this.deletePoint(id);
     });
-    view.on(`statsOn`, () => {
-      updateStats(this._model.points);
+    /* view.on(`statsOn`, () => {
+      // updateStats(this._model.exportPoints);
+      // this._initStats(this._model.exportPoints);
     });
     view.on(`statsOff`, () => {
-    });
+      // this._removeStats();
+    });*/ // пригодится, если буду вырубать статистику при активации таблицы
   }
 
   init() {
-    this._view.showStatus(`Loading route...`); // init() !
+    this._view.showStatus(`Loading route...`);
     this._loadPoints();
     this._loadDestinations();
     this._loadOffers();
+    this._initStats();
+  }
+  _initStats() {
+    this._statsController = new ChartsModel(this._model);
+  }
 
+  _removeStats() {
+    this._statsController.removeCharts();
+    this._statsController = null;
   }
 
   _loadPoints() {
@@ -59,7 +70,8 @@ class Controller extends EventEmitter {
     .then((points) => {
       this._model.points = points;
     })
-    .catch(() => {
+    .catch((err) => {
+      console.log(err);
       this._view.showStatus(`Something went wrong while loading your route info. Check your connection or try again later`);
     });
   }
@@ -109,6 +121,8 @@ class Controller extends EventEmitter {
   this._model.deletePoint(id);
 });
   }
+
+
 }
 
 export default Controller;

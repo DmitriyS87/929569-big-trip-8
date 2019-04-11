@@ -1,4 +1,4 @@
-import Component from './component';
+import Component from '../component';
 import moment from 'moment';
 import flatpickr from 'flatpickr';
 
@@ -49,27 +49,33 @@ class TripPointDetailed extends Component {
     this._onChangeDestination = this._onChangeDestination.bind(this);
     this._onDeleteClick = null;
 
-    view.on(`updated`, (id) => {
+    this._onUpdateHandler = (id) => {
       if (id === this._id) {
         this._onClose();
       }
-    });
+    };
+    view.on(`updated`, this._onUpdateHandler);
 
-    view.on(`unblockError`, (id) => {
+    this._onErrorHandler = (id) => {
       if (id === this._id) {
         this._enable();
         this.element.querySelector(`.point__button:first-child`).innerText = `Save`;
         this.element.querySelector(`.point__button:last-child`).innerText = `Delete`;
         this._errorView();
       }
-    });
+    };
+    view.on(`unblockError`, this._onErrorHandler);
 
-    view.on(`deleted`, (id) => {
+    this._onDeleteHandler = (id) => {
       if (id === this._id) {
-        this._element.remove();
-        this.unrender();
+        this._delete();
       }
-    });
+    };
+    view.on(`deleted`, this._onDeleteHandler);
+  }
+
+  get id() {
+    return this._id;
   }
 
   _replaceSpace(text) {
@@ -367,7 +373,8 @@ class TripPointDetailed extends Component {
   </article>`;
   }
 
-  _delite() {
+  _delete() {
+    this.removeObjectListeners();
     this.element.remove();
     this.unrender();
   }
@@ -393,7 +400,6 @@ class TripPointDetailed extends Component {
     this._element.querySelector(`.point__buttons .point__button:last-child`).addEventListener(`click`, this._onDeliteButtonClick);
     this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onChangeDestination);
     this._element.querySelector(`.travel-way__select`).addEventListener(`click`, this._onClickTravelWay);
-
     flatpickr(this._element.querySelector(`.point__time .point__input:first-child`), {
       enableTime: true,
       altInput: true,
@@ -408,12 +414,17 @@ class TripPointDetailed extends Component {
     });
   }
 
+  removeObjectListeners() {
+    this._view.delete(`updated`, this._onUpdateHandler);
+    this._view.delete(`unblockError`, this._onErrorHandler);
+    this._view.delete(`deleted`, this._onDeleteHandler);
+  }
+
   removeListeners() {
     this._element.querySelector(`.point__buttons .point__button:first-child`).removeEventListener(`click`, this._onSaveButtonClick);
     this._element.querySelector(`.point__buttons .point__button:last-child`).removeEventListener(`click`, this.onDeliteButtonClick);
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onChangeDestination);
     this._element.querySelector(`.travel-way__select`).removeEventListener(`click`, this._onClickTravelWay);
   }
-
 }
 export default TripPointDetailed;

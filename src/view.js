@@ -1,45 +1,22 @@
 import {EventEmitter} from "./event-emitter";
-import Filter from './filter';
-import TripPoint from './trip-point';
-import TripPointDetailed from './trip-point-detailed';
+// import Filter from './filter';
+import TripPoint from './points/trip-point';
+import TripPointDetailed from './points/trip-point-detailed';
 
-import moment from 'moment';
-
-const FILTERS_DATA = [{
-  textFilter: `Everything`,
-  doFilter() {
-    return true;
-  }
-},
-{
-  textFilter: `Future`,
-  doFilter(point) {
-    if (moment().isBefore(moment(point.date, `DD MMM`))) {
-      return true;
-    }
-    return false;
-  }
-},
-{
-  textFilter: `Past`,
-  doFilter(point) {
-    if (moment(point.date, `DD MMM`).isBefore(moment())) {
-      return true;
-    }
-    return false;
-  }
-}];
 class View extends EventEmitter {
-  constructor(model, pointContainer, filterContainer) {
+  constructor(model, pointContainer) {
     super();
     this._model = model;
     this._pointsContainer = pointContainer;
-    this._filterContainer = filterContainer;
     this._destinationsList = undefined;
 
     model.on(`pointsLoaded`, () => {
       model.off(`pointsLoaded`);
-      return this.show();
+      return this.init();
+    });
+    model.on(`pointsChanged`, () => {
+      // console.log(`viewRerender`);
+      return this._rerender();
     });
     model.on(`pointSaved`, (newData) => {
       return this._updatePoint(newData);
@@ -57,11 +34,22 @@ class View extends EventEmitter {
     });
   }
 
-  show() {
-    this._generateViews(this._model.points);
+  init() {
+    this._generatePointsViews(this._model.exportPoints);
     this._renderPoints(this._arrayPoints);
-    this._addFilters();
-    this._addStats();
+    this._addStats(); // есть подозрение что этот функционал нужно выпилить
+  }
+
+  _rerender() {
+    this._arrayPoints.forEach((pair) => {
+      pair.point.unrender();
+      pair.pointDetailed.removeObjectListeners();
+      pair.point = null;
+      pair.pointDetailed = null;
+    });
+    this._arrayPoints = [];
+    this._generatePointsViews(this._model.exportPoints);
+    this._renderPoints(this._arrayPoints);
   }
 
   showStatus(text) {
@@ -72,10 +60,10 @@ class View extends EventEmitter {
     this._pointsContainer.appendChild(message);
   }
   _deletePoint(id) {
-    const deletedElement = this._arrayPoints.find((it) => {
-      return it.id === id;
+    const deletedPair = this._arrayPoints.find((it) => {
+      return it.point.id === id;
     });
-    this._arrayPoints.splice(this._arrayPoints.indexOf(deletedElement), 1);
+    this._arrayPoints.splice(this._arrayPoints.indexOf(deletedPair), 1);
     this.emit(`deleted`, id);
   }
 
@@ -117,18 +105,19 @@ class View extends EventEmitter {
 
   _updatePoint(newData) {
     this._arrayPoints.find((it) => {
-      return it._id === newData.id;
-    }).update(newData);
+      return it.point.id === newData.id;
+    }).point.update(newData);
     this.emit(`updated`, newData.id);
   }
 
   _renderPoints(array) {
+    // console.log(array);
     this._pointsContainer.innerHTML = ``;
-    array.forEach((point) => {
-      this._pointsContainer.appendChild(point.render());
+    array.forEach((pair) => {
+      this._pointsContainer.appendChild(pair.point.render());
     });
   }
-  _generateViews(data) {
+  _generatePointsViews(data) {
     this._arrayPoints = data.map((pointData) => {
       if (pointData !== null) {
         const tripPoint = new TripPoint(pointData, this._model);
@@ -151,7 +140,9 @@ class View extends EventEmitter {
         tripPointDetailed.onDelete = (id) => {
           this.emit(`onDelite`, id);
         };
-        return tripPoint;
+        return {point: tripPoint,
+          pointDetailed: tripPointDetailed
+        };
       }
       return null;
     });
@@ -159,30 +150,6 @@ class View extends EventEmitter {
 
   _clearPointsContainer() {
     this._pointsContainer.innerHTML = ``;
-  }
-
-  _addFilters() {
-    for (let filterData of FILTERS_DATA) {
-      let filter = new Filter(filterData);
-      filter.onFilter = () => {
-        this._clearPointsContainer();
-        this._arrayPoints.filter((point) => {
-          return point !== null;
-        }).forEach((point) => {
-          if (point.element !== null) {
-            point.unrender();
-          }
-        });
-        this._renderPoints(this._arrayPoints.filter((point) => {
-          return point !== null;
-        }).filter((point) => {
-          return FILTERS_DATA.find((it) => {
-            return it === filterData;
-          }).doFilter(point);
-        }));
-      };
-      this._filterContainer.appendChild(filter.render());
-    }
   }
 
   _addStats() {
@@ -198,11 +165,11 @@ class View extends EventEmitter {
         pointsContainer.classList.toggle(`visually-hidden`);
         statsContainer.classList.toggle(`visually-hidden`);
 
-        if (!statsContainer.classList.contains(`visually-hidden`)) {
+        /* if (!statsContainer.classList.contains(`visually-hidden`)) {
           this.emit(`statsOn`);
         } else {
           this.emit(`statsOff`);
-        }
+        }*/ // возможно имеет мсысл реализовать подключение и отключение статистики + удаление обработчиков
       }
     };
 

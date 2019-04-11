@@ -14,6 +14,13 @@ class EventEmitter {
       delete this._events[evt];
     }
   }
+  delete(evt, handler) {
+    if (this._events[evt]) {
+      this._events[evt].splice((this._events[evt].indexOf(handler)), 1);
+      // delete this._events[evt];
+    }
+  }
+
 }
 
 export {EventEmitter};
