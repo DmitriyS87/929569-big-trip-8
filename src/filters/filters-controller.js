@@ -1,6 +1,10 @@
 import FILTERS_DATA from './filters-config';
 import Filter from './filter';
 import {EventEmitter} from '../event-emitter';
+import {clearHTMLInside} from '../utils';
+
+const FILTER_FORM_CLASS = `.trip-filter`;
+const filterContainer = document.querySelector(FILTER_FORM_CLASS);
 
 class FiltersController extends EventEmitter {
   constructor(model) {
@@ -14,6 +18,10 @@ class FiltersController extends EventEmitter {
 
   init() {
     this._filters = this._generateFilters();
+    clearHTMLInside(FILTER_FORM_CLASS);
+    this._filters.forEach((it) => {
+      filterContainer.appendChild(it);
+    });
     this._disable();
   }
 
