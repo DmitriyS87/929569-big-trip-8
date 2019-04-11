@@ -18,7 +18,6 @@ class StatsModel extends EventEmitter {
 
   init() {
     this._makeCharts();
-    this.update();
   }
   _makeCharts() {
     for (let config of chartsConfig) {

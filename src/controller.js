@@ -1,7 +1,6 @@
 import {EventEmitter} from "./event-emitter";
 import API from './api';
 import DataParser from './data-parser';
-import ChartsModel from "./stats/stats-model";
 import StatsController from "./stats/stats-controller";
 
 
@@ -37,13 +36,6 @@ class Controller extends EventEmitter {
     view.on(`onDelite`, (id) => {
       this.deletePoint(id);
     });
-    /* view.on(`statsOn`, () => {
-      // updateStats(this._model.exportPoints);
-      // this._initStats(this._model.exportPoints);
-    });
-    view.on(`statsOff`, () => {
-      // this._removeStats();
-    });*/ // пригодится, если буду вырубать статистику при активации таблицы
   }
 
   init() {

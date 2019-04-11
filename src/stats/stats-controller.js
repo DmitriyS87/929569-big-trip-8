@@ -5,16 +5,12 @@ class StatsController extends EventEmitter {
   constructor(model) {
     super();
     this._model = model;
-
-    model.on(`pointsLoaded`, () => {
-      // this._enable();
-    });
+    this._onStatsClick = this._onStatsClick.bind(this);
   }
 
   init() {
-    this.createListeners();
-    this._disable();
     this._statsModel = new StatsModel(this._model);
+    this.createListeners();
   }
 
   _onStatsClick(evt) {
@@ -29,11 +25,9 @@ class StatsController extends EventEmitter {
       pointsContainer.classList.toggle(`visually-hidden`);
       statsContainer.classList.toggle(`visually-hidden`);
 
-      /* if (!statsContainer.classList.contains(`visually-hidden`)) {
-        this.emit(`statsOn`);
-      } else {
-        this.emit(`statsOff`);
-      }*/ // возможно имеет мсысл реализовать подключение и отключение статистики + удаление обработчиков
+      if (!statsContainer.classList.contains(`visually-hidden`)) {
+        this._statsModel.update();
+      }
     }
   }
 
@@ -41,26 +35,6 @@ class StatsController extends EventEmitter {
     Array.from(document.querySelectorAll(`.view-switch__item`)).forEach((switchLink) => {
       switchLink.addEventListener(`click`, this._onStatsClick);
     });
-  }
-
-  removeListeners() {
-    Array.from(document.querySelectorAll(`.view-switch__item`)).forEach((switchLink) => {
-      switchLink.removeEventListener(`click`, this._onStatsClick);
-    });
-  }
-
-  _setDisabled(value) {
-    Array.from(document.querySelectorAll(`.view-switch__item`)).forEach((element) => {
-      element.disabled = value;
-    });
-  }
-
-  _disable() {
-    this._setDisabled(true);
-  }
-
-  _enable() {
-    this._setDisabled(false);
   }
 }
 

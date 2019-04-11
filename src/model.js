@@ -25,7 +25,6 @@ class Model extends EventEmitter {
   set exportPoints(points) {
     this._exportPoints = points;
     this.emit(`pointsChanged`);
-    // console.log(`modelChangedPoints`);
   }
 
   get exportPoints() {
@@ -74,8 +73,6 @@ class Model extends EventEmitter {
   }
 
   _addDuration(point) {
-    // const duration = this.countDuration(point);
-    // return `${duration.get(`days`) * 24 + duration.get(`hours`)}H ${duration.get(`minutes`)}M`;
     return moment.duration(moment(point.timeRange.endTime) - moment(point.timeRange.startTime));
   }
 
