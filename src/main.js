@@ -1,7 +1,7 @@
 
 import Model from './model';
 import Controller from './controller';
-import Table from './table';
+import Table from './points-table';
 
 const TRIP_DAY_CLASS = `.trip-day__items`;
 

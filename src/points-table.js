@@ -3,7 +3,7 @@ import {EventEmitter} from "./event-emitter";
 import TripPoint from './points/trip-point';
 import TripPointDetailed from './points/trip-point-detailed';
 
-class Table extends EventEmitter {
+class PointsTable extends EventEmitter {
   constructor(model, pointContainer) {
     super();
     this._model = model;
@@ -156,4 +156,4 @@ class Table extends EventEmitter {
 }
 
 
-export default Table;
+export default PointsTable;
