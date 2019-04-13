@@ -213,7 +213,6 @@ class TripPointDetailed extends Component {
       this._description = destinationData.description;
       this._pictures = destinationData.pictures;
       return true;
-      // this._partialUpdate(this._element.querySelector(`.point__destination`), this._getDestinationTemplate(this._description, this._pictures));
     }
     return false;
   }
