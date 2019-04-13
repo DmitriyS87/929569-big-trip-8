@@ -6,8 +6,7 @@ import FiltersController from "./filters/filters-controller";
 import Store from "./network/store";
 import Provider from "./network/provider";
 
-
-const ENTRY = `https://es8-demo-srv.appspot.com/big-trip/`;
+const ENTRY = `https://es8-demo-srv.appspot.com/big-trip`;
 const VAILD_SYMBOLS = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`;
 const STORAGE_KEY = `big_trip_storage`;
 
