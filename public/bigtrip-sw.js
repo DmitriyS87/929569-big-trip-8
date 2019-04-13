@@ -20,21 +20,6 @@ self.addEventListener(`install`, (evt) => {
   evt.waitUntil(onInstall(evt));
 });
 
-self.addEventListener(`activate`, (evt) => {
-  console.log(`sw`, `activate`, {evt});
-});
-
-const getNewData = (request) => {
-  console.log(`now we check our window isOnline`);
-  if (navigator.onLine) {
-    console.log(`now we make fetch and save it in our cache`, {request});
-    return updateCache(request);
-  }
-  return Promise.reject(new Error(`cant save new request in offline mode`))
-  .catch(console.log);
-};
-
-
 function fromCache(evt) {
   return caches.match(evt.request).then((matching) => {
     if (!matching) {
@@ -56,9 +41,6 @@ function updateCache(cacheKey, request, response) {
 }
 
 self.addEventListener(`fetch`, (evt) => {
-  console.log(`fetch`, {request: evt.request});
-  // if (evt.request.method === `GET`) {
-  //   console.log(`cathced!`);
   function onFetchFilter(evtParam) {
     const request = evtParam.request;
     const url = request.url;
@@ -110,7 +92,5 @@ self.addEventListener(`fetch`, (evt) => {
   if (onFetchFilter(evt)) {
     onFetch(evt);
   }
-
-
 });
 
