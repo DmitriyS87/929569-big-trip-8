@@ -1,12 +1,13 @@
-import SORTS_CONFIG from 'sorts-config.js';
+import SORTS_CONFIG from './sorts-config';
 import Sort from './sort';
 import {clearHTMLInside} from '../utils';
 
+const SORTS_CONTAINER = document.querySelector(`.trip-sorting`);
 class SortsController {
-  constructor(model, container) {
+  constructor(model) {
     this._model = model;
     this._config = SORTS_CONFIG;
-    this._container = container;
+    this._container = SORTS_CONTAINER;
 
     model.on(`pointsLoaded`, () => {
       this.enable();
@@ -15,7 +16,7 @@ class SortsController {
 
   init() {
     this._sorts = this._generateSortComponents();
-    clearHTMLInside(this._container);
+    clearHTMLInside(`.trip-sorting`);
     this._sorts.forEach((it) => {
       this._container.appendChild(it);
     });
@@ -23,30 +24,28 @@ class SortsController {
   }
 
   _generateSortComponents() {
-    const STATS = [];
+    const sorts = [];
     for (let sortData of this._config) {
-      let sort = new Sort(sortData.sortName);
+      let sort = new Sort(sortData.sortName, sortData.checked ? true : false);
       sort.onSort = () => {
-        // this._model.exportPoints = this._model.points.filter((point) => {
-        //   return this._config.find((it) => {
-        //     return it.textFilter === filter.name;
-        //   }).doFilter(point);
-        // });
+        this._model.exportPoints = SORTS_CONFIG.find(((it) => {
+          return it.sortName === sort.name;
+        })).doSort(this._model.exportPoints);
       };
-      STATS.push(sort.render());
+      sorts.push(sort.render());
     }
-    return STATS;
+    return sorts;
   }
 
   enable() {
     this._sorts.forEach((element) => {
-      element.firstElementChild.setAttribute(`disabled`, `disabled`);
+      element.firstElementChild.removeAttribute(`disabled`, `disabled`);
     });
   }
 
   disable() {
     this._sorts.forEach((element) => {
-      element.firstElementChild.removeAttribute(`disabled`, `disabled`);
+      element.firstElementChild.setAttribute(`disabled`, `disabled`);
     });
   }
 }

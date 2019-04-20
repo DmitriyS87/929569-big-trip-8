@@ -45,7 +45,7 @@ class FiltersController extends EventEmitter {
   _generateFilters() {
     const FILTERS = [];
     for (let filterData of this._config) {
-      let filter = new Filter(filterData.textFilter);
+      let filter = new Filter(filterData.textFilter, filterData.checked ? true : false);
       filter.onFilter = () => {
         this._model.exportPoints = this._model.points.filter((point) => {
           return this._config.find((it) => {

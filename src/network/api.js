@@ -42,6 +42,11 @@ class API {
     .then(toJSON);
   }
 
+  createPoint({id, data}) {
+    return this._load({url: `points/`, method: `POST`, body: JSON.stringify(data), headers: new Headers({'Content-Type': `application/json`})})
+    .then(toJSON);
+  }
+
   deletePoint(id) {
     return this._load({url: `points/${id}`, method: `DELETE`});
   }

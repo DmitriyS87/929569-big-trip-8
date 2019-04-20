@@ -1,19 +1,26 @@
 import Component from "../component";
 
 class Sort extends Component {
-  constructor(name) {
+  constructor(name, checked) {
     super();
     this._name = name;
+    this._onSort = null;
+    this._onClickSort = this._onClickSort.bind(this);
+    this._checked = checked;
   }
 
-  set onStat(fn) {
+  get name() {
+    return this._name;
+  }
+
+  set onSort(fn) {
     this._onSort = fn.bind(this);
   }
 
   get template() {
     return `<div style="display:inline;">
-    <input type="radio" name="trip-sorting" id="sorting-${this._name.toLoverCase()}" value="${this._name.toLoverCase()}" checked>
-    <label class="trip-sorting__item trip-sorting__item--${this._name.toLoverCase()}" for="sorting-${this._name.toLoverCase()}">${this._name}</label>
+    <input type="radio" name="trip-sorting" id="sorting-${this._name.toLowerCase()}" value="${this._name.toLowerCase()}" ${this._checked ? `checked` : ``}>
+    <label class="trip-sorting__item trip-sorting__item--${this._name.toLowerCase()}" for="sorting-${this._name.toLowerCase()}">${this._name}</label>
     </div>`;
   }
 

@@ -5,10 +5,12 @@ import StatsController from "./stats/stats-controller";
 import FiltersController from "./filters/filters-controller";
 import Store from "./network/store";
 import Provider from "./network/provider";
+import SortsController from "./sort/sorts-controller";
 
 const ENTRY = `https://es8-demo-srv.appspot.com/big-trip`;
 const VAILD_SYMBOLS = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`;
 const STORAGE_KEY = `big_trip_storage`;
+
 
 const makeRandomCountMinMax = (min, max) => {
   return min + Math.floor(Math.random() * (max - min));
@@ -35,8 +37,14 @@ class Controller extends EventEmitter {
     this._store = new Store(STORAGE_KEY, window.localStorage);
     this._provider = new Provider(this._api, this._store);
 
+    model.on(`pointsChanged`, () => {
+      return this._renderTotalCost();
+    });
     pointsTable.on(`onSave`, (newData) => {
       this.updatePoint(newData);
+    });
+    pointsTable.on(`onSaveNewPoint`, (newData) => {
+      this.createPoint(newData);
     });
     pointsTable.on(`onDelite`, (id) => {
       this.deletePoint(id);
@@ -47,6 +55,9 @@ class Controller extends EventEmitter {
     pointsTable.on(`normalMode`, () => {
       this.setNormalMode();
     });
+    pointsTable.on(`pointDeletedFromPage`, () => {
+      this._model.updateExport();
+    });
   }
 
   init() {
@@ -56,7 +67,9 @@ class Controller extends EventEmitter {
     this._loadOffers();
     this._initStats();
     this._initFilters();
+    this._initSorts();
     this._syncDataInit();
+    this._initNewEvent();
   }
 
   setEditMode() {
@@ -69,6 +82,18 @@ class Controller extends EventEmitter {
     this._filtersController.enable();
   }
 
+  _renderTotalCost() {
+    document.querySelector(`.trip__total-cost`).textContent = this._model.totalCost;
+  }
+
+  _initNewEvent() {
+    const onClickNewEvent = () => {
+      console.log(`makeNewPoint`);
+      this._pointsTable.makeNewPoint();
+    };
+    document.querySelector(`.trip-controls__new-event`).addEventListener(`click`, onClickNewEvent);
+  }
+
   _initFilters() {
     this._filtersController = new FiltersController(this._model);
     this._filtersController.init();
@@ -76,6 +101,10 @@ class Controller extends EventEmitter {
   _initStats() {
     this._statsController = new StatsController(this._model);
     this._statsController.init();
+  }
+  _initSorts() {
+    this._SortsController = new SortsController(this._model);
+    this._SortsController.init();
   }
 
   _syncDataInit() {
@@ -126,8 +155,9 @@ class Controller extends EventEmitter {
   updatePoint(newData) {
     this._provider.updatePoint({id: newData.id, data: DataParser.toServerFormat(newData)})
     .catch((it) => {
+      console.log(it);
       this._pointsTable.enablePoint(newData.id);
-      throw new Error(it);
+      //   throw new Error(it);
     })
 .then((point) => {
   if (point) {
@@ -136,11 +166,26 @@ class Controller extends EventEmitter {
 });
   }
 
+  createPoint(newData) {
+    this._provider.createPoint({id: newData.id, data: DataParser.toServerFormat(newData)})
+    .catch((it) => {
+      console.log(it);
+      this._pointsTable.enablePoint(newData.id);
+      //   throw new Error(it);
+    })
+.then((point) => {
+  if (point) {
+    this._pointsTable.closeNewPoint(point.id);
+    this._model.createPoint(point);
+  }
+});
+  }
+
   deletePoint(id) {
     this._provider.deletePoint(id)
     .catch((it) => {
-      this._pointsTable.enablePoint(id);
-      throw new Error(it);
+      this._pointsTable.enablePoint(id); // если контроллер разблокирует, то может ему и блокировать?! или давать событие, чтобы компонент сам разблокировался
+      throw new Error(it); // заменить на сообщение об ошибке
     })
 .then(() => {
   this._model.deletePoint(id);

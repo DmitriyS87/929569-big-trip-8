@@ -46,7 +46,7 @@ class TripPoint extends Component {
   }
 
   get template() {
-    return `<article class="trip-point"}>
+    return `<article class="trip-point">
     <i class="trip-icon">${this._type.icon}</i>
     <h3 class="trip-point__title">${this._type.type} ${DRIVE_TYPE_MAP.get(this._type.type) ? `to` : `in`} ${this._city}</h3>
     <p class="trip-point__schedule">
@@ -60,11 +60,12 @@ class TripPoint extends Component {
   </article>`;
   }
 
-  get date() {
+  get day() {
     return this._date;
   }
 
   update(newData) {
+    this._date = newData.date;
     this._city = newData.city;
     this._type = newData.type;
     this._totalPrice = newData.totalPrice;

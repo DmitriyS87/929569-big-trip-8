@@ -12,13 +12,13 @@ class Model extends EventEmitter {
 
   set points(array) {
     this._points = array.map((it) => {
-      it.date = moment(it.timeRange.startTime).format(`DD MMM`);
+      it.date = moment(it.timeRange.startTime).format(`MMM DD`);
       it.duration = this._addDuration(it);
       it.totalPrice = this._countPrice(it);
       return it;
     });
-    this._exportPoints = this._points;
-    this.emit(`pointsLoaded`);
+    this.exportPoints = this._points;
+    this.emit(`pointsLoaded`); // check the way
   }
   get points() {
     if (this._points instanceof Array) {
@@ -27,9 +27,54 @@ class Model extends EventEmitter {
     return [];
   }
 
+  getNewPointData() {
+    const defaultData = {
+      date: moment().format(`MMM DD`),
+      id: String(Math.max(...this._points.map((point) => {
+        return Number(point.id);
+      })) + 1),
+      type: {type: ``,
+        icon: ``},
+      timeRange: {
+        startTime: moment(),
+        endTime: moment()
+      },
+      description: ``,
+      city: ``,
+      pictures: [],
+      isFavorite: false,
+      offers: [],
+      price: {count: 0},
+      totalPrice: 0
+    };
+    console.log(defaultData);
+    return defaultData;
+  }
+
   set exportPoints(points) {
     this._exportPoints = points;
+    this._exportTables = this._makeTablesData(this._exportPoints);
+    this.totalCost = `€ ${this._countTotalCost()}`;
     this.emit(`pointsChanged`);
+  }
+
+  updateExport() {
+    this.exportPoints = this._points;
+  }
+
+  set totalCost(cost) {
+    this._totalCost = cost;
+  }
+
+  get totalCost() {
+    return this._totalCost;
+  }
+
+  get exportTables() {
+    if (this._exportTables instanceof Array) {
+      return this._exportTables;
+    }
+    return [];
   }
 
   get exportPoints() {
@@ -37,6 +82,40 @@ class Model extends EventEmitter {
       return this._exportPoints;
     }
     return [];
+  }
+
+  _countTotalCost() {
+    return this._exportPoints.reduce((a, b) => {
+      return a + b.totalPrice;
+    }, 0);
+  }
+
+  _makeTablesData(points) {
+    const days = new Set(points.map((it) => {
+      return it.date;
+    }));
+    const daysNumbers = {};
+    [...days].sort((a, b) => {
+      return moment(a, `MMM DD`) - moment(b, `MMM DD`);
+    }).forEach((day, index) => {
+      const count = index + 1;
+      daysNumbers[day] = count;
+    });
+    const daysData = [...days].map((it) => {
+      return {
+        day: it,
+        count: daysNumbers[it],
+        points: points.filter((item) => {
+          return item.date === it;
+        })
+      };
+    });
+
+    return daysData;
+  }
+
+  sortedPoints(points) {
+    this.exportPoints = points;
   }
 
   set destinationsList(array) {
@@ -72,12 +151,20 @@ class Model extends EventEmitter {
   savePoint(newData) {
     newData.duration = this._addDuration(newData);
     newData.totalPrice = this._countPrice(newData);
-    newData.date = moment(newData.timeRange.startTime).format(`DD MMM`);
+    newData.date = moment(newData.timeRange.startTime).format(`MMM DD`);
+    this.emit(`pointSaved`, newData);
     this._points.splice(this._points.indexOf(this._points.find((it) => {
       return it.id === newData.id;
     })), 1, newData);
-    this._exportPoints = this._points;
-    this.emit(`pointSaved`, newData);
+    this.exportPoints = this._points;
+  }
+
+  createPoint(newData) {
+    newData.duration = this._addDuration(newData);
+    newData.totalPrice = this._countPrice(newData);
+    newData.date = moment(newData.timeRange.startTime).format(`MMM DD`);
+    this._points.push(newData);
+    this.exportPoints = this._points;
   }
 
   _addDuration(point) {
@@ -99,7 +186,6 @@ class Model extends EventEmitter {
     this._points.splice(this._points.indexOf(this._points.find((it) => {
       return it.id === id;
     })), 1);
-    this._exportPoints = this._points;
     this.emit(`pointDeleted`, id);
   }
 

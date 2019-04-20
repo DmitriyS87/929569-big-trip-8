@@ -1,17 +1,24 @@
 const SORTS_CONFIG = [
   {sortName: `Event`,
-    doSort() {
-
-    }
+    doSort(points) {
+      return points.sort((a, b) => {
+        return Number(a.id) - Number(b.id);
+      });
+    },
+    checked: true
   },
   {sortName: `Time`,
-    doSort() {
-
+    doSort(points) {
+      return points.sort((a, b) => {
+        return Number(b.duration) - Number(a.duration);
+      });
     }
   },
   {sortName: `Price`,
-    doSort() {
-
+    doSort(points) {
+      return points.sort((a, b) => {
+        return Number(b.price.count) - Number(a.price.count);
+      });
     }
   }
 ];
