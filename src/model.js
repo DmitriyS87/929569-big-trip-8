@@ -17,10 +17,12 @@ class Model extends EventEmitter {
       it.totalPrice = this._countPrice(it);
       return it;
     });
-    this.exportPoints = this._points;
+    this._exportTables = this._makeTablesData(this._points);
+    this.updateExport();
+    // this.exportPoints = this._points;
     this.emit(`pointsLoaded`); // check the way
   }
-  get points() {
+  get points() { // кому и зачем надо???
     if (this._points instanceof Array) {
       return this._points;
     }
@@ -47,19 +49,37 @@ class Model extends EventEmitter {
       price: {count: 0},
       totalPrice: 0
     };
-    console.log(defaultData);
     return defaultData;
   }
 
   set exportPoints(points) {
     this._exportPoints = points;
-    this._exportTables = this._makeTablesData(this._exportPoints);
+    // this._exportTables = this._makeTablesData(this._exportPoints);
     this.totalCost = `€ ${this._countTotalCost()}`;
     this.emit(`pointsChanged`);
   }
 
+  set doFilter(fn) {
+    this._doFilter = fn;
+    this.updateExport(); // рендерим только не пустые
+  }
+
+  set doSort(fn) {
+    this._doSort = fn;
+    this.updateExport();
+  }
+
   updateExport() {
-    this.exportPoints = this._points;
+    let points = this._points;
+    if (typeof this._doFilter === `function`) {
+      points = points.filter((point) => {
+        return this._doFilter(point);
+      });
+    }
+    if (typeof this._doSort === `function`) {
+      points = this._doSort(points);
+    }
+    this.exportPoints = points;
   }
 
   set totalCost(cost) {
@@ -114,10 +134,6 @@ class Model extends EventEmitter {
     return daysData;
   }
 
-  sortedPoints(points) {
-    this.exportPoints = points;
-  }
-
   set destinationsList(array) {
     this._destinationsList = array.map((it) => {
       return it.name;
@@ -156,7 +172,9 @@ class Model extends EventEmitter {
     this._points.splice(this._points.indexOf(this._points.find((it) => {
       return it.id === newData.id;
     })), 1, newData);
-    this.exportPoints = this._points;
+    this._exportTables = this._makeTablesData(this._points);
+    this.updateExport();
+    // this.exportPoints = this._points;
   }
 
   createPoint(newData) {
@@ -164,7 +182,12 @@ class Model extends EventEmitter {
     newData.totalPrice = this._countPrice(newData);
     newData.date = moment(newData.timeRange.startTime).format(`MMM DD`);
     this._points.push(newData);
-    this.exportPoints = this._points;
+    this._points.sort((a, b) => {
+      return moment(a.date, `MMM DD`) - moment(b.date, `MMM DD`);
+    });
+    this._exportTables = this._makeTablesData(this._points);
+    this.updateExport();
+    // this.exportPoints = this._points;
   }
 
   _addDuration(point) {
@@ -186,6 +209,7 @@ class Model extends EventEmitter {
     this._points.splice(this._points.indexOf(this._points.find((it) => {
       return it.id === id;
     })), 1);
+    this._exportTables = this._makeTablesData(this._points);
     this.emit(`pointDeleted`, id);
   }
 

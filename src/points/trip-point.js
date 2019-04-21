@@ -1,6 +1,11 @@
 import Component from '../component';
 import moment from 'moment';
 
+const OFFERS_LINES_CONFIG = {
+  start: 0,
+  end: 3
+};
+
 
 const DRIVE_TYPE_MAP = new Map([
   [`Taxi`, `🚕`],
@@ -29,14 +34,6 @@ class TripPoint extends Component {
     this._onClickListener = null;
   }
 
-  _renderOffersList(offers = []) {
-    return offers.map((item)=>{
-      return `<li>
-      <button class="trip-point__offer">${item.title} +&euro;&nbsp;${item.price}</button>
-      </li>`;
-    }).join(``);
-  }
-
   get id() {
     return this._id;
   }
@@ -46,16 +43,31 @@ class TripPoint extends Component {
   }
 
   get template() {
+
+    const makeOffersList = (offers) => {
+      return offers.map((item)=>{
+        return `<li>${item.title} +&euro;&nbsp;${item.price}</li>`;
+      }).slice(OFFERS_LINES_CONFIG.start, OFFERS_LINES_CONFIG.end).join(``);
+    };
+
+    const makeDuration = () => {
+      const days = this._duration.get(`days`);
+      const hours = this._duration.get(`hours`);
+      const minutes = this._duration.get(`minutes`);
+
+      return `${days > 0 ? `${days}D` : ``} ${days > 0 || hours > 0 ? `${hours}H` : ``} ${minutes > 0 ? `${minutes}M` : ``}`;
+    };
+
     return `<article class="trip-point">
     <i class="trip-icon">${this._type.icon}</i>
     <h3 class="trip-point__title">${this._type.type} ${DRIVE_TYPE_MAP.get(this._type.type) ? `to` : `in`} ${this._city}</h3>
     <p class="trip-point__schedule">
       <span class="trip-point__timetable">${moment(this._timeRange.startTime).format(`HH:mm`)}&nbsp;&mdash; ${moment(this._timeRange.endTime).format(`HH:mm`)}</span>
-      <span class="trip-point__duration">${this._duration.get(`days`) * 24 + this._duration.get(`hours`)}H ${this._duration.get(`minutes`)}M</span>
+      <span class="trip-point__duration">${makeDuration()}</span>
     </p>
     <p class="trip-point__price">&euro;&nbsp;${this._totalPrice}</p>
       <ul class="trip-point__offers">
-        ${this._renderOffersList(this._offers)}
+        ${makeOffersList(this._offers)}
       </ul>
   </article>`;
   }

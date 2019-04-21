@@ -1,10 +1,10 @@
 import Component from './component';
 
 class TripDay extends Component {
-  constructor(controller, data, id) {
+  constructor(controller, date, id) {
     super();
-    this._day = data.day;
-    this._points = data._points;
+    this._day = date;
+    // this._points = data._points;
     this._id = id;
     this._controller = controller;
   }

@@ -28,9 +28,9 @@ class SortsController {
     for (let sortData of this._config) {
       let sort = new Sort(sortData.sortName, sortData.checked ? true : false);
       sort.onSort = () => {
-        this._model.exportPoints = SORTS_CONFIG.find(((it) => {
+        this._model.doSort = SORTS_CONFIG.find((it) => {
           return it.sortName === sort.name;
-        })).doSort(this._model.exportPoints);
+        }).doSort;
       };
       sorts.push(sort.render());
     }

@@ -1,8 +1,10 @@
+import moment from 'moment';
+
 const SORTS_CONFIG = [
   {sortName: `Event`,
     doSort(points) {
       return points.sort((a, b) => {
-        return Number(a.id) - Number(b.id);
+        return moment(a.date, `MMM DD`) - moment(b.date, `MMM DD`);
       });
     },
     checked: true

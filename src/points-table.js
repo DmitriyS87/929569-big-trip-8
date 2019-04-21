@@ -3,7 +3,6 @@ import {EventEmitter} from "./event-emitter";
 import TripPoint from './points/trip-point';
 import TripPointDetailed from './points/trip-point-detailed';
 import TripDay from './trip-day';
-import moment from 'moment';
 
 class PointsTable extends EventEmitter {
   constructor(model, pointContainer) {
@@ -13,6 +12,7 @@ class PointsTable extends EventEmitter {
     this._destinationsList = undefined;
     this._isRendered = false; // костыль!!!!
     this._openedNewPoint = null;
+    // this._tablesElements = [];
 
     model.on(`pointsChanged`, () => {
       return this._rerender();
@@ -37,20 +37,23 @@ class PointsTable extends EventEmitter {
   }
 
   init() {
+    this._tablesElements = [];
     this._getData();
     this._tables = this._makeTables();
     this._clearContainer();
-    this._tables.forEach((it) => {
-      it.render();
-      this.renderElement(it.element);
-    });
+    // this._tables.forEach((it) => {
+    //   it.render();
+    //   this.renderElement(it.element);
+    // });
     this._arrayPoints = this._makePoints();
     this._isRendered = true;
+    this._tablesElements.forEach((it) => {
+      // this.renderElement(it.element);
+      this._pointsContainer.appendChild(it);
+    });
   }
 
   makeNewPoint() {
-    console.log(`makeNewPoint run!`);
-
     const container = this._pointsContainer;
     const newData = this._model.getNewPointData();
     const newPoint = new TripPointDetailed(newData, this);
@@ -58,7 +61,6 @@ class PointsTable extends EventEmitter {
       container.removeChild(newPoint.element);
       newPoint.removeObjectListeners();
       newPoint.unrender();
-      newPoint = null;
       this.emit(`normalMode`);
     };
     newPoint.onSaveClick = (data) => {
@@ -101,9 +103,14 @@ class PointsTable extends EventEmitter {
 
   _makePoints() {
     return this._pointsData.map((pointData) => {
-      return this._generatePointView(pointData, this._tables.find((table) => {
-        return pointData.date === table.day;
-      }).pointsContainer);
+      let suitableTable = this._tables.find((it) => {
+        return it.day === pointData.date;
+      });
+      if (suitableTable.element === null) {
+        suitableTable.render();
+        this._tablesElements.push(suitableTable.element);
+      }
+      return this._generatePointView(pointData, suitableTable.element.querySelector(`.trip-day__items`));
     });
   }
 
@@ -118,7 +125,6 @@ class PointsTable extends EventEmitter {
   }
 
   _rerender() {
-    console.log(`rerender`);
     if (this._isRendered) {
       this._deletePoints();
     }
@@ -132,12 +138,10 @@ class PointsTable extends EventEmitter {
     this._pointsContainer.appendChild(message);
   }
   _deletePoint(id) {
-    // данные должны получить из модели!!!
     const deletedPair = this._arrayPoints.find((it) => {
       return it.point.id === id;
     });
     this._arrayPoints.splice(this._arrayPoints.indexOf(deletedPair), 1);
-    // this._rerender();
     this.emit(`deleted`, id);
   }
 
@@ -163,7 +167,6 @@ class PointsTable extends EventEmitter {
 
   _saveDestinationsList() {
     this.destinationsList = this._model.destinationsList;
-    // this.emit(`destinationsLoaded`, this.destinationsList);
   }
 
   set destinationsList(list) {
@@ -197,9 +200,16 @@ class PointsTable extends EventEmitter {
     const data = this._daysData;
 
     return data.map((dayData) => {
-      const tripDay = new TripDay(this, dayData, dayData.count);
+      const tripDay = new TripDay(this, dayData.day, dayData.count);
       return tripDay;
     });
+  }
+  _getTableElement(pointDate) {
+    const table = this._tables.find((it) => {
+      return it.day === pointDate.date;
+    });
+
+    return table.element;
   }
 
   _generatePointView(pointData, dayContainer) {

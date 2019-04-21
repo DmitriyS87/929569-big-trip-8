@@ -88,7 +88,6 @@ class Controller extends EventEmitter {
 
   _initNewEvent() {
     const onClickNewEvent = () => {
-      console.log(`makeNewPoint`);
       this._pointsTable.makeNewPoint();
     };
     document.querySelector(`.trip-controls__new-event`).addEventListener(`click`, onClickNewEvent);
@@ -154,10 +153,8 @@ class Controller extends EventEmitter {
 
   updatePoint(newData) {
     this._provider.updatePoint({id: newData.id, data: DataParser.toServerFormat(newData)})
-    .catch((it) => {
-      console.log(it);
+    .catch(() => {
       this._pointsTable.enablePoint(newData.id);
-      //   throw new Error(it);
     })
 .then((point) => {
   if (point) {
@@ -168,8 +165,7 @@ class Controller extends EventEmitter {
 
   createPoint(newData) {
     this._provider.createPoint({id: newData.id, data: DataParser.toServerFormat(newData)})
-    .catch((it) => {
-      console.log(it);
+    .catch(() => {
       this._pointsTable.enablePoint(newData.id);
       //   throw new Error(it);
     })

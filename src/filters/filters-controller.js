@@ -7,10 +7,12 @@ const FILTER_FORM_CLASS = `.trip-filter`;
 const filterContainer = document.querySelector(FILTER_FORM_CLASS);
 
 class FiltersController extends EventEmitter {
-  constructor(model) {
+  constructor(model, mainController) {
     super();
     this._model = model;
+    this._mainController = mainController;
     this._config = FILTERS_DATA;
+    this._filterFunction = null;
 
     model.on(`pointsLoaded`, () => {
       this.enable();
@@ -38,6 +40,14 @@ class FiltersController extends EventEmitter {
     });
   }
 
+  set filterFunction(fn) {
+    this._filterFunction = fn;
+  }
+
+  get filterFunction() {
+    return this._filterFunction;
+  }
+
   get filters() {
     return this._filters;
   }
@@ -47,11 +57,10 @@ class FiltersController extends EventEmitter {
     for (let filterData of this._config) {
       let filter = new Filter(filterData.textFilter, filterData.checked ? true : false);
       filter.onFilter = () => {
-        this._model.exportPoints = this._model.points.filter((point) => {
-          return this._config.find((it) => {
-            return it.textFilter === filter.name;
-          }).doFilter(point);
-        });
+        this._model.doFilter = this._config.find((it) => {
+          return it.textFilter === filter.name;
+        }).doFilter;
+
       };
       FILTERS.push(filter.render());
     }

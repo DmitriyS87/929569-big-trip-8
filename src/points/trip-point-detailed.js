@@ -98,16 +98,51 @@ class TripPointDetailed extends Component {
     if (this._stateError) {
       this._resetErrorView();
     }
-    const formData = new FormData(this._element.childNodes[1]);
-    const newData = this._processForm(formData);
-    newData.id = this._id;
-    newData.date = moment(newData.timeRange.startTime).format(`MMM DD`);
-    this.update(newData);
-    this.element.querySelector(`.point__button:first-child`).innerText = `Saving...`;
-    this._disable();
-    if (typeof this._onSaveClick === `function`) {
+    const pointForm = this._element.childNodes[1];
+    const checkForm = (form) => {
+      const typeInput = form.querySelector(`.travel-way__toggle`);
+      const typeLabel = form.querySelector(`.travel-way__label`);
+      const typeValidity = form.querySelector(`.travel-way__label`).innerText !== ``;
+
+      const setErrorBorder = (element) => {
+        element.style.borderColor = `red`;
+        element.style.borderWidth = `1px`;
+        element.style.borderStyle = `Solid`;
+      };
+
+      const removeErrorBorder = (element) => {
+        element.removeAttribute(`style`);
+      };
+      if (!typeValidity) {
+        typeInput.setCustomValidity(`please choose a way`);
+        setErrorBorder(typeLabel);
+      } else {
+        typeInput.setCustomValidity(``);
+        removeErrorBorder(typeLabel);
+      }
+
+      const destinationInput = form.querySelector(`.point__destination-input`);
+      const destinationValidity = destinationInput.checkValidity();
+
+      if (!destinationValidity) {
+        setErrorBorder(destinationInput);
+      } else {
+        removeErrorBorder(destinationInput);
+      }
+
+      return typeValidity && destinationValidity;
+    };
+    if (checkForm(pointForm)) {
+      const formData = new FormData(pointForm);
+      const newData = this._processForm(formData);
+      newData.id = this._id;
+      newData.date = moment(newData.timeRange.startTime).format(`MMM DD`);
+      this.update(newData);
+      this.element.querySelector(`.point__button:first-child`).innerText = `Saving...`;
+      this._disable();
       this._onSaveClick(newData);
     }
+
   }
 
   _onChangeTimeStart(evt) {
@@ -348,7 +383,7 @@ class TripPointDetailed extends Component {
         <div class="travel-way">
           <label class="travel-way__label" for="travel-way__toggle">${this._type.icon}</label>
 
-          <input type="checkbox" class="travel-way__toggle visually-hidden" id="travel-way__toggle">
+          <input type="checkbox" class="travel-way__toggle visually-hidden" id="travel-way__toggle" required>
 
           <div class="travel-way__select">
           ${renderGroupTravelWay(DRIVE_TYPE_MAP)}
@@ -358,7 +393,7 @@ class TripPointDetailed extends Component {
 
         <div class="point__destination-wrap">
           <label class="point__destination-label" for="destination">${this._type.type} to</label>
-          <input class="point__destination-input" list="destination-select" id="destination" value="${this._city}" name="destination">
+          <input class="point__destination-input" list="destination-select" id="destination" value="${this._city}" name="destination" required>
           <datalist id="destination-select">
           ${this._destinationNames ? this._destinationNames : ``}
           </datalist>
