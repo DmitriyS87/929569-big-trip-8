@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-const SORTS_CONFIG = [
+const sortsConfig = [
   {sortName: `Event`,
     doSort(points) {
       return points.sort((a, b) => {
@@ -25,4 +25,4 @@ const SORTS_CONFIG = [
   }
 ];
 
-export default SORTS_CONFIG;
+export default sortsConfig;

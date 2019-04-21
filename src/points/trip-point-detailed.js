@@ -3,6 +3,7 @@ import moment from 'moment';
 import flatpickr from 'flatpickr';
 
 const ESC = 27;
+
 const DRIVE_TYPE_MAP = new Map([
   [`Taxi`, `🚕`],
   [`Bus`, `🚌`],
@@ -50,14 +51,14 @@ class TripPointDetailed extends Component {
     this._onChangeTimeStart = this._onChangeTimeStart.bind(this);
     this._onDeleteClick = null;
 
-    this._onUpdateHandler = (id) => {
+    this._onUpdate = (id) => {
       if (id === this._id) {
         this._onClose();
       }
     };
-    pointsTable.on(`updated`, this._onUpdateHandler);
+    pointsTable.on(`updated`, this._onUpdate);
 
-    this._onErrorHandler = (id) => {
+    this._onError = (id) => {
       if (id === this._id) {
         this._enable();
         this.element.querySelector(`.point__button:first-child`).innerText = `Save`;
@@ -65,24 +66,23 @@ class TripPointDetailed extends Component {
         this._errorView();
       }
     };
-    pointsTable.on(`unblockError`, this._onErrorHandler);
+    pointsTable.on(`unblockError`, this._onError);
 
-    this._onDeleteHandler = (id) => {
+    this._onDelete = (id) => {
       if (id === this._id) {
-        this._delete();
+        this.delete();
         pointsTable.emit(`normalMode`);
         pointsTable.emit(`pointDeletedFromPage`);
       }
     };
-    pointsTable.on(`deleted`, this._onDeleteHandler);
-    this._onDeleteNewHandler = (id) => {
+    pointsTable.on(`deleted`, this._onDelete);
+    this._onNewPointDelete = (id) => {
       if (id === this._id) {
-        this._delete();
+        this.delete();
         pointsTable.emit(`normalMode`);
-        // pointsTable.emit(`pointDeletedFromPage`);
       }
     };
-    pointsTable.on(`onDeleteNew`, this._onDeleteNewHandler);
+    pointsTable.on(`onDeleteNew`, this._onNewPointDelete);
   }
 
   get id() {
@@ -98,7 +98,7 @@ class TripPointDetailed extends Component {
     if (this._stateError) {
       this._resetErrorView();
     }
-    const pointForm = this._element.childNodes[1];
+    const pointForm = this._element.getElementsByTagName(`form`)[0];
     const checkForm = (form) => {
       const typeInput = form.querySelector(`.travel-way__toggle`);
       const typeLabel = form.querySelector(`.travel-way__label`);
@@ -440,7 +440,7 @@ class TripPointDetailed extends Component {
   </article>`;
   }
 
-  _delete() {
+  delete() {
     this.removeObjectListeners();
     this.element.remove();
     this.unrender();
@@ -488,9 +488,10 @@ class TripPointDetailed extends Component {
   }
 
   removeObjectListeners() {
-    this._pointsTable.delete(`updated`, this._onUpdateHandler);
-    this._pointsTable.delete(`unblockError`, this._onErrorHandler);
-    this._pointsTable.delete(`deleted`, this._onDeleteHandler);
+    this._pointsTable.delete(`updated`, this._onUpdate);
+    this._pointsTable.delete(`unblockError`, this._onError);
+    this._pointsTable.delete(`deleted`, this._onDelete);
+    this._pointsTable.delete(`onDeleteNew`, this._onNewPointDelete);
   }
 
   removeListeners() {

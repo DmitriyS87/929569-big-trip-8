@@ -11,6 +11,7 @@ const ENTRY = `https://es8-demo-srv.appspot.com/big-trip`;
 const VAILD_SYMBOLS = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`;
 const STORAGE_KEY = `big_trip_storage`;
 
+const FIRST_SYMBOL_INDEX = 0;
 
 const makeRandomCountMinMax = (min, max) => {
   return min + Math.floor(Math.random() * (max - min));
@@ -144,7 +145,7 @@ class Controller extends EventEmitter {
     this._api.getOffers()
     .then((offers) => {
       this._model.offers = offers.map((it) => {
-        it.type = it.type[0].toUpperCase() + it.type.substring(1);
+        it.type = it.type[FIRST_SYMBOL_INDEX].toUpperCase() + it.type.substring(FIRST_SYMBOL_INDEX + 1);
         return it;
       });
       this._model.baseOffersTypes = offers;
@@ -167,7 +168,6 @@ class Controller extends EventEmitter {
     this._provider.createPoint({id: newData.id, data: DataParser.toServerFormat(newData)})
     .catch(() => {
       this._pointsTable.enablePoint(newData.id);
-      //   throw new Error(it);
     })
 .then((point) => {
   if (point) {
@@ -179,9 +179,8 @@ class Controller extends EventEmitter {
 
   deletePoint(id) {
     this._provider.deletePoint(id)
-    .catch((it) => {
-      this._pointsTable.enablePoint(id); // если контроллер разблокирует, то может ему и блокировать?! или давать событие, чтобы компонент сам разблокировался
-      throw new Error(it); // заменить на сообщение об ошибке
+    .catch(() => {
+      this._pointsTable.enablePoint(id);
     })
 .then(() => {
   this._model.deletePoint(id);

@@ -1,4 +1,4 @@
-import FILTERS_DATA from './filters-config';
+import filtersConfig from './filters-config';
 import Filter from './filter';
 import {EventEmitter} from '../event-emitter';
 import {clearHTMLInside} from '../utils';
@@ -11,12 +11,15 @@ class FiltersController extends EventEmitter {
     super();
     this._model = model;
     this._mainController = mainController;
-    this._config = FILTERS_DATA;
+    this._config = filtersConfig;
     this._filterFunction = null;
 
-    model.on(`pointsLoaded`, () => {
+    this._onPointsLoaded = () => {
       this.enable();
-    });
+      model.off(`pointsLoaded`, this._onPointsLoaded);
+    };
+
+    model.on(`pointsLoaded`, this._onPointsLoaded);
   }
 
   init() {
@@ -53,7 +56,7 @@ class FiltersController extends EventEmitter {
   }
 
   _generateFilters() {
-    const FILTERS = [];
+    const filtersElements = [];
     for (let filterData of this._config) {
       let filter = new Filter(filterData.textFilter, filterData.checked ? true : false);
       filter.onFilter = () => {
@@ -62,9 +65,9 @@ class FiltersController extends EventEmitter {
         }).doFilter;
 
       };
-      FILTERS.push(filter.render());
+      filtersElements.push(filter.render());
     }
-    return FILTERS;
+    return filtersElements;
   }
 }
 

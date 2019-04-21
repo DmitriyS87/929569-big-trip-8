@@ -7,9 +7,12 @@ class StatsModel extends EventEmitter {
     super();
     this._charts = [];
     this._model = model;
-    model.on(`pointsLoaded`, () => {
+
+    this._onPointsLoaded = () => {
       this.init();
-    });
+      model.off(`pointsLoaded`, this._onPointsLoaded);
+    };
+    model.on(`pointsLoaded`, this._onPointsLoaded);
 
     model.on(`pointsChanged`, () => {
       this.update();

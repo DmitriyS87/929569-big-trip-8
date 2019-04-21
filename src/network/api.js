@@ -42,7 +42,7 @@ class API {
     .then(toJSON);
   }
 
-  createPoint({id, data}) {
+  createPoint({data}) {
     return this._load({url: `points/`, method: `POST`, body: JSON.stringify(data), headers: new Headers({'Content-Type': `application/json`})})
     .then(toJSON);
   }

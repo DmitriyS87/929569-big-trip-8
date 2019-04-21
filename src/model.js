@@ -19,14 +19,7 @@ class Model extends EventEmitter {
     });
     this._exportTables = this._makeTablesData(this._points);
     this.updateExport();
-    // this.exportPoints = this._points;
-    this.emit(`pointsLoaded`); // check the way
-  }
-  get points() { // кому и зачем надо???
-    if (this._points instanceof Array) {
-      return this._points;
-    }
-    return [];
+    this.emit(`pointsLoaded`);
   }
 
   getNewPointData() {
@@ -54,14 +47,13 @@ class Model extends EventEmitter {
 
   set exportPoints(points) {
     this._exportPoints = points;
-    // this._exportTables = this._makeTablesData(this._exportPoints);
     this.totalCost = `€ ${this._countTotalCost()}`;
     this.emit(`pointsChanged`);
   }
 
   set doFilter(fn) {
     this._doFilter = fn;
-    this.updateExport(); // рендерим только не пустые
+    this.updateExport();
   }
 
   set doSort(fn) {
@@ -174,7 +166,6 @@ class Model extends EventEmitter {
     })), 1, newData);
     this._exportTables = this._makeTablesData(this._points);
     this.updateExport();
-    // this.exportPoints = this._points;
   }
 
   createPoint(newData) {
@@ -187,7 +178,6 @@ class Model extends EventEmitter {
     });
     this._exportTables = this._makeTablesData(this._points);
     this.updateExport();
-    // this.exportPoints = this._points;
   }
 
   _addDuration(point) {

@@ -4,7 +4,6 @@ class TripDay extends Component {
   constructor(controller, date, id) {
     super();
     this._day = date;
-    // this._points = data._points;
     this._id = id;
     this._controller = controller;
   }

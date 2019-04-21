@@ -1,5 +1,4 @@
 import {EventEmitter} from "./event-emitter";
-// import Filter from './filter';
 import TripPoint from './points/trip-point';
 import TripPointDetailed from './points/trip-point-detailed';
 import TripDay from './trip-day';
@@ -10,18 +9,18 @@ class PointsTable extends EventEmitter {
     this._model = model;
     this._pointsContainer = pointContainer;
     this._destinationsList = undefined;
-    this._isRendered = false; // костыль!!!!
+    this._isRendered = false;
     this._openedNewPoint = null;
-    // this._tablesElements = [];
+
 
     model.on(`pointsChanged`, () => {
       return this._rerender();
     });
     model.on(`pointSaved`, (newData) => {
-      return this._updatePoint(newData);// this._rerender(); // лишнее?? см "pointsChanged"
+      return this._updatePoint(newData);
     });
     model.on(`newPointSaved`, (id) => {
-      return this.emit(`newPointSaved`, id); // лишнее?? см "pointsChanged"
+      return this.emit(`newPointSaved`, id);
     });
     model.on(`pointDeleted`, (id) => {
       return this._deletePoint(id);
@@ -41,14 +40,9 @@ class PointsTable extends EventEmitter {
     this._getData();
     this._tables = this._makeTables();
     this._clearContainer();
-    // this._tables.forEach((it) => {
-    //   it.render();
-    //   this.renderElement(it.element);
-    // });
     this._arrayPoints = this._makePoints();
     this._isRendered = true;
     this._tablesElements.forEach((it) => {
-      // this.renderElement(it.element);
       this._pointsContainer.appendChild(it);
     });
   }
@@ -76,10 +70,7 @@ class PointsTable extends EventEmitter {
   }
 
   closeNewPoint() {
-    // this._pointsContainer.removeChild(this._openedNewPoint.element);
-    // this._openedNewPoint.unrender();
-    // this._openedNewPoint = null;
-    this._openedNewPoint._delete();
+    this._openedNewPoint.delete();
     this.emit(`normalMode`);
   }
 
@@ -249,10 +240,6 @@ class PointsTable extends EventEmitter {
     renderPoint(pointPair.point, dayContainer);
 
     return pointPair;
-  }
-
-  _clearPointsContainer() {
-    this._pointsContainer.innerHTML = ``;
   }
 
 }

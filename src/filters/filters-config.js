@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-const FILTERS_CONFIG = [
+const filtersConfig = [
   {
     textFilter: `Everything`,
     doFilter() {
@@ -27,4 +27,4 @@ const FILTERS_CONFIG = [
     }
   }];
 
-export default FILTERS_CONFIG;
+export default filtersConfig;

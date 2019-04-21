@@ -38,7 +38,6 @@ class Provider {
         this._store.setItem({key: point.id, item: point});
         return DataParser.parsePoint(point);
       });
-      // .then(toJSON);
     }
     const point = data;
     this._needSync = true;
@@ -53,7 +52,6 @@ class Provider {
         this._store.setItem({key: point.id, item: point});
         return DataParser.parsePoint(point);
       });
-      // .then(toJSON);
     }
     const point = data;
     this._needSync = true;
@@ -71,7 +69,6 @@ class Provider {
     this._needSync = true;
     this._store.removeItem({key: id});
     return Promise.resolve(true);
-    //
   }
 
   syncData() {

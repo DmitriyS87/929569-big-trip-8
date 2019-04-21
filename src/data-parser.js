@@ -1,16 +1,15 @@
 import moment from 'moment';
 
-const DRIVE_TYPE_MAP = new Map([
+const FIRST_SYMBOL_INDEX = 0;
+
+const TYPE_MAP = new Map([
   [`Taxi`, `🚕`],
   [`Bus`, `🚌`],
   [`Train`, `🚂`],
   [`Flight`, `✈️`],
   [`Ship`, `🛳️`],
   [`Transport`, `🚊`],
-  [`Drive`, `🚗`]
-]);
-
-const STAY_TYPE_MAP = new Map([
+  [`Drive`, `🚗`],
   [`Check-in`, `🏨`],
   [`Sightseeing`, `🏛`],
   [`Restaurant`, `🍴`]
@@ -20,9 +19,9 @@ class DataParser {
     this.id = String(data.id);
 
     this.type = {};
-    data.type = data.type[0].toUpperCase() + data.type.substring(1);
+    data.type = data.type[FIRST_SYMBOL_INDEX].toUpperCase() + data.type.substring(FIRST_SYMBOL_INDEX + 1);
     this.type.type = data.type;
-    this.type.icon = DRIVE_TYPE_MAP.has(data.type) ? DRIVE_TYPE_MAP.get(data.type) : STAY_TYPE_MAP.get(data.type);
+    this.type.icon = TYPE_MAP.get(data.type);
 
     this.timeRange = {};
     this.timeRange.startTime = moment(data[`date_from`]);
