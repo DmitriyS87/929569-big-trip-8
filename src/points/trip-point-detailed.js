@@ -278,46 +278,6 @@ class TripPointDetailed extends Component {
     </div>`;
   }
 
-  static createMaper(target) {
-    return new Map([
-      [`travel-way`, (value) => {
-        target.type.type = value;
-        target.type.icon = DRIVE_TYPE_MAP.has(value) ? DRIVE_TYPE_MAP.get(value) : STAY_TYPE_MAP.get(value);
-        return target.type;
-      }],
-      [`destination`, (value) => {
-        target.city = value;
-        return target.city;
-      }],
-      [`date-start`, (value) => {
-        target.timeRange.startTime = value;
-        return target.timeRange;
-      }],
-      [`date-end`, (value) => {
-        target.timeRange.endTime = value;
-        return target.timeRange;
-      }],
-      [`price`, (value) => {
-        target.price.count = Number(value);
-        return target.price;
-      }],
-      [`total-price`, (value) => {
-        target.totalPrice = Number(value);
-        return target.totalPrice;
-      }],
-      [`offer`, (value) => {
-        target.offers.push({
-          title: _replaceDash(value)
-        });
-        return target.offers;
-      }],
-      [`favorite`, () => {
-        target.isFavorite = true;
-        return target.isFavorite;
-      }]
-    ]);
-  }
-
   _onClickTravelWay(evt) {
     if (evt.target.name === `travel-way`) {
       this._type.type = evt.target.value;
@@ -505,5 +465,46 @@ class TripPointDetailed extends Component {
       it.removeEventListener(`click`, this._onSelectTravelWay);
     });
   }
+
+  static createMaper(target) {
+    return new Map([
+      [`travel-way`, (value) => {
+        target.type.type = value;
+        target.type.icon = DRIVE_TYPE_MAP.has(value) ? DRIVE_TYPE_MAP.get(value) : STAY_TYPE_MAP.get(value);
+        return target.type;
+      }],
+      [`destination`, (value) => {
+        target.city = value;
+        return target.city;
+      }],
+      [`date-start`, (value) => {
+        target.timeRange.startTime = value;
+        return target.timeRange;
+      }],
+      [`date-end`, (value) => {
+        target.timeRange.endTime = value;
+        return target.timeRange;
+      }],
+      [`price`, (value) => {
+        target.price.count = Number(value);
+        return target.price;
+      }],
+      [`total-price`, (value) => {
+        target.totalPrice = Number(value);
+        return target.totalPrice;
+      }],
+      [`offer`, (value) => {
+        target.offers.push({
+          title: _replaceDash(value)
+        });
+        return target.offers;
+      }],
+      [`favorite`, () => {
+        target.isFavorite = true;
+        return target.isFavorite;
+      }]
+    ]);
+  }
+
 }
 export default TripPointDetailed;
