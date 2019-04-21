@@ -1,5 +1,5 @@
 const CACHE_NAME = `BIG_TRIP`;
-const IGNORE_URL_PATTERN = /point|photo/;
+const IGNORE_URL_PATTERN = /point/;
 
 self.addEventListener(`install`, (evt) => {
   function onInstall() {
@@ -62,10 +62,17 @@ self.addEventListener(`fetch`, (evt) => {
     let resourceType = CACHE_NAME;
 
     if (acceptHeader.indexOf(`text/html`) !== -1) {
-      resourceType = CACHE_NAME + `content`;
-    } else if (acceptHeader.indexOf(`image`) !== -1) {
-      resourceType = CACHE_NAME + `image`;
+      resourceType = `${CACHE_NAME} content`;
+    } else if (acceptHeader.indexOf(`image`) !== -1 || acceptHeader.indexOf(`image/jpeg`) !== -1) {
+      resourceType = `${CACHE_NAME} image`;
+    } else if (acceptHeader.indexOf(`text/css`) !== -1) {
+      resourceType = `${CACHE_NAME} css`;
+    } else if (acceptHeader.indexOf(`text/plain`) !== -1) {
+      resourceType = `${CACHE_NAME} plain`;
+    } else if (acceptHeader.indexOf(`font/woff2`) !== -1) {
+      resourceType = `${CACHE_NAME} fonts`;
     }
+
 
     const cacheKey = resourceType;
 
@@ -76,14 +83,12 @@ self.addEventListener(`fetch`, (evt) => {
             return updateCache(cacheKey, request, response);
           })
           .catch(() => fromCache(evtParam))
-          // .catch(() => offlineResponse(opts))
       );
     } else {
       evtParam.respondWith(
           fromCache(evtParam)
           .catch(() => fetch(request))
           .then((response) => updateCache(cacheKey, request, response))
-          // .catch(() => offlineResponse(resourceType, opts))
       );
     }
   }
