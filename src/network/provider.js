@@ -38,7 +38,20 @@ class Provider {
         this._store.setItem({key: point.id, item: point});
         return DataParser.parsePoint(point);
       });
-      // .then(toJSON);
+    }
+    const point = data;
+    this._needSync = true;
+    this._store.setItem({key: point.id, item: point});
+    return Promise.resolve(DataParser.parsePoint(point));
+  }
+
+  createPoint({id, data}) {
+    if (this._isOnline()) {
+      return this._api.createPoint({id, data})
+      .then((point) => {
+        this._store.setItem({key: point.id, item: point});
+        return DataParser.parsePoint(point);
+      });
     }
     const point = data;
     this._needSync = true;
@@ -56,7 +69,6 @@ class Provider {
     this._needSync = true;
     this._store.removeItem({key: id});
     return Promise.resolve(true);
-    //
   }
 
   syncData() {

@@ -2,6 +2,8 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {EventEmitter} from '../event-emitter';
 
+const DATASETS_BASE_INDEX = 0;
+
 class ChartView extends EventEmitter {
   constructor(chartModel, options) {
     super();
@@ -75,15 +77,15 @@ class ChartView extends EventEmitter {
 
     this._additionalOptions = options;
 
-    this._onUpdateHandler = () => {
+    this._onUpdate = () => {
       return this._update();
     };
 
-    this._onInitHandler = () => {
+    this._onInit = () => {
       this._makeChart();
     };
-    chartModel.on(`statsDataUpdated`, this._onUpdateHandler);
-    chartModel.on(`statsInit`, this._onInitHandler);
+    chartModel.on(`statsDataUpdated`, this._onUpdate);
+    chartModel.on(`statsInit`, this._onInit);
   }
 
   _makeChart() {
@@ -99,7 +101,7 @@ class ChartView extends EventEmitter {
   _update() {
     const data = this._model.getChartData(this._additionalOptions.name); //
     this._chart.data.labels = data.types;
-    this._chart.data.datasets[0].data = data.counts;
+    this._chart.data.datasets[DATASETS_BASE_INDEX].data = data.counts;
     this._chart.update();
   }
 }

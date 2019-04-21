@@ -1,16 +1,17 @@
 import moment from 'moment';
 
-const FILTERS_CONFIG = [
+const filtersConfig = [
   {
     textFilter: `Everything`,
     doFilter() {
       return true;
-    }
+    },
+    checked: true
   },
   {
     textFilter: `Future`,
     doFilter(point) {
-      if (moment().isBefore(moment(point.date, `DD MMM`))) {
+      if (moment().isBefore(moment(point.date, `MMM DD`))) {
         return true;
       }
       return false;
@@ -19,11 +20,11 @@ const FILTERS_CONFIG = [
   {
     textFilter: `Past`,
     doFilter(point) {
-      if (moment(point.date, `DD MMM`).isBefore(moment())) {
+      if (moment(point.date, `MMM DD`).isBefore(moment())) {
         return true;
       }
       return false;
     }
   }];
 
-export default FILTERS_CONFIG;
+export default filtersConfig;

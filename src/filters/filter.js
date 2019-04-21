@@ -1,9 +1,10 @@
 import Component from "../component";
 
 class Filter extends Component {
-  constructor(name) {
+  constructor(name, checked) {
     super();
     this._name = name;
+    this._checked = checked;
 
     this._onFilter = null;
     this._onClickFilter = this._onClickFilter.bind(this);
@@ -23,7 +24,7 @@ class Filter extends Component {
 
   get template() {
     return `<div style="display:inline;">
-    <input type="radio" id="filter-${this._name.toLowerCase()}" name="filter" value="${this._name.toLowerCase()}"}>
+    <input type="radio" id="filter-${this._name.toLowerCase()}" name="filter" value="${this._name.toLowerCase()}" ${this._checked ? `checked` : ``}>
     <label class="trip-filter__item" for="filter-${this._name.toLowerCase()}">${this._name}
     </label></div>`;
   }

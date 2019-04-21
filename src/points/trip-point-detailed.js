@@ -2,6 +2,8 @@ import Component from '../component';
 import moment from 'moment';
 import flatpickr from 'flatpickr';
 
+const ESC = 27;
+
 const DRIVE_TYPE_MAP = new Map([
   [`Taxi`, `🚕`],
   [`Bus`, `🚌`],
@@ -45,16 +47,18 @@ class TripPointDetailed extends Component {
     this._onSaveButtonClick = this._onSaveButtonClick.bind(this);
     this._onDeliteButtonClick = this._onDeliteButtonClick.bind(this);
     this._onChangeDestination = this._onChangeDestination.bind(this);
+    this._onKeyDown = this._onKeyDown.bind(this);
+    this._onChangeTimeStart = this._onChangeTimeStart.bind(this);
     this._onDeleteClick = null;
 
-    this._onUpdateHandler = (id) => {
+    this._onUpdate = (id) => {
       if (id === this._id) {
         this._onClose();
       }
     };
-    pointsTable.on(`updated`, this._onUpdateHandler);
+    pointsTable.on(`updated`, this._onUpdate);
 
-    this._onErrorHandler = (id) => {
+    this._onError = (id) => {
       if (id === this._id) {
         this._enable();
         this.element.querySelector(`.point__button:first-child`).innerText = `Save`;
@@ -62,15 +66,23 @@ class TripPointDetailed extends Component {
         this._errorView();
       }
     };
-    pointsTable.on(`unblockError`, this._onErrorHandler);
+    pointsTable.on(`unblockError`, this._onError);
 
-    this._onDeleteHandler = (id) => {
+    this._onDelete = (id) => {
       if (id === this._id) {
-        this._delete();
+        this.delete();
+        pointsTable.emit(`normalMode`);
+        pointsTable.emit(`pointDeletedFromPage`);
+      }
+    };
+    pointsTable.on(`deleted`, this._onDelete);
+    this._onNewPointDelete = (id) => {
+      if (id === this._id) {
+        this.delete();
         pointsTable.emit(`normalMode`);
       }
     };
-    pointsTable.on(`deleted`, this._onDeleteHandler);
+    pointsTable.on(`onDeleteNew`, this._onNewPointDelete);
   }
 
   get id() {
@@ -86,15 +98,55 @@ class TripPointDetailed extends Component {
     if (this._stateError) {
       this._resetErrorView();
     }
-    const formData = new FormData(this._element.childNodes[1]);
-    const newData = this._processForm(formData);
-    newData.id = this._id;
-    this.update(newData);
-    this.element.querySelector(`.point__button:first-child`).innerText = `Saving...`;
-    this._disable();
-    if (typeof this._onSaveClick === `function`) {
+    const pointForm = this._element.getElementsByTagName(`form`)[0];
+    const checkForm = (form) => {
+      const typeInput = form.querySelector(`.travel-way__toggle`);
+      const typeLabel = form.querySelector(`.travel-way__label`);
+      const typeValidity = form.querySelector(`.travel-way__label`).innerText !== ``;
+
+      const setErrorBorder = (element) => {
+        element.style.borderColor = `red`;
+        element.style.borderWidth = `1px`;
+        element.style.borderStyle = `Solid`;
+      };
+
+      const removeErrorBorder = (element) => {
+        element.removeAttribute(`style`);
+      };
+      if (!typeValidity) {
+        typeInput.setCustomValidity(`please choose a way`);
+        setErrorBorder(typeLabel);
+      } else {
+        typeInput.setCustomValidity(``);
+        removeErrorBorder(typeLabel);
+      }
+
+      const destinationInput = form.querySelector(`.point__destination-input`);
+      const destinationValidity = destinationInput.checkValidity();
+
+      if (!destinationValidity) {
+        setErrorBorder(destinationInput);
+      } else {
+        removeErrorBorder(destinationInput);
+      }
+
+      return typeValidity && destinationValidity;
+    };
+    if (checkForm(pointForm)) {
+      const formData = new FormData(pointForm);
+      const newData = this._processForm(formData);
+      newData.id = this._id;
+      newData.date = moment(newData.timeRange.startTime).format(`MMM DD`);
+      this.update(newData);
+      this.element.querySelector(`.point__button:first-child`).innerText = `Saving...`;
+      this._disable();
       this._onSaveClick(newData);
     }
+
+  }
+
+  _onChangeTimeStart(evt) {
+    this._element.querySelector(`.point__input`).value = moment(evt.target.value).format(`MMM DD`);
   }
 
   _disable() {
@@ -140,7 +192,6 @@ class TripPointDetailed extends Component {
 
   _processForm(formData) {
     const clipboard = {
-      date: ``,
       type: {
         type: ``,
         icon: ``
@@ -227,46 +278,6 @@ class TripPointDetailed extends Component {
     </div>`;
   }
 
-  static createMaper(target) {
-    return new Map([
-      [`travel-way`, (value) => {
-        target.type.type = value;
-        target.type.icon = DRIVE_TYPE_MAP.has(value) ? DRIVE_TYPE_MAP.get(value) : STAY_TYPE_MAP.get(value);
-        return target.type;
-      }],
-      [`destination`, (value) => {
-        target.city = value;
-        return target.city;
-      }],
-      [`date-start`, (value) => {
-        target.timeRange.startTime = value;
-        return target.timeRange;
-      }],
-      [`date-end`, (value) => {
-        target.timeRange.endTime = value;
-        return target.timeRange;
-      }],
-      [`price`, (value) => {
-        target.price.count = Number(value);
-        return target.price;
-      }],
-      [`total-price`, (value) => {
-        target.totalPrice = Number(value);
-        return target.totalPrice;
-      }],
-      [`offer`, (value) => {
-        target.offers.push({
-          title: _replaceDash(value)
-        });
-        return target.offers;
-      }],
-      [`favorite`, () => {
-        target.isFavorite = true;
-        return target.isFavorite;
-      }]
-    ]);
-  }
-
   _onClickTravelWay(evt) {
     if (evt.target.name === `travel-way`) {
       this._type.type = evt.target.value;
@@ -304,6 +315,12 @@ class TripPointDetailed extends Component {
     this._onDeleteClick = fn.bind(this);
   }
 
+  _onKeyDown(evt) {
+    if (evt.keyCode === ESC) {
+      this._onClose();
+    }
+  }
+
   get template() {
     const renderGroupTravelWay = (map) => {
       return `<div class="travel-way__select-group">
@@ -320,13 +337,13 @@ class TripPointDetailed extends Component {
       <header class="point__header">
         <label class="point__date">
           choose day
-          <input class="point__input" type="text" placeholder="MAR 18" name="day" value="${this._date}">
+          <input class="point__input" type="text" placeholder="MAR 18" name="day" value="${this._date}" disabled="disabled">
         </label>
 
         <div class="travel-way">
           <label class="travel-way__label" for="travel-way__toggle">${this._type.icon}</label>
 
-          <input type="checkbox" class="travel-way__toggle visually-hidden" id="travel-way__toggle">
+          <input type="checkbox" class="travel-way__toggle visually-hidden" id="travel-way__toggle" required>
 
           <div class="travel-way__select">
           ${renderGroupTravelWay(DRIVE_TYPE_MAP)}
@@ -336,7 +353,7 @@ class TripPointDetailed extends Component {
 
         <div class="point__destination-wrap">
           <label class="point__destination-label" for="destination">${this._type.type} to</label>
-          <input class="point__destination-input" list="destination-select" id="destination" value="${this._city}" name="destination">
+          <input class="point__destination-input" list="destination-select" id="destination" value="${this._city}" name="destination" required>
           <datalist id="destination-select">
           ${this._destinationNames ? this._destinationNames : ``}
           </datalist>
@@ -383,7 +400,7 @@ class TripPointDetailed extends Component {
   </article>`;
   }
 
-  _delete() {
+  delete() {
     this.removeObjectListeners();
     this.element.remove();
     this.unrender();
@@ -394,6 +411,7 @@ class TripPointDetailed extends Component {
   }
 
   update(newData) {
+    this._date = newData.date;
     this._id = newData.id;
     this._city = newData.city;
     this._type = newData.type;
@@ -406,10 +424,12 @@ class TripPointDetailed extends Component {
   }
 
   createListeners() {
+    this._element.querySelector(`.point__time .point__input`).addEventListener(`change`, this._onChangeTimeStart);
     this._element.querySelector(`.point__buttons .point__button:first-child`).addEventListener(`click`, this._onSaveButtonClick);
     this._element.querySelector(`.point__buttons .point__button:last-child`).addEventListener(`click`, this._onDeliteButtonClick);
     this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onChangeDestination);
     this._element.querySelector(`.travel-way__select`).addEventListener(`click`, this._onClickTravelWay);
+    document.addEventListener(`keydown`, this._onKeyDown);
     Array.from(this._element.querySelectorAll(`.travel-way__select-group`)).forEach((it) => {
       it.addEventListener(`click`, this._onSelectTravelWay);
     });
@@ -428,19 +448,63 @@ class TripPointDetailed extends Component {
   }
 
   removeObjectListeners() {
-    this._pointsTable.delete(`updated`, this._onUpdateHandler);
-    this._pointsTable.delete(`unblockError`, this._onErrorHandler);
-    this._pointsTable.delete(`deleted`, this._onDeleteHandler);
+    this._pointsTable.delete(`updated`, this._onUpdate);
+    this._pointsTable.delete(`unblockError`, this._onError);
+    this._pointsTable.delete(`deleted`, this._onDelete);
+    this._pointsTable.delete(`onDeleteNew`, this._onNewPointDelete);
   }
 
   removeListeners() {
+    this._element.querySelector(`.point__time .point__input`).removeEventListener(`change`, this._onChangeTimeStart);
     this._element.querySelector(`.point__buttons .point__button:first-child`).removeEventListener(`click`, this._onSaveButtonClick);
     this._element.querySelector(`.point__buttons .point__button:last-child`).removeEventListener(`click`, this.onDeliteButtonClick);
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onChangeDestination);
     this._element.querySelector(`.travel-way__select`).removeEventListener(`click`, this._onClickTravelWay);
+    document.removeEventListener(`keydown`, this._onKeyDown);
     Array.from(this._element.querySelectorAll(`.travel-way__select-group`)).forEach((it) => {
       it.removeEventListener(`click`, this._onSelectTravelWay);
     });
   }
+
+  static createMaper(target) {
+    return new Map([
+      [`travel-way`, (value) => {
+        target.type.type = value;
+        target.type.icon = DRIVE_TYPE_MAP.has(value) ? DRIVE_TYPE_MAP.get(value) : STAY_TYPE_MAP.get(value);
+        return target.type;
+      }],
+      [`destination`, (value) => {
+        target.city = value;
+        return target.city;
+      }],
+      [`date-start`, (value) => {
+        target.timeRange.startTime = value;
+        return target.timeRange;
+      }],
+      [`date-end`, (value) => {
+        target.timeRange.endTime = value;
+        return target.timeRange;
+      }],
+      [`price`, (value) => {
+        target.price.count = Number(value);
+        return target.price;
+      }],
+      [`total-price`, (value) => {
+        target.totalPrice = Number(value);
+        return target.totalPrice;
+      }],
+      [`offer`, (value) => {
+        target.offers.push({
+          title: _replaceDash(value)
+        });
+        return target.offers;
+      }],
+      [`favorite`, () => {
+        target.isFavorite = true;
+        return target.isFavorite;
+      }]
+    ]);
+  }
+
 }
 export default TripPointDetailed;
