@@ -208,7 +208,6 @@ class PointsTable extends EventEmitter {
       const tripPoint = new TripPoint(data, this._model);
       const tripPointDetailed = new TripPointDetailed(data, this);
       tripPoint.onClickPoint = () => {
-        tripPointDetailed.destinations = this._model.destinationsList;
         tripPointDetailed.render();
         pointsDayContainer.replaceChild(tripPointDetailed.element, tripPoint.element);
         tripPoint.unrender();

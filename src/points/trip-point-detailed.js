@@ -43,7 +43,6 @@ class TripPointDetailed extends Component {
 
     this._onSelectTravelWay = this._onSelectTravelWay.bind(this);
     this._onClickTravelWay = this._onClickTravelWay.bind(this);
-    this._includeDestinations = this._includeDestinations.bind(this);
     this._onSaveButtonClick = this._onSaveButtonClick.bind(this);
     this._onDeliteButtonClick = this._onDeliteButtonClick.bind(this);
     this._onChangeDestination = this._onChangeDestination.bind(this);
@@ -234,10 +233,9 @@ class TripPointDetailed extends Component {
     return clipboard;
   }
 
-  set destinations(list) {
-    if (list !== undefined) {
-      this._destinationNames = this._includeDestinations(list);
-    }
+  get destinations() {
+    const destinations = this._pointsTable.destinationsList;
+    return destinations ? this._includeDestinations(destinations) : ``;
   }
 
   _includeDestinations(list) {
@@ -355,7 +353,7 @@ class TripPointDetailed extends Component {
           <label class="point__destination-label" for="destination">${this._type.type} to</label>
           <input class="point__destination-input" list="destination-select" id="destination" value="${this._city}" name="destination" required>
           <datalist id="destination-select">
-          ${this._destinationNames ? this._destinationNames : ``}
+          ${this.destinations}
           </datalist>
         </div>
 
